@@ -33,7 +33,7 @@ tower = "*"  # Components for building robust clients and servers.
 serde = { version = "*", features = ["derive"] }  # Serialization/deserialization framework.
 ```
 
-Run:
+Try it:
 
 ```sh
 cargo build
@@ -53,7 +53,10 @@ Edit file `src/main.rs` like this:
 extern crate axum;
 extern crate tokio;
 
-use axum::{routing::get, Router};
+use axum::{
+    routing::get,
+    Router,
+};
 
 #[tokio::main]
 async fn main() {
@@ -69,7 +72,7 @@ async fn main() {
 }
 ```
 
-Run:
+Try it:
 
 ```sh
 cargo run
@@ -80,9 +83,10 @@ Browse <http://localhost:3000> and you should see "Hello, World!".
 
 ## Router and Handler
 
-A route can call a function, which is called a handler.
+An Axum route can call an function, which is called an Axum handler. The handler
+is async function returns something that can be converted into a response.
 
-Edit `main.rs` to add a handler function that returns text:
+Edit `main.rs` to add a handler async function that returns text:
 
 ```rust
 async fn hello() -> String {
@@ -97,7 +101,7 @@ let app = Router::new()
     .route("/", get(hello));
 ```
 
-Run:
+Try it:
 
 ```sh
 cargo run
@@ -129,7 +133,7 @@ async fn bar() -> String {
 }
 ```
 
-Run:
+Try it:
 
 ```sh
 cargo run
@@ -173,7 +177,7 @@ async fn post_bar() -> String {
 }
 ```
 
-Run:
+Try it:
 
 ```sh
 cargo run
@@ -183,8 +187,8 @@ Browse <http://localhost:3000/foo> and you should see "Get Foo!".
 
 Browse <http://localhost:3000/bar> and you should see "Get Bar!".
 
-To explicity try the GET verb and POST verb, one way is to use a command line
-program such as `curl` like this:
+To explicity try it by using the GET verb and POST verb, one way is to use a
+command line program such as `curl` like this:
 
 ```sh
 $ curl -X GET 'http://localhost:3000/foo'
@@ -198,4 +202,48 @@ Get Bar!
 
 $ curl -X POST 'http://localhost:3000/bar'
 Post Bar!
+```
+
+
+## Extract path parameters
+
+An Axum "extractor" is how you pick apart the incoming request in order to get any parts that your handler needs.
+
+Add code to use `Path`:
+
+```rust
+use axum::{
+    extract::Path,
+    routing::get,
+    Router,
+};
+```
+
+Add a route using path parameter syntax, such as ":id", in order to tell Axum to extract a path parameter and deserialize it into a variable named `id`:
+
+```rust
+let app = Router::new()
+    .route("/", get(root))
+    .route("/foo", get(get_foo).post(post_foo))
+    .route("/bar", get(get_bar).post(post_bar))
+    .route("/item/:id", get(get_item));
+```
+
+Add a handler:
+
+```rust
+// `Path` gives you the path parameters and deserializes them.
+async fn get_item(Path(id): Path<u32>) {
+    format!("Get item with identifier {:?}", id).to_string()
+}
+
+Try it:
+
+```sh
+cargo run
+```
+
+```sh
+$ curl -X GET 'http://localhost:3000/item/1'
+Get item with identifier 1
 ```
