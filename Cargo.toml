@@ -10,4 +10,4 @@ axum = "*"  # Web framework that focuses on ergonomics and modularity.
 hyper = "*"  # A fast and correct HTTP library.
 tokio = { version = "*", features = ["full"] }  # Event-driven, non-blocking I/O platform for writing asynchronous I/O backed applications. 
 tower = "*"  # Tower is a library of modular and reusable components for building robust clients and servers.
-serde = { version = "*", features = ["derive"] }   # Generic serialization/deserialization framework.
+serde = { version = "*", features = ["derive"] }  # Generic serialization/deserialization framework.
