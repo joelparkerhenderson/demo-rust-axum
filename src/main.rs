@@ -2,6 +2,7 @@ extern crate axum;
 extern crate tokio;
 
 use axum::{
+    extract::Json,
     extract::Path,
     extract::Query,
     routing::get,
@@ -21,7 +22,8 @@ async fn main() {
         .route("/foo", get(get_foo).post(post_foo))
         .route("/bar", get(get_bar).post(post_bar))
         .route("/item", get(get_item))
-        .route("/item/:id", get(get_item_by_id));      
+        .route("/item/:id", get(get_item_by_id))
+        .route("/demo-json", get(get_demo_json));      
     
     // Run our application by using hyper and URL http://localhost:3000.
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
@@ -63,8 +65,15 @@ async fn get_item(Query(params): Query<HashMap<String, String>>) -> String {
     format!("Get item query params: {:?}", params)
 }
 
-// Axum handler for "GET /item/:id" which shows how to use `axum::extract::Path`
-// in order to extract a path parameter and deserialize it to an integer.
+// Axum handler for "GET /item/:id" which shows how to use `axum::extract::Path`.
+// This extracts a path parameter then deserializes it into an integer.
 async fn get_item_by_id(Path(id): Path<u32>) -> String {
-    format!("Get item by id {:?}", id)
+    format!("Get item by id: {:?}", id)
+}
+
+// Axum handler for "GET /json" which shows how to use `aumx::extract::Json`.
+// This buffers the request body then deserializes it into a `serde_json::Value`.
+// The Axum `Json` type supports any type that implements `serde::Deserialize`.
+async fn get_demo_json(Json(payload): Json<serde_json::Value>) -> String{
+    format!("Get demo JSON payload: {:?}", payload)
 }

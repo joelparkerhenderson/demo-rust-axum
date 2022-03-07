@@ -31,6 +31,7 @@ hyper = "*"  # A fast and correct HTTP library.
 tokio = { version = "*", features = ["full"] }  # Event-driven, non-blocking I/O platform.
 tower = "*"  # Components for building robust clients and servers.
 serde = { version = "*", features = ["derive"] }  # Serialization/deserialization framework.
+serde_json = "*"  # Serialization/deserialize of JSON data.
 ```
 
 Try it:
@@ -116,7 +117,7 @@ Add routes:
 
 ```rust
 let app = Router::new()
-    .route("/", get(hello))
+    …
     .route("/foo", get(foo))
     .route("/bar", get(bar))
 ```
@@ -152,7 +153,7 @@ Add routes for GET and POST:
 
 ```rust
 let app = Router::new()
-    .route("/", get(root))
+    …
     .route("/foo", get(get_foo).post(post_foo))
     .route("/bar", get(get_bar).post(post_bar));
 ```
@@ -191,29 +192,31 @@ To explicity try it by using the GET verb and POST verb, one way is to use a
 command line program such as `curl` like this:
 
 ```sh
-$ curl -X GET 'http://localhost:3000/foo'
+$ curl --request GET 'http://localhost:3000/foo'
 Get Foo!
 
-$ curl -X POST 'http://localhost:3000/foo'
+$ curl --request POST 'http://localhost:3000/foo'
 Post Foo!
 
-$ curl -X GET 'http://localhost:3000/bar'
+$ curl --request GET 'http://localhost:3000/bar'
 Get Bar!
 
-$ curl -X POST 'http://localhost:3000/bar'
+$ curl --request POST 'http://localhost:3000/bar'
 Post Bar!
 ```
 
 
 ## Extract query parameters
 
+An Axum "extractor" is how you pick apart the incoming request in order to get
+any parts that your handler needs.
+
 Add code to use `Query`:
 
 ```rust
 use axum::{
+    …
     extract::Query,
-    routing::get,
-    Router,
 };
 ```
 
@@ -227,9 +230,7 @@ Add a route:
 
 ```rust
 let app = Router::new()
-    .route("/", get(root))
-    .route("/foo", get(get_foo).post(post_foo))
-    .route("/bar", get(get_bar).post(post_bar))
+    …
     .route("/item", get(get_item));
 ```
 
@@ -248,24 +249,19 @@ cargo run
 ```
 
 ```sh
-$ curl -X GET 'http://localhost:3000/item?a=b&c=d'
-Get item query params: {"a": "b", "c": "d"}
+$ curl --request GET 'http://localhost:3000/item?a=b'
+Get item query params: {"a": "b"}
 ```
 
 
 ## Extract path parameters
 
-An Axum "extractor" is how you pick apart the incoming request in order to get
-any parts that your handler needs.
-
 Add code to use `Path`:
 
 ```rust
 use axum::{
-    extract::Path,
+    …
     extract::Query,
-    routing::get,
-    Router,
 };
 ```
 
@@ -274,20 +270,17 @@ extract a path parameter and deserialize it into a variable named `id`:
 
 ```rust
 let app = Router::new()
-    .route("/", get(root))
-    .route("/foo", get(get_foo).post(post_foo))
-    .route("/bar", get(get_bar).post(post_bar))
-    .route("/item", get(get_item))
+    …
     .route("/item/:id", get(get_item_by_id));
 ```
 
 Add a handler:
 
 ```rust
-// `Path` gives you the path parameters and deserializes them.
 async fn get_item_by_id(Path(id): Path<u32>) {
-    format!("Get item by id {:?}", id).to_string()
+    format!("Get item by id: {:?}", id).to_string()
 }
+```
 
 Try it:
 
@@ -296,7 +289,60 @@ cargo run
 ```
 
 ```sh
-$ curl -X GET 'http://localhost:3000/item/1'
-Get item by id 1
+$ curl --request GET 'http://localhost:3000/item/1'
+Get item by id: 1
 ```
 
+
+## Extract JSON data
+
+Add code to use `JSON`:
+
+```rust
+use axum::{
+    …
+    extract::Json,
+};
+```
+
+Add a route:
+
+```rust
+let app = Router::new()
+    …
+    .route("/demo-json", get(get_demo_json));
+```
+
+Add a handler:
+
+```rust
+async fn get_demo_json(Json(payload): Json<serde_json::Value>) -> String{
+    format!("Get demo JSON payload: {:?}", payload)
+}
+```
+
+Try it:
+
+```sh
+cargo run
+```
+
+To JSON with newer versions of curl:
+
+```sh
+$ curl \
+    --request GET 'http://localhost:3000/demo-json' \
+    --json '{"a":"b"}'
+Get demo JSON payload: Object({"a": String("b")}) 
+```
+
+
+To JSON with older versions of curl:
+
+```sh
+$ curl \
+    --request GET 'http://localhost:3000/demo-json' \
+    --header "Content-Type: application/json" \
+    --data '{"a":"b"}'
+Get demo JSON payload: Object({"a": String("b")}) 
+```
