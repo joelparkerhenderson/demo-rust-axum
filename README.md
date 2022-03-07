@@ -110,7 +110,7 @@ Browse <http://localhost:3000> and you should see "Hello, World!".
 
 Add routes:
 
-```
+```rust
 let app = Router::new()
     .route("/", get(hello))
     .route("/foo", get(foo))
@@ -131,10 +131,71 @@ async fn bar() -> String {
 
 Run:
 
-```
+```sh
 cargo run
 ```
 
 Browse <http://localhost:3000/foo> and you should see "Foo!".
 
 Browse <http://localhost:3000/bar> and you should see "Bar!".
+
+
+## Add HTTP verbs GET and POST
+
+Axum uses HTTP verbs, including GET to fetch data, POST to submit data, etc.
+
+Add routes for GET and POST:
+
+```rust
+let app = Router::new()
+    .route("/", get(root))
+    .route("/foo", get(get_foo).post(post_foo))
+    .route("/bar", get(get_bar).post(post_bar));
+```
+
+Update handlers:
+
+```rust
+async fn get_foo() -> String {
+   "Get Foo!".to_string()
+}
+
+async fn post_foo() -> String {
+   "Post Foo!".to_string()
+}
+
+async fn get_bar() -> String {
+   "Get Bar!".to_string()
+}
+
+async fn post_bar() -> String {
+   "Post Bar!".to_string()
+}
+```
+
+Run:
+
+```sh
+cargo run
+```
+
+Browse <http://localhost:3000/foo> and you should see "Get Foo!".
+
+Browse <http://localhost:3000/bar> and you should see "Get Bar!".
+
+To explicity try the GET verb and POST verb, one way is to use a command line
+program such as `curl` like this:
+
+```sh
+$ curl -X GET 'http://localhost:3000/foo'
+Get Foo!
+
+$ curl -X POST 'http://localhost:3000/foo'
+Post Foo!
+
+$ curl -X GET 'http://localhost:3000/bar'
+Get Bar!
+
+$ curl -X POST 'http://localhost:3000/bar'
+Post Bar!
+```
