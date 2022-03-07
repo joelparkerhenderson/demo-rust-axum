@@ -11,8 +11,13 @@ use axum::{
 
 // Use HashMap to deserialize a HTTP GET query into a key-value map.
 // Axum extracts query parameters by using `axum::extract::Query`.
-// For the implementation, see the function `get_query`.
+// For the implementation, see function `get_query`.
 use std::collections::HashMap;
+
+// Use Serde JSON to serialize/deserialize JSON, such as the request body.
+// Axum creates JSON payloads or extracts them by using `axum::extract::Json`.
+// For the implementation, see functions `get_demo_json` and `post_demo_json`.
+use serde_json::{json, Value};
 
 #[tokio::main]
 async fn main() {
@@ -23,7 +28,7 @@ async fn main() {
         .route("/bar", get(get_bar).post(post_bar))
         .route("/item", get(get_item))
         .route("/item/:id", get(get_item_by_id))
-        .route("/demo-json", get(get_demo_json));      
+        .route("/demo-json", get(get_demo_json).post(post_demo_json));      
     
     // Run our application by using hyper and URL http://localhost:3000.
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
@@ -71,9 +76,16 @@ async fn get_item_by_id(Path(id): Path<u32>) -> String {
     format!("Get item by id: {:?}", id)
 }
 
-// Axum handler for "GET /json" which shows how to use `aumx::extract::Json`.
+// Axum handler for "GET /demo-json" which shows how to return a JSON structure.
+// The `Json` type sets an HTTP header content-type of `application/json`. The
+// The `Json` type works with any type that implements `serde::Serialize`.
+async fn get_demo_json() -> Json<Value> {
+    Json(json!({"a":"b"}))
+}
+
+// Axum handler for "POST /demo-json" which shows how to use `aumx::extract::Json`.
 // This buffers the request body then deserializes it into a `serde_json::Value`.
 // The Axum `Json` type supports any type that implements `serde::Deserialize`.
-async fn get_demo_json(Json(payload): Json<serde_json::Value>) -> String{
+async fn post_demo_json(Json(payload): Json<serde_json::Value>) -> String{
     format!("Get demo JSON payload: {:?}", payload)
 }

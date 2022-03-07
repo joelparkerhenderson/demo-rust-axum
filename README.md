@@ -294,6 +294,46 @@ Get item by id: 1
 ```
 
 
+## Get JSON data
+
+Use Serde JSON in order to format JSON data using structs:
+
+```
+use serde_json::{json, Value};
+```
+
+Add a route:
+
+```rust
+let app = Router::new()
+    …
+    .route("/demo-json", get(get_demo_json));
+```
+
+Add a handler:
+
+```rust
+async fn get_demo_json() -> Json<Value> {
+    Json(json!({"a":"b"}))
+}
+```
+
+Try it:
+
+```sh
+cargo run
+```
+
+To JSON with curl, set a custom HTTP header like this:
+
+```sh
+$ curl \
+    --header "Content-Type: application/json" \
+    --request GET 'http://localhost:3000/demo-json'
+{"a":"b"}
+```
+
+
 ## Extract JSON data
 
 Add code to use `JSON`:
