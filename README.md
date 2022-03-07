@@ -111,6 +111,47 @@ cargo run
 Browse <http://localhost:3000> and you should see "Hello, World!".
 
 
+## Add fallback and handler
+
+For a request that fails to match anything in the router, you can use the function `fallback`.
+
+Use Axum types:
+
+```
+use axum::{
+    …
+    handler::Handler,
+    http::StatusCode,
+    http::Uri,
+    response::IntoResponse,
+};
+```
+
+Add the router fallback as the first choice:
+
+```
+let app = Router::new()
+    .fallback(fallback.into_service()),
+    .route("/", get(hello));
+```
+
+Add a fallback handler:
+
+```
+async fn fallback(uri: Uri) -> impl IntoResponse {
+    (StatusCode::NOT_FOUND, format!("No route for {}", uri))
+}
+```
+
+Try it:
+
+```sh
+cargo run
+```
+
+Browse <http://localhost:3000/whatever> and you should see "No route for /whatever".
+
+
 ## Add routes and handlers
 
 Add routes:

@@ -5,7 +5,10 @@ use axum::{
     extract::Json,
     extract::Path,
     extract::Query,
+    handler::Handler,
     http::StatusCode,
+    http::Uri,
+    response::IntoResponse,
     routing::get,
     Router,
 };
@@ -24,6 +27,7 @@ use serde_json::{json, Value};
 async fn main() {
     // Build our application by creating our router and route.
     let app = Router::new()
+        .fallback(fallback.into_service())
         .route("/", get(hello))
         .route("/foo", get(get_foo).post(post_foo))
         .route("/bar", get(get_bar).post(post_bar))
@@ -39,6 +43,12 @@ async fn main() {
         .unwrap();
 }
 
+
+// Axum handler for any request that fails to match the router routes.
+// This implementation returns a HTTP status code 404 Not Found response.
+async fn fallback(uri: Uri) -> impl IntoResponse {
+    (StatusCode::NOT_FOUND, format!("No route for {}", uri))
+}
 
 // Axum handler for "GET /" which returns a string, which causes Axum to
 // immediately respond with a `200 OK` response, along with the plain text.
