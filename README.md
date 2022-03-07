@@ -205,36 +205,88 @@ Post Bar!
 ```
 
 
-## Extract path parameters
+## Extract query parameters
 
-An Axum "extractor" is how you pick apart the incoming request in order to get any parts that your handler needs.
-
-Add code to use `Path`:
+Add code to use `Query`:
 
 ```rust
 use axum::{
-    extract::Path,
+    extract::Query,
     routing::get,
     Router,
 };
 ```
 
-Add a route using path parameter syntax, such as ":id", in order to tell Axum to extract a path parameter and deserialize it into a variable named `id`:
+Use HashMap to deserialize query parameters into a key-value map:
+
+```rust
+use std::collections::HashMap;
+```
+
+Add a route:
 
 ```rust
 let app = Router::new()
     .route("/", get(root))
     .route("/foo", get(get_foo).post(post_foo))
     .route("/bar", get(get_bar).post(post_bar))
-    .route("/item/:id", get(get_item));
+    .route("/item", get(get_item));
+```
+
+Add a handler:
+
+```rust
+async fn get_item(Query(params): Query<HashMap<String, String>>) -> String {
+    format!("Get item query params: {:?}", params)
+}
+```
+
+Try it:
+
+```sh
+cargo run
+```
+
+```sh
+$ curl -X GET 'http://localhost:3000/item?a=b&c=d'
+Get item query params: {"a": "b", "c": "d"}
+```
+
+
+## Extract path parameters
+
+An Axum "extractor" is how you pick apart the incoming request in order to get
+any parts that your handler needs.
+
+Add code to use `Path`:
+
+```rust
+use axum::{
+    extract::Path,
+    extract::Query,
+    routing::get,
+    Router,
+};
+```
+
+Add a route using path parameter syntax, such as ":id", in order to tell Axum to
+extract a path parameter and deserialize it into a variable named `id`:
+
+```rust
+let app = Router::new()
+    .route("/", get(root))
+    .route("/foo", get(get_foo).post(post_foo))
+    .route("/bar", get(get_bar).post(post_bar))
+    .route("/item", get(get_item))
+    .route("/item/:id", get(get_item_by_id));
 ```
 
 Add a handler:
 
 ```rust
 // `Path` gives you the path parameters and deserializes them.
-async fn get_item(Path(id): Path<u32>) {
-    format!("Get item with identifier {:?}", id).to_string()
+async fn get_item_by_id(Path(id): Path<u32>) {
+    format!("Get item by id {:?}", id).to_string()
 }
 
 Try it:
@@ -245,5 +297,6 @@ cargo run
 
 ```sh
 $ curl -X GET 'http://localhost:3000/item/1'
-Get item with identifier 1
+Get item by id 1
 ```
+

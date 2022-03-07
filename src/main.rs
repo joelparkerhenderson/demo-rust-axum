@@ -3,9 +3,15 @@ extern crate tokio;
 
 use axum::{
     extract::Path,
+    extract::Query,
     routing::get,
     Router,
 };
+
+// Use HashMap to deserialize a HTTP GET query into a key-value map.
+// Axum extracts query parameters by using `axum::extract::Query`.
+// For the implementation, see the function `get_query`.
+use std::collections::HashMap;
 
 #[tokio::main]
 async fn main() {
@@ -14,7 +20,8 @@ async fn main() {
         .route("/", get(hello))
         .route("/foo", get(get_foo).post(post_foo))
         .route("/bar", get(get_bar).post(post_bar))
-        .route("/item/:id", get(get_item));
+        .route("/item", get(get_item))
+        .route("/item/:id", get(get_item_by_id));      
     
     // Run our application by using hyper and URL http://localhost:3000.
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
@@ -49,9 +56,15 @@ async fn get_bar() -> String {
 async fn post_bar() -> String {
     "Post Bar!".to_string()
 }
- 
+
+// Axum handler for "GET /item" which shows how to use `axum::extrac::Query`.
+// This extracts query parameters then deserializes them into a key-value map.
+async fn get_item(Query(params): Query<HashMap<String, String>>) -> String {
+    format!("Get item query params: {:?}", params)
+}
+
 // Axum handler for "GET /item/:id" which shows how to use `axum::extract::Path`
 // in order to extract a path parameter and deserialize it to an integer.
-async fn get_item(Path(id): Path<u32>) -> String {
-    format!("Get item with identifier {:?}", id).to_string()
+async fn get_item_by_id(Path(id): Path<u32>) -> String {
+    format!("Get item by id {:?}", id)
 }
