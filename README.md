@@ -85,7 +85,7 @@ A route can call a function, which is called a handler.
 Edit `main.rs` to add a handler function that returns text:
 
 ```rust
-async fn hello_handler() -> String {
+async fn hello() -> String {
    "Hello, World!".to_string()
 }
 ```
@@ -94,7 +94,7 @@ Change the `main.rs` router to this:
 
 ```rust
 let app = Router::new()
-    .route("/", get(hello_handler));
+    .route("/", get(hello));
 ```
 
 Run:
@@ -104,3 +104,37 @@ cargo run
 ```
 
 Browse <http://localhost:3000> and you should see "Hello, World!".
+
+
+## Add routes and handlers
+
+Add routes:
+
+```
+let app = Router::new()
+    .route("/", get(hello))
+    .route("/foo", get(foo))
+    .route("/bar", get(bar))
+```
+
+Add handlers:
+
+```rust
+async fn foo() -> String {
+   "Foo!".to_string()
+}
+
+async fn bar() -> String {
+   "Bar!".to_string()
+}
+```
+
+Run:
+
+```
+cargo run
+```
+
+Browse <http://localhost:3000/foo> and you should see "Foo!".
+
+Browse <http://localhost:3000/bar> and you should see "Bar!".
