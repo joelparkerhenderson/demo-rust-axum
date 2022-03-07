@@ -247,91 +247,31 @@ Post Bar!
 ```
 
 
-## Extract query parameters
+## Get HTML content
 
-An Axum "extractor" is how you pick apart the incoming request in order to get
-any parts that your handler needs.
-
-Add code to use `Query`:
+Add code to use `Html`:
 
 ```rust
 use axum::{
     …
-    extract::Query,
+    response::Html,
 };
 ```
 
-Use HashMap to deserialize query parameters into a key-value map:
-
-```rust
-use std::collections::HashMap;
-```
-
-Add a route:
+Add route:
 
 ```rust
 let app = Router::new()
     …
-    .route("/item", get(get_item));
+    .route("/demo.html", get(get_demo_html));
 ```
 
-Add a handler:
+Add handler:
 
 ```rust
-async fn get_item(Query(params): Query<HashMap<String, String>>) -> String {
-    format!("Get item query params: {:?}", params)
+async fn get_demo_html() -> Html<&'static str> {
+    Html("<h1>Hello</h1>")
 }
-```
-
-Try it:
-
-```sh
-cargo run
-```
-
-```sh
-$ curl --request GET 'http://localhost:3000/item?a=b'
-Get item query params: {"a": "b"}
-```
-
-
-## Extract path parameters
-
-Add code to use `Path`:
-
-```rust
-use axum::{
-    …
-    extract::Query,
-};
-```
-
-Add a route using path parameter syntax, such as ":id", in order to tell Axum to
-extract a path parameter and deserialize it into a variable named `id`:
-
-```rust
-let app = Router::new()
-    …
-    .route("/item/:id", get(get_item_by_id));
-```
-
-Add a handler:
-
-```rust
-async fn get_item_by_id(Path(id): Path<u32>) {
-    format!("Get item by id: {:?}", id).to_string()
-}
-```
-
-Try it:
-
-```sh
-cargo run
-```
-
-```sh
-$ curl --request GET 'http://localhost:3000/item/1'
-Get item by id: 1
 ```
 
 
@@ -454,4 +394,91 @@ Add a handler:
 async fn get_demo_ok() -> (StatusCode, String) {
     (StatusCode::OK, "Everything is OK".to_string())
 }
+```
+
+## Extract query parameters
+
+An Axum "extractor" is how you pick apart the incoming request in order to get
+any parts that your handler needs.
+
+Add code to use `Query`:
+
+```rust
+use axum::{
+    …
+    extract::Query,
+};
+```
+
+Use HashMap to deserialize query parameters into a key-value map:
+
+```rust
+use std::collections::HashMap;
+```
+
+Add a route:
+
+```rust
+let app = Router::new()
+    …
+    .route("/item", get(get_item));
+```
+
+Add a handler:
+
+```rust
+async fn get_item(Query(params): Query<HashMap<String, String>>) -> String {
+    format!("Get item query params: {:?}", params)
+}
+```
+
+Try it:
+
+```sh
+cargo run
+```
+
+```sh
+$ curl --request GET 'http://localhost:3000/item?a=b'
+Get item query params: {"a": "b"}
+```
+
+
+## Extract path parameters
+
+Add code to use `Path`:
+
+```rust
+use axum::{
+    …
+    extract::Query,
+};
+```
+
+Add a route using path parameter syntax, such as ":id", in order to tell Axum to
+extract a path parameter and deserialize it into a variable named `id`:
+
+```rust
+let app = Router::new()
+    …
+    .route("/item/:id", get(get_item_by_id));
+```
+
+Add a handler:
+
+```rust
+async fn get_item_by_id(Path(id): Path<u32>) {
+    format!("Get item by id: {:?}", id).to_string()
+}
+```
+
+Try it:
+
+```sh
+cargo run
+```
+
+```sh
+$ curl --request GET 'http://localhost:3000/item/1'
+Get item by id: 1
 ```

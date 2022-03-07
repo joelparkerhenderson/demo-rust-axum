@@ -8,6 +8,7 @@ use axum::{
     handler::Handler,
     http::StatusCode,
     http::Uri,
+    response::Html,
     response::IntoResponse,
     routing::get,
     Router,
@@ -31,10 +32,11 @@ async fn main() {
         .route("/", get(hello))
         .route("/foo", get(get_foo).post(post_foo))
         .route("/bar", get(get_bar).post(post_bar))
+        .route("/demo.html", get(get_demo_html))
+        .route("/demo.json", get(get_demo_json).post(post_demo_json))
+        .route("/demo-ok", get(get_demo_ok))
         .route("/item", get(get_item))
-        .route("/item/:id", get(get_item_by_id))
-        .route("/demo-json", get(get_demo_json).post(post_demo_json))
-        .route("/demo-ok", get(get_demo_ok));
+        .route("/item/:id", get(get_item_by_id));
     
     // Run our application by using hyper and URL http://localhost:3000.
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
@@ -76,20 +78,14 @@ async fn post_bar() -> String {
     "Post Bar!".to_string()
 }
 
-// Axum handler for "GET /item" which shows how to use `axum::extrac::Query`.
-// This extracts query parameters then deserializes them into a key-value map.
-async fn get_item(Query(params): Query<HashMap<String, String>>) -> String {
-    format!("Get item query params: {:?}", params)
+// Axum handler for "GET /demo.html" which shows to return HTML text.
+// The `Html` type sets an HTTP header content-type of `text/html`.
+async fn get_demo_html() -> Html<&'static str> {
+    Html("<h1>Hello</h1>")
 }
 
-// Axum handler for "GET /item/:id" which shows how to use `axum::extract::Path`.
-// This extracts a path parameter then deserializes it into an integer.
-async fn get_item_by_id(Path(id): Path<u32>) -> String {
-    format!("Get item by id: {:?}", id)
-}
-
-// Axum handler for "GET /demo-json" which shows how to return a JSON structure.
-// The `Json` type sets an HTTP header content-type of `application/json`. The
+// Axum handler for "GET /demo.json" which shows how to return JSON data.
+// The `Json` type sets an HTTP header content-type of `application/json`.
 // The `Json` type works with any type that implements `serde::Serialize`.
 async fn get_demo_json() -> Json<Value> {
     Json(json!({"a":"b"}))
@@ -100,6 +96,18 @@ async fn get_demo_json() -> Json<Value> {
 // The Axum `Json` type supports any type that implements `serde::Deserialize`.
 async fn post_demo_json(Json(payload): Json<serde_json::Value>) -> String{
     format!("Get demo JSON payload: {:?}", payload)
+}
+
+// Axum handler for "GET /item" which shows how to use `axum::extrac::Query`.
+// This extracts query parameters then deserializes them into a key-value map.
+async fn get_item(Query(params): Query<HashMap<String, String>>) -> String {
+    format!("Get item query params: {:?}", params)
+}
+
+// Axum handler for "GET /item/:id" which shows how to use `axum::extract::Path`.
+// This extracts a path parameter then deserializes it into an integer.
+async fn get_item_by_id(Path(id): Path<u32>) -> String {
+    format!("Get item by id: {:?}", id)
 }
 
 // Axum handler that implements `IntoResponse`, which allows us to return any
