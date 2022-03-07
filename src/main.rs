@@ -5,6 +5,7 @@ use axum::{
     extract::Json,
     extract::Path,
     extract::Query,
+    http::StatusCode,
     routing::get,
     Router,
 };
@@ -28,7 +29,8 @@ async fn main() {
         .route("/bar", get(get_bar).post(post_bar))
         .route("/item", get(get_item))
         .route("/item/:id", get(get_item_by_id))
-        .route("/demo-json", get(get_demo_json).post(post_demo_json));      
+        .route("/demo-json", get(get_demo_json).post(post_demo_json))
+        .route("/demo-ok", get(get_demo_ok));
     
     // Run our application by using hyper and URL http://localhost:3000.
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
@@ -88,4 +90,10 @@ async fn get_demo_json() -> Json<Value> {
 // The Axum `Json` type supports any type that implements `serde::Deserialize`.
 async fn post_demo_json(Json(payload): Json<serde_json::Value>) -> String{
     format!("Get demo JSON payload: {:?}", payload)
+}
+
+// Axum handler that implements `IntoResponse`, which allows us to return any
+// HTTP status code (such as status code 200 OK) and any description string.
+async fn get_demo_ok() -> (StatusCode, String) {
+    (StatusCode::OK, "Everything is OK".to_string())
 }

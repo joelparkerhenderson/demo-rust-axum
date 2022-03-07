@@ -386,3 +386,31 @@ $ curl \
     --data '{"a":"b"}'
 Get demo JSON payload: Object({"a": String("b")}) 
 ```
+
+
+## Return HTTP status code OK
+
+Add code to use `StatusCode`:
+
+```rust
+use axum::{
+    …
+    http::StatusCode,
+};
+```
+    
+Add a route:
+
+```rust
+let app = Router::new()
+    …
+    .route("/demo-ok", get(get_demo_status));
+```
+
+Add a handler:
+
+```rust
+async fn get_demo_ok() -> (StatusCode, String) {
+    (StatusCode::OK, "Everything is OK".to_string())
+}
+```
