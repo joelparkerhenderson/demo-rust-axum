@@ -2,7 +2,7 @@
 
 Demonstration of:
 
-* Rust: programming language
+* [Rust](https://www.rust-lang.org): programming language
 
 * [Axum](https://crates.io/crates/axum): web framework that focuses on ergonomics and modularity.
 
