@@ -482,3 +482,54 @@ cargo run
 $ curl --request GET 'http://localhost:3000/item/1'
 Get item by id: 1
 ```
+
+
+## Tracing subscriber
+
+Edit file `Cargo.toml` to add crates:
+
+```toml
+tracing = "*"
+tracing-subscriber = { version = "*", features = ["env-filter"] }
+```
+
+Run:
+
+```sh
+cargo build
+```
+
+Edit file `main.rs` to use tracing:
+
+```rust
+use tracing_subscriber::{
+    layer::SubscriberExt, 
+    util::SubscriberInitExt,
+};
+```
+
+Add a tracing subscriber:
+
+```rust
+async fn main() {
+    tracing_subscriber::registry()
+        .with(tracing_subscriber::fmt::layer())
+        .init();
+    …
+```
+
+Try it:
+
+```sh
+cargo run
+```
+
+You should see console output that shows tracing initialization such as:
+
+```
+2022-03-08T00:13:54.483877Z 
+    TRACE mio::poll: 
+    registering event source with poller: 
+    token=Token(1), 
+    interests=READABLE | WRITABLE    
+```

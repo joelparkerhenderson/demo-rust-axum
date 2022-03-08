@@ -14,6 +14,11 @@ use axum::{
     Router,
 };
 
+use tracing_subscriber::{
+    layer::SubscriberExt, 
+    util::SubscriberInitExt,
+};
+
 // Use HashMap to deserialize a HTTP GET query into a key-value map.
 // Axum extracts query parameters by using `axum::extract::Query`.
 // For the implementation, see function `get_query`.
@@ -26,6 +31,12 @@ use serde_json::{json, Value};
 
 #[tokio::main]
 async fn main() {
+
+    // Start tracing.
+    tracing_subscriber::registry()
+    .with(tracing_subscriber::fmt::layer())
+    .init();
+
     // Build our application by creating our router and route.
     let app = Router::new()
         .fallback(fallback.into_service())

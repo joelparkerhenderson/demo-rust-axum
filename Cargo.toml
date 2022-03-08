@@ -12,3 +12,5 @@ tokio = { version = "*", features = ["full"] }  # Event-driven, non-blocking I/O
 tower = "*"  # Tower is a library of modular and reusable components for building robust clients and servers.
 serde = { version = "*", features = ["derive"] }  # Generic serialization/deserialization framework.
 serde_json = "*"  # Serialization/deserialize of JSON data.
+tracing = "*"  #  Application-level tracing for Rust.
+tracing-subscriber = { version = "*", features = ["env-filter"] }  #  Utilities for implementing and composing `tracing` subscribers. 
