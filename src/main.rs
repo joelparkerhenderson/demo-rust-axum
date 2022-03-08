@@ -15,7 +15,7 @@ use axum::{
 };
 
 use tracing_subscriber::{
-    layer::SubscriberExt, 
+    layer::SubscriberExt,
     util::SubscriberInitExt,
 };
 
@@ -48,7 +48,7 @@ async fn main() {
         .route("/foo", get(get_foo).post(post_foo))
         .route("/item", get(get_item))
         .route("/item/:id", get(get_item_by_id));
-    
+
     // Run our application by using hyper and URL http://localhost:3000.
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
         .serve(app.into_make_service())
@@ -100,16 +100,16 @@ async fn post_demo_json(Json(payload): Json<serde_json::Value>) -> String{
     format!("Get demo JSON payload: {:?}", payload)
 }
 
-// Axum handler for "GET /foo"
+// Axum handler for "GET /foo" which shows naming convention for GET.
 async fn get_foo() -> String {
     "GET foo".to_string()
  }
- 
-// Axum handler for "POST /foo"
+
+// Axum handler for "POST /foo" which shows naming convention for POST.
 async fn post_foo() -> String {
     "POST foo".to_string()
 }
- 
+
 // Axum handler for "GET /item" which shows how to use `axum::extrac::Query`.
 // This extracts query parameters then deserializes them into a key-value map.
 async fn get_item(Query(params): Query<HashMap<String, String>>) -> String {

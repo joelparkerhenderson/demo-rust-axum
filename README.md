@@ -8,7 +8,7 @@ Demonstration of:
 
 * [Tower](https://crates.io/crates/tower): library of modular and reusable components for building robust clients and servers.
 
-* [Tokio](https://crates.io/crates/tokio): event-driven, non-blocking I/O platform for writing asynchronous I/O backed applications. 
+* [Tokio](https://crates.io/crates/tokio): event-driven, non-blocking I/O platform for writing asynchronous I/O backed applications.
 
 * [Hyper](https://crates.io/crates/hyper): fast and correct HTTP library.
 
@@ -43,9 +43,9 @@ cargo build
 
 ## Hello, World!
 
-To write a simple application that uses a single route, 
+To write a simple application that uses a single route,
 such as a root route that responds with "Hello, World!",
-then we create a new route, specifying the root path "/", 
+then we create a new route, specifying the root path "/",
 and specifying an asynchronous response that returns text.
 
 Edit file `src/main.rs` like this:
@@ -73,13 +73,15 @@ async fn main() {
 }
 ```
 
-Try it:
+### Try it
 
 ```sh
 cargo run
 ```
 
-Browse <http://localhost:3000> and you should see "Hello, World!".
+Browse <http://localhost:3000>
+
+You should see "Hello, World!".
 
 
 ## Router and Handler
@@ -102,13 +104,15 @@ let app = Router::new()
     .route("/", get(hello));
 ```
 
-Try it:
+### Try it
 
 ```sh
 cargo run
 ```
 
-Browse <http://localhost:3000> and you should see "Hello, World!".
+Browse <http://localhost:3000>
+
+You should see "Hello, World!".
 
 
 ## Add fallback and handler
@@ -143,13 +147,15 @@ async fn fallback(uri: Uri) -> impl IntoResponse {
 }
 ```
 
-Try it:
+### Try it
 
 ```sh
 cargo run
 ```
 
-Browse <http://localhost:3000/whatever> and you should see "No route for /whatever".
+Browse <http://localhost:3000/whatever>
+
+You should see "No route for /whatever".
 
 
 
@@ -163,7 +169,7 @@ use axum::{
     http::StatusCode,
 };
 ```
-    
+
 Add a route:
 
 ```rust
@@ -180,13 +186,15 @@ async fn demo_status() -> (StatusCode, String) {
 }
 ```
 
-Try it:
+### Try it
 
 ```sh
 cargo run
 ```
 
-Browse <http://localhost:3000/demo-status> and you should see "Everything is OK".
+Browse <http://localhost:3000/demo-status>
+
+You should see "Everything is OK".
 
 
 
@@ -208,13 +216,15 @@ async fn demo_uri(uri: Uri) -> String {
 }
 ```
 
-Try it:
+### Try it
 
 ```sh
 cargo run
 ```
 
-Browse <http://localhost:3000/demo-uri> and you should see "The URI is: /demo-uri!".
+Browse <http://localhost:3000/demo-uri>
+
+You should see "The URI is: /demo-uri!".
 
 
 ## Add HTTP verbs for GET and POST
@@ -241,13 +251,13 @@ async fn post_item() -> String {
 }
 ```
 
-Try it:
+### Try it
 
 ```sh
 cargo run
 ```
 
-To make a request using an explicit GET verb or POST verb, 
+To make a request using an explicit GET verb or POST verb,
 one way is to use a command line program such as `curl` like this:
 
 ```sh
@@ -256,6 +266,7 @@ GET item
 
 $ curl --request POST 'http://localhost:3000/item'
 POST item
+```
 
 
 ## Get HTML content
@@ -285,6 +296,16 @@ async fn get_demo_html() -> Html<&'static str> {
 }
 ```
 
+### Try it
+
+```sh
+cargo run
+```
+
+Browse <http://localhost:3000/demo.html>
+
+You should see HTML with headline text "Hello".
+
 
 ## Get JSON data
 
@@ -310,7 +331,7 @@ async fn get_demo_json() -> Json<Value> {
 }
 ```
 
-Try it:
+### Try it
 
 ```sh
 cargo run
@@ -353,30 +374,29 @@ async fn get_demo_json(Json(payload): Json<serde_json::Value>) -> String{
 }
 ```
 
-Try it:
+### Try it
 
 ```sh
 cargo run
 ```
 
-To JSON with newer versions of curl:
+To use JSON with newer versions of curl:
 
 ```sh
 $ curl \
     --request GET 'http://localhost:3000/demo-json' \
     --json '{"a":"b"}'
-Get demo JSON payload: Object({"a": String("b")}) 
+Get demo JSON payload: Object({"a": String("b")})
 ```
 
-
-To JSON with older versions of curl:
+To use JSON with older versions of curl:
 
 ```sh
 $ curl \
     --request GET 'http://localhost:3000/demo-json' \
     --header "Content-Type: application/json" \
     --data '{"a":"b"}'
-Get demo JSON payload: Object({"a": String("b")}) 
+Get demo JSON payload: Object({"a": String("b")})
 ```
 
 
@@ -416,7 +436,7 @@ async fn get_item(Query(params): Query<HashMap<String, String>>) -> String {
 }
 ```
 
-Try it:
+### Try it
 
 ```sh
 cargo run
@@ -456,7 +476,7 @@ async fn get_item_by_id(Path(id): Path<u32>) {
 }
 ```
 
-Try it:
+### Try it
 
 ```sh
 cargo run
@@ -477,17 +497,11 @@ tracing = "*"
 tracing-subscriber = { version = "*", features = ["env-filter"] }
 ```
 
-Run:
-
-```sh
-cargo build
-```
-
 Edit file `main.rs` to use tracing:
 
 ```rust
 use tracing_subscriber::{
-    layer::SubscriberExt, 
+    layer::SubscriberExt,
     util::SubscriberInitExt,
 };
 ```
@@ -502,7 +516,7 @@ async fn main() {
     …
 ```
 
-Try it:
+### Try it
 
 ```sh
 cargo run
@@ -511,9 +525,9 @@ cargo run
 You should see console output that shows tracing initialization such as:
 
 ```
-2022-03-08T00:13:54.483877Z 
-    TRACE mio::poll: 
-    registering event source with poller: 
-    token=Token(1), 
-    interests=READABLE | WRITABLE    
+2022-03-08T00:13:54.483877Z
+    TRACE mio::poll:
+    registering event source with poller:
+    token=Token(1),
+    interests=READABLE | WRITABLE
 ```
