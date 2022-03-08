@@ -531,3 +531,25 @@ You should see console output that shows tracing initialization such as:
     token=Token(1),
     interests=READABLE | WRITABLE
 ```
+
+
+## Sidenote: SocketAddr
+
+To bind the server, our demo code uses a socket address string:
+
+```rust
+axum::Server::bind(&"0.0.0.0:3000".parse().unwrap()) …
+```
+
+If you prefer create a socket address step by step, then you can do this:
+
+```rust
+use std::net::SocketAddr;
+
+async fn main() {
+    …
+    let host = [127, 0, 0, 1];
+    let port = 3000;
+    let addr = SocketAddr::from((host, port));
+    axum::Server::bind(&addr) …
+```
