@@ -41,11 +41,16 @@ serde = { version = "*", features = ["derive"] }  # Serialization/deserializatio
 serde_json = "*"  # Serialization/deserialize of JSON data.
 ```
 
-## Try it
+<details>
+<summary>Try it</summary>
+
+Shell:
 
 ```sh
 cargo run
 ```
+
+</details>
 
 
 ## Hello, World!
@@ -80,7 +85,10 @@ async fn main() {
 }
 ```
 
-### Try it
+<details>
+<summary>Try it</summary>
+
+Shell:
 
 ```sh
 cargo run
@@ -89,6 +97,8 @@ cargo run
 Browse <http://localhost:3000>
 
 You should see "Hello, World!".
+
+</details>
 
 
 ## Router and Handler
@@ -111,7 +121,10 @@ let app = Router::new()
     .route("/", get(hello));
 ```
 
-### Try it
+<details>
+<summary>Try it</summary>
+
+Shell:
 
 ```sh
 cargo run
@@ -120,6 +133,8 @@ cargo run
 Browse <http://localhost:3000>
 
 You should see "Hello, World!".
+
+</details>
 
 
 ## Add fallback and handler
@@ -154,7 +169,10 @@ async fn fallback(uri: Uri) -> impl IntoResponse {
 }
 ```
 
-### Try it
+<details>
+<summary>Try it</summary>
+
+Shell:
 
 ```sh
 cargo run
@@ -164,6 +182,7 @@ Browse <http://localhost:3000/whatever>
 
 You should see "No route for /whatever".
 
+</details>
 
 
 ## Respond with an HTTP status code
@@ -193,7 +212,10 @@ async fn demo_status() -> (StatusCode, String) {
 }
 ```
 
-### Try it
+<details>
+<summary>Try it</summary>
+
+Shell:
 
 ```sh
 cargo run
@@ -203,6 +225,7 @@ Browse <http://localhost:3000/demo-status>
 
 You should see "Everything is OK".
 
+</details>
 
 
 ## Respond with the current URI
@@ -223,7 +246,10 @@ async fn demo_uri(uri: Uri) -> String {
 }
 ```
 
-### Try it
+<details>
+<summary>Try it</summary>
+
+Shell:
 
 ```sh
 cargo run
@@ -232,6 +258,8 @@ cargo run
 Browse <http://localhost:3000/demo-uri>
 
 You should see "The URI is: /demo-uri!".
+
+</details>
 
 
 ## Add HTTP verbs for GET and POST
@@ -258,7 +286,10 @@ async fn post_item() -> String {
 }
 ```
 
-### Try it
+<details>
+<summary>Try it</summary>
+
+Shell:
 
 ```sh
 cargo run
@@ -267,13 +298,31 @@ cargo run
 To make a request using an explicit GET verb or POST verb,
 one way is to use a command line program such as `curl` like this:
 
-```sh
-$ curl --request GET 'http://localhost:3000/item'
-GET item
+Shell:
 
-$ curl --request POST 'http://localhost:3000/item'
-POST item
+```sh
+curl --request GET 'http://localhost:3000/item'
 ```
+
+Output:
+
+```sh
+GET item
+```
+
+Shell:
+
+```sh
+curl --request POST 'http://localhost:3000/item'
+```
+
+Output:
+
+```sh
+GET item
+```
+
+</details>
 
 
 ## Get HTML content
@@ -303,7 +352,10 @@ async fn get_demo_html() -> Html<&'static str> {
 }
 ```
 
-### Try it
+<details>
+<summary>Try it</summary>
+
+Shell:
 
 ```sh
 cargo run
@@ -312,6 +364,8 @@ cargo run
 Browse <http://localhost:3000/demo.html>
 
 You should see HTML with headline text "Hello".
+
+</details>
 
 
 ## Get JSON data
@@ -338,7 +392,10 @@ async fn get_demo_json() -> Json<Value> {
 }
 ```
 
-### Try it
+<details>
+<summary>Try it</summary>
+
+Shell:
 
 ```sh
 cargo run
@@ -347,11 +404,18 @@ cargo run
 To JSON with curl, set a custom HTTP header like this:
 
 ```sh
-$ curl \
-    --header "Content-Type: application/json" \
-    --request GET 'http://localhost:3000/demo-json'
+curl \
+--header "Content-Type: application/json" \
+--request GET 'http://localhost:3000/demo-json'
+```
+
+Output:
+
+```sh
 {"a":"b"}
 ```
+
+</details>
 
 
 ## Extract JSON data
@@ -381,7 +445,10 @@ async fn get_demo_json(Json(payload): Json<serde_json::Value>) -> String{
 }
 ```
 
-### Try it
+<details>
+<summary>Try it</summary>
+
+Shell:
 
 ```sh
 cargo run
@@ -390,21 +457,33 @@ cargo run
 To use JSON with newer versions of curl:
 
 ```sh
-$ curl \
-    --request GET 'http://localhost:3000/demo-json' \
-    --json '{"a":"b"}'
+curl \
+--request GET 'http://localhost:3000/demo-json' \
+--json '{"a":"b"}'
+```
+
+Output:
+
+```sh
 Get demo JSON payload: Object({"a": String("b")})
 ```
 
 To use JSON with older versions of curl:
 
 ```sh
-$ curl \
-    --request GET 'http://localhost:3000/demo-json' \
-    --header "Content-Type: application/json" \
-    --data '{"a":"b"}'
+curl \
+--request GET 'http://localhost:3000/demo-json' \
+--header "Content-Type: application/json" \
+--data '{"a":"b"}'
+```
+
+Output:
+
+```sh
 Get demo JSON payload: Object({"a": String("b")})
 ```
+
+</details>
 
 
 ## Extract query parameters
@@ -443,16 +522,28 @@ async fn get_item(Query(params): Query<HashMap<String, String>>) -> String {
 }
 ```
 
-### Try it
+<details>
+<summary>Try it</summary>
+
+Shell:
 
 ```sh
 cargo run
 ```
 
+Shell:
+
 ```sh
-$ curl --request GET 'http://localhost:3000/item?a=b'
+curl --request GET 'http://localhost:3000/item?a=b'
+```
+
+Output:
+
+```
 Get item query params: {"a": "b"}
 ```
+
+</details>
 
 
 ## Extract path parameters
@@ -472,30 +563,107 @@ extract a path parameter and deserialize it into a variable named `id`:
 ```rust
 let app = Router::new()
     …
-    .route("/item/:id", get(get_item_by_id));
+    .route("/item/:id", get(get_item_id));
 ```
 
 Add a handler:
 
 ```rust
-async fn get_item_by_id(Path(id): Path<u32>) {
+async fn get_item_id(Path(id): Path<u32>) {
     format!("Get item by id: {:?}", id).to_string()
 }
 ```
 
-### Try it
+<details>
+<summary>Try it</summary>
+
+Shell:
 
 ```sh
 cargo run
 ```
 
+Shell:
+
 ```sh
-$ curl --request GET 'http://localhost:3000/item/1'
+curl --request GET 'http://localhost:3000/item/1'
+```
+
+Ouput:
+
+```sh
 Get item by id: 1
 ```
 
+</details>
 
-## Tracing subscriber
+
+## Return a struct by id
+
+Suppose we want our app to be a bookstore.
+
+Create a book struct:
+
+```rust
+struct Book {
+    title: String,
+    author: String,
+}
+```
+
+Create a books data lookup:
+
+```rust
+async fn books() -> HashMap<u32, Book> {
+    let mut books: HashMap<u32, Book> = HashMap::new();
+    books.insert(1, Book { title: "Antigone".into(), author: "Sophocles".into()});
+    books.insert(2, Book { title: "Beloved".into(), author: "Toni Morrison".into()});
+    books.insert(3, Book { title: "Candide".into(), author: "Voltaire".into()});
+    books
+}
+```
+
+Add a route:
+
+```rust
+let app = Router::new()
+    …
+    .route("/book/:id", get(get_book_by_id));
+```
+
+Add a handler:
+
+```rust
+async fn get_book_by_id(Path(id): Path<u32>) {
+    format!("Get item by id: {:?}", id).to_string()
+}
+```
+
+<details>
+<summary>Try it</summary>
+
+Shell:
+
+```sh
+cargo run
+```
+
+Shell:
+
+```sh
+curl --request GET 'http://localhost:3000/book/1'
+```
+
+Output:
+
+```sh
+<h1>Book 1</h1> The book is Antigone by Sophocles"
+```
+
+</details>
+
+
+## Bonus: Tracing subscriber
 
 Edit file `Cargo.toml` to add crates:
 
@@ -523,7 +691,10 @@ async fn main() {
     …
 ```
 
-### Try it
+<details>
+<summary>Try it</summary>
+
+Shell:
 
 ```sh
 cargo run
@@ -539,8 +710,10 @@ You should see console output that shows tracing initialization such as:
     interests=READABLE | WRITABLE
 ```
 
+</details>
 
-## Sidenote: SocketAddr
+
+## Bonus: SocketAddr
 
 To bind the server, our demo code uses a socket address string:
 
