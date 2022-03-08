@@ -152,26 +152,31 @@ cargo run
 Browse <http://localhost:3000/whatever> and you should see "No route for /whatever".
 
 
-## Add routes and handlers
 
-Add routes:
+## Respond with an HTTP status code
+
+Add code to use `StatusCode`:
+
+```rust
+use axum::{
+    …
+    http::StatusCode,
+};
+```
+    
+Add a route:
 
 ```rust
 let app = Router::new()
     …
-    .route("/foo", get(foo))
-    .route("/bar", get(bar))
+    .route("/demo-ok", get(demo_status));
 ```
 
-Add handlers:
+Add a handler:
 
 ```rust
-async fn foo() -> String {
-   "Foo!".to_string()
-}
-
-async fn bar() -> String {
-   "Bar!".to_string()
+async fn demo_status() -> (StatusCode, String) {
+    (StatusCode::OK, "Everything is OK".to_string())
 }
 ```
 
@@ -181,12 +186,38 @@ Try it:
 cargo run
 ```
 
-Browse <http://localhost:3000/foo> and you should see "Foo!".
-
-Browse <http://localhost:3000/bar> and you should see "Bar!".
+Browse <http://localhost:3000/demo-status> and you should see "Everything is OK".
 
 
-## Add HTTP verbs GET and POST
+
+## Respond with the current URI
+
+Add a route:
+
+```rust
+let app = Router::new()
+    …
+    .route("/demo-uri", get(demo_uri));
+```
+
+Add a handler:
+
+```rust
+async fn demo_uri(uri: Uri) -> String {
+    format!("The URI is: {:?}", uri)
+}
+```
+
+Try it:
+
+```sh
+cargo run
+```
+
+Browse <http://localhost:3000/demo-uri> and you should see "The URI is: /demo-uri!".
+
+
+## Add HTTP verbs for GET and POST
 
 Axum uses HTTP verbs, including GET to fetch data, POST to submit data, etc.
 
@@ -195,27 +226,18 @@ Add routes for GET and POST:
 ```rust
 let app = Router::new()
     …
-    .route("/foo", get(get_foo).post(post_foo))
-    .route("/bar", get(get_bar).post(post_bar));
+    .route("/item", get(get_item).post(post_item))
 ```
 
-Update handlers:
+Add handlers:
 
 ```rust
-async fn get_foo() -> String {
-   "Get Foo!".to_string()
+async fn get_item() -> String {
+   "GET item".to_string()
 }
 
-async fn post_foo() -> String {
-   "Post Foo!".to_string()
-}
-
-async fn get_bar() -> String {
-   "Get Bar!".to_string()
-}
-
-async fn post_bar() -> String {
-   "Post Bar!".to_string()
+async fn post_item() -> String {
+   "POST item".to_string()
 }
 ```
 
@@ -225,26 +247,15 @@ Try it:
 cargo run
 ```
 
-Browse <http://localhost:3000/foo> and you should see "Get Foo!".
-
-Browse <http://localhost:3000/bar> and you should see "Get Bar!".
-
-To explicity try it by using the GET verb and POST verb, one way is to use a
-command line program such as `curl` like this:
+To make a request using an explicit GET verb or POST verb, 
+one way is to use a command line program such as `curl` like this:
 
 ```sh
-$ curl --request GET 'http://localhost:3000/foo'
-Get Foo!
+$ curl --request GET 'http://localhost:3000/item'
+GET item
 
-$ curl --request POST 'http://localhost:3000/foo'
-Post Foo!
-
-$ curl --request GET 'http://localhost:3000/bar'
-Get Bar!
-
-$ curl --request POST 'http://localhost:3000/bar'
-Post Bar!
-```
+$ curl --request POST 'http://localhost:3000/item'
+POST item
 
 
 ## Get HTML content
@@ -368,33 +379,6 @@ $ curl \
 Get demo JSON payload: Object({"a": String("b")}) 
 ```
 
-
-## Return HTTP status code OK
-
-Add code to use `StatusCode`:
-
-```rust
-use axum::{
-    …
-    http::StatusCode,
-};
-```
-    
-Add a route:
-
-```rust
-let app = Router::new()
-    …
-    .route("/demo-ok", get(get_demo_status));
-```
-
-Add a handler:
-
-```rust
-async fn get_demo_ok() -> (StatusCode, String) {
-    (StatusCode::OK, "Everything is OK".to_string())
-}
-```
 
 ## Extract query parameters
 

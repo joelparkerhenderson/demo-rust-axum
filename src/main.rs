@@ -41,11 +41,11 @@ async fn main() {
     let app = Router::new()
         .fallback(fallback.into_service())
         .route("/", get(hello))
-        .route("/foo", get(get_foo).post(post_foo))
-        .route("/bar", get(get_bar).post(post_bar))
+        .route("/demo-status", get(demo_status))
+        .route("/demo-uri", get(demo_uri))
         .route("/demo.html", get(get_demo_html))
         .route("/demo.json", get(get_demo_json).post(post_demo_json))
-        .route("/demo-ok", get(get_demo_ok))
+        .route("/foo", get(get_foo).post(post_foo))
         .route("/item", get(get_item))
         .route("/item/:id", get(get_item_by_id));
     
@@ -55,7 +55,6 @@ async fn main() {
         .await
         .unwrap();
 }
-
 
 // Axum handler for any request that fails to match the router routes.
 // This implementation returns a HTTP status code 404 Not Found response.
@@ -69,24 +68,16 @@ async fn hello() -> String {
     "Hello, World!".to_string()
 }
 
-// Axum handler for "GET /foo"
-async fn get_foo() -> String {
-    "Get Foo!".to_string()
- }
- 
-// Axum handler for "POST /foo"
-async fn post_foo() -> String {
-    "Post Foo!".to_string()
+// Axum handler that implements `IntoResponse`, which allows us to return any
+// HTTP status code (such as status code 200 OK) and any description string.
+async fn demo_status() -> (StatusCode, String) {
+    (StatusCode::OK, "Everything is OK".to_string())
 }
- 
-// Axum handler for "GET /bar"
-async fn get_bar() -> String {
-    "Get Bar!".to_string()
-}
- 
-// Axum handler for "POST /bar"
-async fn post_bar() -> String {
-    "Post Bar!".to_string()
+
+// Axum handler that implements `IntoResponse`, which allows us to return any
+// HTTP status code (such as status code 200 OK) and any description string.
+async fn demo_uri(uri: Uri) -> String {
+    format!("The URI is: {:?}", uri)
 }
 
 // Axum handler for "GET /demo.html" which shows to return HTML text.
@@ -109,6 +100,16 @@ async fn post_demo_json(Json(payload): Json<serde_json::Value>) -> String{
     format!("Get demo JSON payload: {:?}", payload)
 }
 
+// Axum handler for "GET /foo"
+async fn get_foo() -> String {
+    "GET foo".to_string()
+ }
+ 
+// Axum handler for "POST /foo"
+async fn post_foo() -> String {
+    "POST foo".to_string()
+}
+ 
 // Axum handler for "GET /item" which shows how to use `axum::extrac::Query`.
 // This extracts query parameters then deserializes them into a key-value map.
 async fn get_item(Query(params): Query<HashMap<String, String>>) -> String {
@@ -119,10 +120,4 @@ async fn get_item(Query(params): Query<HashMap<String, String>>) -> String {
 // This extracts a path parameter then deserializes it into an integer.
 async fn get_item_by_id(Path(id): Path<u32>) -> String {
     format!("Get item by id: {:?}", id)
-}
-
-// Axum handler that implements `IntoResponse`, which allows us to return any
-// HTTP status code (such as status code 200 OK) and any description string.
-async fn get_demo_ok() -> (StatusCode, String) {
-    (StatusCode::OK, "Everything is OK".to_string())
 }
