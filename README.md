@@ -15,7 +15,14 @@ Demonstration of:
 * [Serde](https://crates.io/crates/serde): serialization/deserialization framework.
 
 
-## Cargo.toml
+## Create a demo
+
+Create a typical new Rust project:
+
+```
+cargo new demo_rust_axum
+cd demo_rust_axum
+```
 
 Edit file `Cargo.toml` like this:
 
@@ -34,10 +41,10 @@ serde = { version = "*", features = ["derive"] }  # Serialization/deserializatio
 serde_json = "*"  # Serialization/deserialize of JSON data.
 ```
 
-Try it:
+## Try it
 
 ```sh
-cargo build
+cargo run
 ```
 
 
