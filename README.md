@@ -14,8 +14,12 @@ Demonstration of:
 
 * [Serde](https://crates.io/crates/serde): serialization/deserialization framework.
 
+Does this demo help your work? You can donate to us with GitHub sponsors.
 
-## Create a demo
+Have an idea, suggestion, or feedback? You can let us us with GitHub issues.
+
+
+## 1. Hello, World!
 
 Create a typical new Rust project:
 
@@ -40,25 +44,6 @@ tower = "*"  # Components for building robust clients and servers.
 serde = { version = "*", features = ["derive"] }  # Serialization/deserialization framework.
 serde_json = "*"  # Serialization/deserialize of JSON data.
 ```
-
-<details>
-<summary>Interactive</summary>
-
-Shell:
-
-```sh
-cargo run
-```
-
-</details>
-
-
-## Hello, World!
-
-To write a simple application that uses a single route,
-such as a root route that responds with "Hello, World!",
-then we create a new route, specifying the root path "/",
-and specifying an asynchronous response that returns text.
 
 Edit file `src/main.rs` like this:
 
@@ -106,7 +91,7 @@ You should see "Hello, World!".
 </details>
 
 
-## Router and Handler
+## 2. Create a new route and handler function
 
 An Axum route can call an function, which is called an Axum handler. The handler
 is async function returns something that can be converted into a response.
@@ -144,7 +129,7 @@ You should see "Hello, World!".
 </details>
 
 
-## Add fallback and handler
+## 3. Create a router fallback response "not found"
 
 For a request that fails to match anything in the router, you can use the function `fallback`.
 
@@ -194,7 +179,7 @@ You should see "No route for /whatever".
 </details>
 
 
-## Respond with an HTTP status code
+## 4. Create a response with HTTP status code OK
 
 Add code to use `StatusCode`:
 
@@ -239,7 +224,7 @@ You should see "Everything is OK".
 </details>
 
 
-## Respond with the current URI
+## 5. Create a response that echos the URI
 
 Add a route:
 
@@ -275,7 +260,7 @@ You should see "The URI is: /demo-uri!".
 </details>
 
 
-## Add HTTP verbs for GET and POST
+## 6. Create routes and handlers for GET and POST
 
 Axum uses HTTP verbs, including GET to fetch data, POST to submit data, etc.
 
@@ -346,7 +331,7 @@ curl --request GET 'http://localhost:3000/item'
 </details>
 
 
-## Get HTML content
+## 7. Create a reponse with HTML text
 
 Add code to use `Html`:
 
@@ -389,9 +374,9 @@ You should see HTML with headline text "Hello".
 </details>
 
 
-## Get JSON data
+## 8. Create a route that gets JSON data
 
-Use Serde JSON in order to format JSON data using structs:
+Use Serde JSON in order to format JSON data:
 
 ```rust
 // Use Serde JSON to serialize/deserialize JSON, such as the request body.
@@ -445,7 +430,7 @@ Output:
 </details>
 
 
-## Extract JSON data
+## 9. Create a route that extracts its JSON payload
 
 Add code to use `JSON`:
 
@@ -516,7 +501,7 @@ Get demo JSON payload: Object({"a": String("b")})
 </details>
 
 
-## Extract query parameters
+## 10. Create a route that extracts query parameters
 
 An Axum "extractor" is how you pick apart the incoming request in order to get
 any parts that your handler needs.
@@ -578,7 +563,7 @@ Get item query params: {"a": "b"}
 </details>
 
 
-## Extract path parameters
+## 11. Create a route that extracts path parameters
 
 Add code to use `Path`:
 
@@ -632,9 +617,9 @@ Get item by id: 1
 </details>
 
 
-## Get books as structs from a data source
+## 11. Create a data store of books
 
-Suppose we want our app to be a catalog of books.
+Suppose we want our app to be a data store of books.
 
 Create a book struct:
 
@@ -648,10 +633,11 @@ struct Book {
 }
 ```
 
-We need a list of books. For this demo, we will impleement this by using a
-global variable name `BOOKS` and access it via a mutually-exclusive lock.
+For a production app, we could implement the data by using a database.
 
-Edit file `Cargo.toml` to add the crate `once_cell` which facilitates global variables:
+For this demo app, we will implement the data by using a global variable `BOOKS`.
+
+Edit file `Cargo.toml` to add the crate `once_cell` for global variables:
 
 ```toml
 once_cell = "*"
@@ -697,6 +683,23 @@ async fn main() {
     …
 }
 ```
+
+<details>
+<summary>Interactive</summary>
+
+Shell:
+
+```sh
+cargo run
+```
+
+The app should launch normally.
+
+</details>
+
+
+
+## 12. Create a route to get all books
 
 Add a route:
 
@@ -753,7 +756,8 @@ Output:
 </details>
 
 
-## Bonus: Tracing subscriber
+
+## 13. Bonus: Add a Tower tracing subscriber
 
 Edit file `Cargo.toml` to add crates:
 
@@ -805,7 +809,7 @@ You should see console output that shows tracing initialization such as:
 </details>
 
 
-## Bonus: SocketAddr
+## 14. Bonus: Refactor to use a host, port, and socket address
 
 To bind the server, our demo code uses a socket address string:
 
