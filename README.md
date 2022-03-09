@@ -30,8 +30,8 @@ Have an idea, suggestion, or feedback? Let us know via GitHub issues.
 Create a typical new Rust project:
 
 ```sh
-cargo new demo_rust_axum
-cd demo_rust_axum
+cargo new demo-rust-axum
+cd demo-rust-axum
 ```
 
 Edit file `Cargo.toml` like this:
