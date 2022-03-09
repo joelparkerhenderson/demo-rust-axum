@@ -756,8 +756,72 @@ Output:
 </details>
 
 
+## 13. Create a route to get one book id
 
-## 13. Bonus: Add a Tower tracing subscriber
+Add a route:
+
+```rust
+let app = Router::new()
+    …
+    .route("/books/:id", get(get_books));
+```
+
+Add a handler:
+
+```rust
+// Axum handler for "GET /books/:id" which returns one resource HTML page.
+// This demo app uses our BOOKS data, and iterates on them to find the id.
+async fn get_books_id(Path(id): Path<u32>) -> Html<String> {
+    match BOOKS.lock().unwrap().iter().find(|&book| &book.id == &id) {
+        Some(book) => Html(
+            format!(
+                "<p>{} by {}</p>\n",
+                &book.title,
+                &book.author
+            )
+        ),
+        None => Html("<p>Not found</p>".into()),
+    }
+}
+```
+
+<details>
+<summary>Interactive</summary>
+
+Shell:
+
+```sh
+cargo run
+```
+
+Shell:
+
+```sh
+curl 'http://localhost:3000/books/1'
+```
+
+Output:
+
+```sh
+<p>Antigone by Sophocles</p>
+```
+
+Shell:
+
+```sh
+curl 'http://localhost:3000/books/0'
+```
+
+Output:
+
+```sh
+<p>Not found</p>
+```
+
+</details>
+
+
+## 14. Bonus: Add a Tower tracing subscriber
 
 Edit file `Cargo.toml` to add crates:
 
@@ -809,7 +873,7 @@ You should see console output that shows tracing initialization such as:
 </details>
 
 
-## 14. Bonus: Refactor to use a host, port, and socket address
+## 15. Bonus: Refactor to use a host, port, and socket address
 
 To bind the server, our demo code uses a socket address string:
 

@@ -57,7 +57,8 @@ async fn main() {
         .route("/foo", get(get_foo).post(post_foo))
         .route("/item", get(get_item))
         .route("/item/:id", get(get_item_id))
-        .route("/books", get(get_books));
+        .route("/books", get(get_books))
+        .route("/books/:id", get(get_books_id));
 
     // Run our application by using hyper and URL http://localhost:3000.
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
@@ -184,4 +185,19 @@ async fn get_books() -> Html<String> {
             )
         ).collect::<String>()
     )
+}
+
+// Axum handler for "GET /books/:id" which returns one resource HTML page.
+// This demo app uses our BOOKS data, and iterates on them to find the id.
+async fn get_books_id(Path(id): Path<u32>) -> Html<String> {
+    match BOOKS.lock().unwrap().iter().find(|&book| &book.id == &id) {
+        Some(book) => Html(
+            format!(
+                "<p>{} by {}</p>\n",
+                &book.title,
+                &book.author
+            )
+        ),
+        None => Html("<p>Not found</p>".into()),
+    }
 }
