@@ -1,6 +1,11 @@
+// Axum web framework.
 extern crate axum;
+
+// Tokio provides an event-driven, non-blocking I/O platform for writing
+// asynchronous I/O backed applications; Axum leverages Tokio throughout.
 extern crate tokio;
 
+// Use Axum capabities.
 use axum::{
     extract::Json,
     extract::Path,
@@ -14,6 +19,7 @@ use axum::{
     Router,
 };
 
+// Use tracing crates for application-level tracing output.
 use tracing_subscriber::{
     layer::SubscriberExt,
     util::SubscriberInitExt,
@@ -40,7 +46,7 @@ async fn main() {
     // Initialize our demo data for the examples about books.
     init_books().await;
 
-    // Build our application by creating our router and route.
+    // Build our application by creating our router.
     let app = Router::new()
         .fallback(fallback.into_service())
         .route("/", get(hello))
@@ -60,6 +66,8 @@ async fn main() {
         .unwrap();
 
 }
+
+//// Demo Axum handlers
 
 // Axum handler for any request that fails to match the router routes.
 // This implementation returns a HTTP status code 404 Not Found response.
@@ -127,7 +135,9 @@ async fn get_item_id(Path(id): Path<u32>) -> String {
     format!("Get item by id: {:?}", id)
 }
 
-// Demo book structure, for use by the function `get_book_by_id`.
+//// Demo books using a struct and using data as a global variable
+
+// Demo book structure that we can debug, clone, hash, and compare.
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
 struct Book {
     id: u32,
@@ -148,7 +158,7 @@ use std::collections::HashSet;
 // We initialize the data store in the function `init_data()`.
 static BOOKS: Lazy<Mutex<HashSet<Book>>> = Lazy::new(|| Mutex::new(HashSet::new()));
 
-// Initialize the BOOKS global variable.
+// Initialize the BOOKS global variable by inserting demo data.
 async fn init_books() {
     for book in vec![
         Book { id: 1, title: "Antigone".into(), author: "Sophocles".into()},

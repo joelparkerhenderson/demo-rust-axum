@@ -19,7 +19,7 @@ Demonstration of:
 
 Create a typical new Rust project:
 
-```
+```sh
 cargo new demo_rust_axum
 cd demo_rust_axum
 ```
@@ -42,7 +42,7 @@ serde_json = "*"  # Serialization/deserialize of JSON data.
 ```
 
 <details>
-<summary>Try it</summary>
+<summary>Interactive</summary>
 
 Shell:
 
@@ -63,9 +63,14 @@ and specifying an asynchronous response that returns text.
 Edit file `src/main.rs` like this:
 
 ```rust
+// Axum web framework.
 extern crate axum;
+
+// Tokio provides an event-driven, non-blocking I/O platform for writing
+// asynchronous I/O backed applications; Axum leverages Tokio throughout.
 extern crate tokio;
 
+// Use Axum capabities.
 use axum::{
     routing::get,
     Router,
@@ -73,7 +78,7 @@ use axum::{
 
 #[tokio::main]
 async fn main() {
-     // Build our application by creating our router and route.
+     // Build our application by creating our router.
     let app = Router::new()
         .route("/", get(|| async { "Hello, World!" }));
 
@@ -86,7 +91,7 @@ async fn main() {
 ```
 
 <details>
-<summary>Try it</summary>
+<summary>Interactive</summary>
 
 Shell:
 
@@ -109,6 +114,8 @@ is async function returns something that can be converted into a response.
 Edit `main.rs` to add a handler async function that returns text:
 
 ```rust
+// Axum handler for "GET /" which returns a string, which causes Axum to
+// immediately respond with a `200 OK` response, along with the plain text.
 async fn hello() -> String {
    "Hello, World!".to_string()
 }
@@ -122,7 +129,7 @@ let app = Router::new()
 ```
 
 <details>
-<summary>Try it</summary>
+<summary>Interactive</summary>
 
 Shell:
 
@@ -143,7 +150,7 @@ For a request that fails to match anything in the router, you can use the functi
 
 Use Axum types:
 
-```
+```rust
 use axum::{
     …
     handler::Handler,
@@ -155,7 +162,7 @@ use axum::{
 
 Add the router fallback as the first choice:
 
-```
+```rust
 let app = Router::new()
     .fallback(fallback.into_service()),
     .route("/", get(hello));
@@ -163,14 +170,16 @@ let app = Router::new()
 
 Add a fallback handler:
 
-```
+```rust
+// Axum handler for any request that fails to match the router routes.
+// This implementation returns a HTTP status code 404 Not Found response.
 async fn fallback(uri: Uri) -> impl IntoResponse {
     (StatusCode::NOT_FOUND, format!("No route for {}", uri))
 }
 ```
 
 <details>
-<summary>Try it</summary>
+<summary>Interactive</summary>
 
 Shell:
 
@@ -207,13 +216,15 @@ let app = Router::new()
 Add a handler:
 
 ```rust
+// Axum handler that implements `IntoResponse`, which allows us to return any
+// HTTP status code (such as status code 200 OK) and any description string.
 async fn demo_status() -> (StatusCode, String) {
     (StatusCode::OK, "Everything is OK".to_string())
 }
 ```
 
 <details>
-<summary>Try it</summary>
+<summary>Interactive</summary>
 
 Shell:
 
@@ -241,13 +252,15 @@ let app = Router::new()
 Add a handler:
 
 ```rust
+// Axum handler for "GET /demo.html" which shows to return HTML text.
+// The `Html` type sets an HTTP header content-type of `text/html`.
 async fn demo_uri(uri: Uri) -> String {
     format!("The URI is: {:?}", uri)
 }
 ```
 
 <details>
-<summary>Try it</summary>
+<summary>Interactive</summary>
 
 Shell:
 
@@ -287,7 +300,7 @@ async fn post_item() -> String {
 ```
 
 <details>
-<summary>Try it</summary>
+<summary>Interactive</summary>
 
 Shell:
 
@@ -361,7 +374,7 @@ async fn get_demo_html() -> Html<&'static str> {
 ```
 
 <details>
-<summary>Try it</summary>
+<summary>Interactive</summary>
 
 Shell:
 
@@ -380,7 +393,10 @@ You should see HTML with headline text "Hello".
 
 Use Serde JSON in order to format JSON data using structs:
 
-```
+```rust
+// Use Serde JSON to serialize/deserialize JSON, such as the request body.
+// Axum creates JSON payloads or extracts them by using `axum::extract::Json`.
+// For the implementation, see functions `get_demo_json` and `post_demo_json`.
 use serde_json::{json, Value};
 ```
 
@@ -395,13 +411,16 @@ let app = Router::new()
 Add a handler:
 
 ```rust
+// Axum handler for "GET /demo.json" which shows how to return JSON data.
+// The `Json` type sets an HTTP header content-type of `application/json`.
+// The `Json` type works with any type that implements `serde::Serialize`.
 async fn get_demo_json() -> Json<Value> {
     Json(json!({"a":"b"}))
 }
 ```
 
 <details>
-<summary>Try it</summary>
+<summary>Interactive</summary>
 
 Shell:
 
@@ -448,13 +467,16 @@ let app = Router::new()
 Add a handler:
 
 ```rust
+// Axum handler for "POST /demo-json" which shows how to use `aumx::extract::Json`.
+// This buffers the request body then deserializes it into a `serde_json::Value`.
+// The Axum `Json` type supports any type that implements `serde::Deserialize`.
 async fn get_demo_json(Json(payload): Json<serde_json::Value>) -> String{
     format!("Get demo JSON payload: {:?}", payload)
 }
 ```
 
 <details>
-<summary>Try it</summary>
+<summary>Interactive</summary>
 
 Shell:
 
@@ -525,13 +547,15 @@ let app = Router::new()
 Add a handler:
 
 ```rust
+// Axum handler for "GET /item" which shows how to use `axum::extrac::Query`.
+// This extracts query parameters then deserializes them into a key-value map.
 async fn get_item(Query(params): Query<HashMap<String, String>>) -> String {
     format!("Get item query params: {:?}", params)
 }
 ```
 
 <details>
-<summary>Try it</summary>
+<summary>Interactive</summary>
 
 Shell:
 
@@ -547,7 +571,7 @@ curl 'http://localhost:3000/item?a=b'
 
 Output:
 
-```
+```sh
 Get item query params: {"a": "b"}
 ```
 
@@ -577,13 +601,15 @@ let app = Router::new()
 Add a handler:
 
 ```rust
+// Axum handler for "GET /item/:id" which shows how to use `axum::extract::Path`.
+// This extracts a path parameter then deserializes it into an integer.
 async fn get_item_id(Path(id): Path<u32>) {
     format!("Get item by id: {:?}", id).to_string()
 }
 ```
 
 <details>
-<summary>Try it</summary>
+<summary>Interactive</summary>
 
 Shell:
 
@@ -610,9 +636,10 @@ Get item by id: 1
 
 Suppose we want our app to be a catalog of books.
 
-Create a book struct that we can debug, clone, hash, and compare for equality:
+Create a book struct:
 
 ```rust
+// Demo book structure that we can debug, clone, hash, and compare.
 #[derive(Debug, Clone, Hash, ParialEq, Eq)]
 struct Book {
     id: u32,
@@ -649,6 +676,7 @@ static BOOKS: Lazy<Mutex<HashSet<Book>>> = Lazy::new(|| Mutex::new(HashSet::new(
 Add a function to initialize the BOOKS global variable with demo data:
 
 ```rust
+// Initialize the BOOKS global variable by inserting demo data.
 async fn init_books() {
     for book in vec![
         Book { id: 1, title: "Antigone".into(), author: "Sophocles".into()},
@@ -700,7 +728,7 @@ async fn get_books() -> Html<String> {
 ```
 
 <details>
-<summary>Try it</summary>
+<summary>Interactive</summary>
 
 Shell:
 
@@ -737,6 +765,7 @@ tracing-subscriber = { version = "*", features = ["env-filter"] }
 Edit file `main.rs` to use tracing:
 
 ```rust
+// Use tracing crates for application-level tracing output.
 use tracing_subscriber::{
     layer::SubscriberExt,
     util::SubscriberInitExt,
@@ -747,6 +776,7 @@ Add a tracing subscriber:
 
 ```rust
 async fn main() {
+    // Start tracing.
     tracing_subscriber::registry()
         .with(tracing_subscriber::fmt::layer())
         .init();
@@ -754,7 +784,7 @@ async fn main() {
 ```
 
 <details>
-<summary>Try it</summary>
+<summary>Interactive</summary>
 
 Shell:
 
