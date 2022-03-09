@@ -37,6 +37,9 @@ async fn main() {
     .with(tracing_subscriber::fmt::layer())
     .init();
 
+    // Initialize our demo data for the examples about books.
+    init_books().await;
+
     // Build our application by creating our router and route.
     let app = Router::new()
         .fallback(fallback.into_service())
@@ -47,13 +50,15 @@ async fn main() {
         .route("/demo.json", get(get_demo_json).post(post_demo_json))
         .route("/foo", get(get_foo).post(post_foo))
         .route("/item", get(get_item))
-        .route("/item/:id", get(get_item_by_id));
+        .route("/item/:id", get(get_item_id))
+        .route("/books", get(get_books));
 
     // Run our application by using hyper and URL http://localhost:3000.
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
         .serve(app.into_make_service())
         .await
         .unwrap();
+
 }
 
 // Axum handler for any request that fails to match the router routes.
@@ -118,6 +123,55 @@ async fn get_item(Query(params): Query<HashMap<String, String>>) -> String {
 
 // Axum handler for "GET /item/:id" which shows how to use `axum::extract::Path`.
 // This extracts a path parameter then deserializes it into an integer.
-async fn get_item_by_id(Path(id): Path<u32>) -> String {
+async fn get_item_id(Path(id): Path<u32>) -> String {
     format!("Get item by id: {:?}", id)
+}
+
+// Demo book structure, for use by the function `get_book_by_id`.
+#[derive(Debug, Clone, Hash, PartialEq, Eq)]
+struct Book {
+    id: u32,
+    title: String,
+    author: String,
+}
+
+// Use once_cell for creating a global variable e.g. our BOOKS data.
+use once_cell::sync::Lazy;
+
+// Use Mutex for thread-safe access to a variable e.g. our BOOKS data.
+use std::sync::Mutex;
+
+// Use HashSet for a collection of items e.g. our BOOKS data.
+use std::collections::HashSet;
+
+// Create a data store as a global variable by using `once_cell` and `Mutex`.
+// We initialize the data store in the function `init_data()`.
+static BOOKS: Lazy<Mutex<HashSet<Book>>> = Lazy::new(|| Mutex::new(HashSet::new()));
+
+// Initialize the BOOKS global variable.
+async fn init_books() {
+    for book in vec![
+        Book { id: 1, title: "Antigone".into(), author: "Sophocles".into()},
+        Book { id: 2, title: "Beloved".into(), author: "Toni Morrison".into()},
+        Book { id: 3, title: "Candide".into(), author: "Voltaire".into()},
+    ] {
+        BOOKS.lock().unwrap().insert(book);
+    }
+}
+
+// Axum handler for "GET /books" which returns a resource index HTML page.
+// This demo app uses our BOOKS data; a production app could use a database.
+// This function needs to clone the BOOKS in order to sort them by title.
+async fn get_books() -> Html<String> {
+    let mut books = Vec::from_iter(BOOKS.lock().unwrap().clone());
+    books.sort_by(|a, b| a.title.cmp(&b.title));
+    Html(
+        books.iter().map(|book|
+            format!(
+                "<p>{} by {}</p>\n",
+                &book.title,
+                &book.author
+            )
+        ).collect::<String>()
+    )
 }

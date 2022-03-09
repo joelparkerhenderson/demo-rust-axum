@@ -322,6 +322,14 @@ Output:
 GET item
 ```
 
+The command `curl` does GET by default i.e. these are equivalent:
+
+```sh
+curl 'http://localhost:3000/item'
+
+curl --request GET 'http://localhost:3000/item'
+```
+
 </details>
 
 
@@ -534,7 +542,7 @@ cargo run
 Shell:
 
 ```sh
-curl --request GET 'http://localhost:3000/item?a=b'
+curl 'http://localhost:3000/item?a=b'
 ```
 
 Output:
@@ -586,7 +594,7 @@ cargo run
 Shell:
 
 ```sh
-curl --request GET 'http://localhost:3000/item/1'
+curl 'http://localhost:3000/item/1'
 ```
 
 Ouput:
@@ -598,28 +606,67 @@ Get item by id: 1
 </details>
 
 
-## Return a struct by id
+## Get books as structs from a data source
 
-Suppose we want our app to be a bookstore.
+Suppose we want our app to be a catalog of books.
 
-Create a book struct:
+Create a book struct that we can debug, clone, hash, and compare for equality:
 
 ```rust
+#[derive(Debug, Clone, Hash, ParialEq, Eq)]
 struct Book {
+    id: u32,
     title: String,
     author: String,
 }
 ```
 
-Create a books data lookup:
+We need a list of books. For this demo, we will impleement this by using a
+global variable name `BOOKS` and access it via a mutually-exclusive lock.
+
+Edit file `Cargo.toml` to add the crate `once_cell` which facilitates global variables:
+
+```toml
+once_cell = "*"
+```
+
+Edit file `main.rs` to add:
 
 ```rust
-async fn books() -> HashMap<u32, Book> {
-    let mut books: HashMap<u32, Book> = HashMap::new();
-    books.insert(1, Book { title: "Antigone".into(), author: "Sophocles".into()});
-    books.insert(2, Book { title: "Beloved".into(), author: "Toni Morrison".into()});
-    books.insert(3, Book { title: "Candide".into(), author: "Voltaire".into()});
-    books
+// Use once_cell for creating a global variable e.g. our BOOKS data.
+use once_cell::sync::Lazy;
+
+// Use Mutex for thread-safe access to a variable e.g. our BOOKS data.
+use std::sync::Mutex;
+
+// Use HashSet for a collection of items e.g. our BOOKS data.
+use std::collections::HashSet;
+
+// Create our BOOKS data by using a global variable with thread-safe access.
+static BOOKS: Lazy<Mutex<HashSet<Book>>> = Lazy::new(|| Mutex::new(HashSet::new()));
+```
+
+Add a function to initialize the BOOKS global variable with demo data:
+
+```rust
+async fn init_books() {
+    for book in vec![
+        Book { id: 1, title: "Antigone".into(), author: "Sophocles".into()},
+        Book { id: 2, title: "Beloved".into(), author: "Toni Morrison".into()},
+        Book { id: 3, title: "Candide".into(), author: "Voltaire".into()},
+    ] {
+        BOOKS.lock().unwrap().insert(book);
+    }
+}
+```
+
+Call the function at the start of `main()`:
+
+```rust
+async fn main() {
+    // Initialize our demo data for the examples about books.
+    init_books().await;
+    …
 }
 ```
 
@@ -628,14 +675,27 @@ Add a route:
 ```rust
 let app = Router::new()
     …
-    .route("/book/:id", get(get_book_by_id));
+    .route("/books", get(get_books));
 ```
 
 Add a handler:
 
 ```rust
-async fn get_book_by_id(Path(id): Path<u32>) {
-    format!("Get item by id: {:?}", id).to_string()
+// Axum handler for "GET /books" which returns a resource index HTML page.
+// This demo app uses our BOOKS data; a production app could use a database.
+// This function needs to clone the BOOKS in order to sort them by title.
+async fn get_books() -> Html<String> {
+    let mut books = Vec::from_iter(BOOKS.lock().unwrap().clone());
+    books.sort_by(|a, b| a.title.cmp(&b.title));
+    Html(
+        books.iter().map(|book|
+            format!(
+                "<p>{} by {}</p>\n",
+                &book.title,
+                &book.author
+            )
+        ).collect::<String>()
+    )
 }
 ```
 
@@ -651,13 +711,15 @@ cargo run
 Shell:
 
 ```sh
-curl --request GET 'http://localhost:3000/book/1'
+curl 'http://localhost:3000/books'
 ```
 
 Output:
 
 ```sh
-<h1>Book 1</h1> The book is Antigone by Sophocles"
+<p>Antigone by Sophocles</p>
+<p>Beloved by Toni Morrison</p>
+<p>Candide by Voltaire</p>
 ```
 
 </details>
