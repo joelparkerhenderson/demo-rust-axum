@@ -20,9 +20,9 @@ Demonstration of:
 
 Thanks to all the above projects and their authors. Donate to them if you can.
 
-Does this demo help your work? Donate to us if you can via our GitHub sponsors.
+Does this demo help your work? Donate here if you can via GitHub sponsors.
 
-Have an idea, suggestion, or feedback? Let us know via our GitHub issues.
+Have an idea, suggestion, or feedback? Let us know via GitHub issues.
 
 
 ## 1. Hello, World!
