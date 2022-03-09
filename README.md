@@ -2,17 +2,21 @@
 
 Demonstration of:
 
-* [Rust](https://www.rust-lang.org): programming language
+* [Rust](https://www.rust-lang.org): programming language that focuses on reliability and stability.
 
 * [Axum](https://crates.io/crates/axum): web framework that focuses on ergonomics and modularity.
 
 * [Tower](https://crates.io/crates/tower): library of modular and reusable components for building robust clients and servers.
 
+* [Serde](https://crates.io/crates/serde): serialization/deserialization framework.
+
+<!--
+
 * [Tokio](https://crates.io/crates/tokio): event-driven, non-blocking I/O platform for writing asynchronous I/O backed applications.
 
 * [Hyper](https://crates.io/crates/hyper): fast and correct HTTP library.
 
-* [Serde](https://crates.io/crates/serde): serialization/deserialization framework.
+-->
 
 Thanks to all the above projects and their authors. Donate to them if you can.
 
