@@ -83,6 +83,7 @@ async fn main() {
 
 <details>
 <summary>Interactive</summary>
+<p><b>Try the demo…</b></p>
 
 Shell:
 
@@ -121,6 +122,7 @@ let app = Router::new()
 
 <details>
 <summary>Interactive</summary>
+<p><b>Try the demo…</b></p>
 
 Shell:
 
@@ -171,6 +173,7 @@ async fn fallback(uri: Uri) -> impl IntoResponse {
 
 <details>
 <summary>Interactive</summary>
+<p><b>Try the demo…</b></p>
 
 Shell:
 
@@ -216,6 +219,7 @@ async fn demo_status() -> (StatusCode, String) {
 
 <details>
 <summary>Interactive</summary>
+<p><b>Try the demo…</b></p>
 
 Shell:
 
@@ -252,6 +256,7 @@ async fn demo_uri(uri: Uri) -> String {
 
 <details>
 <summary>Interactive</summary>
+<p><b>Try the demo…</b></p>
 
 Shell:
 
@@ -292,6 +297,7 @@ async fn post_item() -> String {
 
 <details>
 <summary>Interactive</summary>
+<p><b>Try the demo…</b></p>
 
 Shell:
 
@@ -366,6 +372,7 @@ async fn get_demo_html() -> Html<&'static str> {
 
 <details>
 <summary>Interactive</summary>
+<p><b>Try the demo…</b></p>
 
 Shell:
 
@@ -412,6 +419,7 @@ async fn get_demo_json() -> Json<Value> {
 
 <details>
 <summary>Interactive</summary>
+<p><b>Try the demo…</b></p>
 
 Shell:
 
@@ -468,6 +476,7 @@ async fn post_demo_json(Json(payload): Json<serde_json::Value>) -> String{
 
 <details>
 <summary>Interactive</summary>
+<p><b>Try the demo…</b></p>
 
 Shell:
 
@@ -547,6 +556,7 @@ async fn get_item(Query(params): Query<HashMap<String, String>>) -> String {
 
 <details>
 <summary>Interactive</summary>
+<p><b>Try the demo…</b></p>
 
 Shell:
 
@@ -601,6 +611,7 @@ async fn get_item_id(Path(id): Path<u32>) {
 
 <details>
 <summary>Interactive</summary>
+<p><b>Try the demo…</b></p>
 
 Shell:
 
@@ -692,6 +703,7 @@ async fn main() {
 
 <details>
 <summary>Interactive</summary>
+<p><b>Try the demo…</b></p>
 
 Shell:
 
@@ -738,6 +750,7 @@ async fn get_books() -> Html<String> {
 
 <details>
 <summary>Interactive</summary>
+<p><b>Try the demo…</b></p>
 
 Shell:
 
@@ -793,6 +806,7 @@ async fn get_books_id(Path(id): Path<u32>) -> Html<String> {
 
 <details>
 <summary>Interactive</summary>
+<p><b>Try the demo…</b></p>
 
 Shell:
 
@@ -859,6 +873,7 @@ async fn main() {
 
 <details>
 <summary>Interactive</summary>
+<p><b>Try the demo…</b></p>
 
 Shell:
 
