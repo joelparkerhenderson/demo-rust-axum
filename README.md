@@ -914,3 +914,27 @@ async fn main() {
     let addr = SocketAddr::from((host, port));
     axum::Server::bind(&addr) …
 ```
+
+## 16. Conclusion: What you learned and what's next
+
+You learned how to:
+
+* Create a project using Rust and the Axum web framework.
+
+* Create Axum router routes and their handler functions.
+
+* Create responses with HTTP status code OK and HTML text.
+
+* Create functionality for HTTP GET and HTTP POST.
+
+* Use Axum extractors for query parameters and path parameters.
+
+* Create a data store and access it using RESTful routes.
+
+What's next:
+
+* [The Rust book](https://doc.rust-lang.org/stable/book/) is an excellent thorough starting point.
+
+* [The Axum crate](https://crates.io/crates/axum) has dozens of examples you can try.
+
+* What suggestions and feedback do you have for us?
