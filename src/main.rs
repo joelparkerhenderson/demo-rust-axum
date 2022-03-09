@@ -54,7 +54,7 @@ async fn main() {
         .route("/demo-uri", get(demo_uri))
         .route("/demo.html", get(get_demo_html))
         .route("/demo.json", get(get_demo_json).post(post_demo_json))
-        .route("/foo", get(get_foo).post(post_foo))
+        .route("/foo", get(get_foo).put(put_foo).post(post_foo).delete(delete_foo))
         .route("/items", get(get_items))
         .route("/items/:id", get(get_items_id))
         .route("/books", get(get_books))
@@ -117,11 +117,16 @@ async fn post_demo_json(Json(payload): Json<serde_json::Value>) -> String{
 // Axum handler for "GET /foo" which shows naming convention for GET.
 async fn get_foo() -> String {
     "GET foo".to_string()
- }
+}
 
 // Axum handler for "POST /foo" which shows naming convention for POST.
 async fn post_foo() -> String {
     "POST foo".to_string()
+}
+
+// Axum handler for "DELETE /foo" which shows naming convention for DELETE.
+async fn delete_foo() -> String {
+    "DELETE foo".to_string()
 }
 
 // Axum handler for "GET /items" which shows how to use `axum::extrac::Query`.

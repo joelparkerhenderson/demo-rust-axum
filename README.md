@@ -271,16 +271,16 @@ You should see "The URI is: /demo-uri!".
 </details>
 
 
-## 6. Create routes and handlers for GET and POST
+## 6. Create routes and handlers for GET, POST, DELETE.
 
-Axum uses HTTP verbs, including GET to fetch data, POST to submit data, etc.
+Axum uses HTTP verbs, including GET to fetch data, POST to submit data, DELETE to destroy data, etc.
 
-Add routes for GET and POST:
+Add routes for GET and POST and DELETE:
 
 ```rust
 let app = Router::new()
     …
-    .route("/foo", get(get_foo).post(post_foo))
+    .route("/foo", get(get_foo).post(post_foo).delete(delete_foo))
 ```
 
 Add handlers:
@@ -292,6 +292,10 @@ async fn get_foo() -> String {
 
 async fn post_foo() -> String {
    "POST foo".to_string()
+}
+
+async fn delete_foo() -> String {
+   "DELETE foo".to_string()
 }
 ```
 
@@ -305,7 +309,7 @@ Shell:
 cargo run
 ```
 
-To make a request using an explicit GET verb or POST verb,
+To make a request using an explicit request of GET or POST or DELETE,
 one way is to use a command line program such as `curl` like this:
 
 Shell:
@@ -330,6 +334,18 @@ Output:
 
 ```sh
 POST foo
+```
+
+Shell:
+
+```sh
+curl --request DELETE 'http://localhost:3000/foo'
+```
+
+Output:
+
+```sh
+DELETE foo
 ```
 
 The command `curl` uses GET by default i.e. these are equivalent:
