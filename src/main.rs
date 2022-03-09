@@ -55,8 +55,8 @@ async fn main() {
         .route("/demo.html", get(get_demo_html))
         .route("/demo.json", get(get_demo_json).post(post_demo_json))
         .route("/foo", get(get_foo).post(post_foo))
-        .route("/item", get(get_item))
-        .route("/item/:id", get(get_item_id))
+        .route("/items", get(get_items))
+        .route("/items/:id", get(get_items_id))
         .route("/books", get(get_books))
         .route("/books/:id", get(get_books_id));
 
@@ -124,16 +124,16 @@ async fn post_foo() -> String {
     "POST foo".to_string()
 }
 
-// Axum handler for "GET /item" which shows how to use `axum::extrac::Query`.
+// Axum handler for "GET /items" which shows how to use `axum::extrac::Query`.
 // This extracts query parameters then deserializes them into a key-value map.
-async fn get_item(Query(params): Query<HashMap<String, String>>) -> String {
-    format!("Get item query params: {:?}", params)
+async fn get_items(Query(params): Query<HashMap<String, String>>) -> String {
+    format!("Get items with query params: {:?}", params)
 }
 
-// Axum handler for "GET /item/:id" which shows how to use `axum::extract::Path`.
+// Axum handler for "GET /items/:id" which shows how to use `axum::extract::Path`.
 // This extracts a path parameter then deserializes it into an integer.
-async fn get_item_id(Path(id): Path<u32>) -> String {
-    format!("Get item by id: {:?}", id)
+async fn get_items_id(Path(id): Path<u32>) -> String {
+    format!("Get items with path id: {:?}", id)
 }
 
 //// Demo books using a struct and using data as a global variable

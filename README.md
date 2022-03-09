@@ -280,18 +280,18 @@ Add routes for GET and POST:
 ```rust
 let app = Router::new()
     …
-    .route("/item", get(get_item).post(post_item))
+    .route("/foo", get(get_foo).post(post_foo))
 ```
 
 Add handlers:
 
 ```rust
-async fn get_item() -> String {
-   "GET item".to_string()
+async fn get_foo() -> String {
+   "GET foo".to_string()
 }
 
-async fn post_item() -> String {
-   "POST item".to_string()
+async fn post_foo() -> String {
+   "POST foo".to_string()
 }
 ```
 
@@ -311,33 +311,33 @@ one way is to use a command line program such as `curl` like this:
 Shell:
 
 ```sh
-curl --request GET 'http://localhost:3000/item'
+curl --request GET 'http://localhost:3000/foo'
 ```
 
 Output:
 
 ```sh
-GET item
+GET foo
 ```
 
 Shell:
 
 ```sh
-curl --request POST 'http://localhost:3000/item'
+curl --request POST 'http://localhost:3000/foo'
 ```
 
 Output:
 
 ```sh
-GET item
+POST foo
 ```
 
-The command `curl` does GET by default i.e. these are equivalent:
+The command `curl` uses GET by default i.e. these are equivalent:
 
 ```sh
-curl 'http://localhost:3000/item'
+curl 'http://localhost:3000/foo'
 
-curl --request GET 'http://localhost:3000/item'
+curl --request GET 'http://localhost:3000/foo'
 ```
 
 </details>
@@ -541,7 +541,7 @@ Add a route:
 ```rust
 let app = Router::new()
     …
-    .route("/item", get(get_item));
+    .route("/items", get(get_items));
 ```
 
 Add a handler:
@@ -549,8 +549,8 @@ Add a handler:
 ```rust
 // Axum handler for "GET /item" which shows how to use `axum::extrac::Query`.
 // This extracts query parameters then deserializes them into a key-value map.
-async fn get_item(Query(params): Query<HashMap<String, String>>) -> String {
-    format!("Get item query params: {:?}", params)
+async fn get_items(Query(params): Query<HashMap<String, String>>) -> String {
+    format!("Get items with query params: {:?}", params)
 }
 ```
 
@@ -567,13 +567,13 @@ cargo run
 Shell:
 
 ```sh
-curl 'http://localhost:3000/item?a=b'
+curl 'http://localhost:3000/items?a=b'
 ```
 
 Output:
 
 ```sh
-Get item query params: {"a": "b"}
+Get items with query params: {"a": "b"}
 ```
 
 </details>
@@ -596,7 +596,7 @@ extract a path parameter and deserialize it into a variable named `id`:
 ```rust
 let app = Router::new()
     …
-    .route("/item/:id", get(get_item_id));
+    .route("/items/:id", get(get_items_id));
 ```
 
 Add a handler:
@@ -604,8 +604,8 @@ Add a handler:
 ```rust
 // Axum handler for "GET /item/:id" which shows how to use `axum::extract::Path`.
 // This extracts a path parameter then deserializes it into an integer.
-async fn get_item_id(Path(id): Path<u32>) {
-    format!("Get item by id: {:?}", id).to_string()
+async fn get_items_id(Path(id): Path<u32>) {
+    format!("Get items with id: {:?}", id).to_string()
 }
 ```
 
@@ -622,13 +622,13 @@ cargo run
 Shell:
 
 ```sh
-curl 'http://localhost:3000/item/1'
+curl 'http://localhost:3000/items/1'
 ```
 
 Ouput:
 
 ```sh
-Get item by id: 1
+Get items with id: 1
 ```
 
 </details>
