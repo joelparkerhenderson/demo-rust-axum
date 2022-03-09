@@ -1,11 +1,11 @@
-// Axum web framework.
+// axum web framework.
 extern crate axum;
 
 // Tokio provides an event-driven, non-blocking I/O platform for writing
-// asynchronous I/O backed applications; Axum leverages Tokio throughout.
+// asynchronous I/O backed applications; axum leverages Tokio throughout.
 extern crate tokio;
 
-// Use Axum capabities.
+// Use axum capabities.
 use axum::{
     extract::Json,
     extract::Path,
@@ -26,12 +26,12 @@ use tracing_subscriber::{
 };
 
 // Use HashMap to deserialize a HTTP GET query into a key-value map.
-// Axum extracts query parameters by using `axum::extract::Query`.
+// axum extracts query parameters by using `axum::extract::Query`.
 // For the implementation, see function `get_query`.
 use std::collections::HashMap;
 
 // Use Serde JSON to serialize/deserialize JSON, such as the request body.
-// Axum creates JSON payloads or extracts them by using `axum::extract::Json`.
+// axum creates JSON payloads or extracts them by using `axum::extract::Json`.
 // For the implementation, see functions `get_demo_json` and `post_demo_json`.
 use serde_json::{json, Value};
 
@@ -68,79 +68,79 @@ async fn main() {
 
 }
 
-//// Demo Axum handlers
+//// Demo axum handlers
 
-// Axum handler for any request that fails to match the router routes.
+// axum handler for any request that fails to match the router routes.
 // This implementation returns a HTTP status code 404 Not Found response.
 async fn fallback(uri: Uri) -> impl IntoResponse {
     (StatusCode::NOT_FOUND, format!("No route for {}", uri))
 }
 
-// Axum handler for "GET /" which returns a string, which causes Axum to
+// axum handler for "GET /" which returns a string, which causes axum to
 // immediately respond with a `200 OK` response, along with the plain text.
 async fn hello() -> String {
     "Hello, World!".to_string()
 }
 
-// Axum handler that implements `IntoResponse`, which allows us to return any
+// axum handler that implements `IntoResponse`, which allows us to return any
 // HTTP status code (such as status code 200 OK) and any description string.
 async fn demo_status() -> (StatusCode, String) {
     (StatusCode::OK, "Everything is OK".to_string())
 }
 
-// Axum handler that implements `IntoResponse`, which allows us to return any
+// axum handler that implements `IntoResponse`, which allows us to return any
 // HTTP status code (such as status code 200 OK) and any description string.
 async fn demo_uri(uri: Uri) -> String {
     format!("The URI is: {:?}", uri)
 }
 
-// Axum handler for "GET /demo.html" which shows to return HTML text.
+// axum handler for "GET /demo.html" which shows to return HTML text.
 // The `Html` type sets an HTTP header content-type of `text/html`.
 async fn get_demo_html() -> Html<&'static str> {
     Html("<h1>Hello</h1>")
 }
 
-// Axum handler for "GET /demo.json" which shows how to return JSON data.
+// axum handler for "GET /demo.json" which shows how to return JSON data.
 // The `Json` type sets an HTTP header content-type of `application/json`.
 // The `Json` type works with any type that implements `serde::Serialize`.
 async fn get_demo_json() -> Json<Value> {
     Json(json!({"a":"b"}))
 }
 
-// Axum handler for "POST /demo-json" which shows how to use `aumx::extract::Json`.
+// axum handler for "POST /demo-json" which shows how to use `aumx::extract::Json`.
 // This buffers the request body then deserializes it into a `serde_json::Value`.
-// The Axum `Json` type supports any type that implements `serde::Deserialize`.
+// The axum `Json` type supports any type that implements `serde::Deserialize`.
 async fn post_demo_json(Json(payload): Json<serde_json::Value>) -> String{
     format!("Get demo JSON payload: {:?}", payload)
 }
 
-// Axum handler for "GET /foo" which shows naming convention for GET.
+// axum handler for "GET /foo" which shows naming convention for GET.
 async fn get_foo() -> String {
     "GET foo".to_string()
 }
 
-// Axum handler for "PUT /foo" which shows naming convention for PUT.
+// axum handler for "PUT /foo" which shows naming convention for PUT.
 async fn put_foo() -> String {
     "PUT foo".to_string()
 }
 
-// Axum handler for "POST /foo" which shows naming convention for POST.
+// axum handler for "POST /foo" which shows naming convention for POST.
 async fn post_foo() -> String {
     "POST foo".to_string()
 }
 
-// Axum handler for "DELETE /foo" which shows naming convention for DELETE.
+// axum handler for "DELETE /foo" which shows naming convention for DELETE.
 async fn delete_foo() -> String {
     "DELETE foo".to_string()
 }
 
-// Axum handler for "GET /items" which shows how to use `axum::extrac::Query`.
+// axum handler for "GET /items" which shows how to use `axum::extrac::Query`.
 // This extracts query parameters then deserializes them into a key-value map.
 async fn get_items(Query(params): Query<HashMap<String, String>>) -> String {
     format!("Get items with query params: {:?}", params)
 }
 
-// Axum handler for "GET /items/:id" which shows how to use `axum::extract::Path`.
+// axum handler for "GET /items/:id" which shows how to use `axum::extract::Path`.
 // This extracts a path parameter then deserializes it into an integer.
 async fn get_items_id(Path(id): Path<u32>) -> String {
     format!("Get items with path id: {:?}", id)
@@ -180,7 +180,7 @@ async fn init_books() {
     }
 }
 
-// Axum handler for "GET /books" which returns a resource index HTML page.
+// axum handler for "GET /books" which returns a resource index HTML page.
 // This demo app uses our BOOKS data; a production app could use a database.
 // This function needs to clone the BOOKS in order to sort them by title.
 async fn get_books() -> Html<String> {
@@ -197,7 +197,7 @@ async fn get_books() -> Html<String> {
     )
 }
 
-// Axum handler for "GET /books/:id" which returns one resource HTML page.
+// axum handler for "GET /books/:id" which returns one resource HTML page.
 // This demo app uses our BOOKS data, and iterates on them to find the id.
 async fn get_books_id(Path(id): Path<u32>) -> Html<String> {
     match BOOKS.lock().unwrap().iter().find(|&book| &book.id == &id) {

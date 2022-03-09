@@ -1,10 +1,10 @@
-# Demo of Rust and Axum web framework
+# Demo of Rust and axum web framework
 
 Demonstration of:
 
 * [Rust](https://www.rust-lang.org): programming language that focuses on reliability and stability.
 
-* [Axum](https://crates.io/crates/axum): web framework that focuses on ergonomics and modularity.
+* [axum](https://crates.io/crates/axum): web framework that focuses on ergonomics and modularity.
 
 * [Tower](https://crates.io/crates/tower): library of modular and reusable components for building robust clients and servers.
 
@@ -54,14 +54,14 @@ serde_json = "*"  # Serialization/deserialize of JSON data.
 Edit file `src/main.rs` like this:
 
 ```rust
-// Axum web framework.
+// axum web framework.
 extern crate axum;
 
 // Tokio provides an event-driven, non-blocking I/O platform for writing
-// asynchronous I/O backed applications; Axum leverages Tokio throughout.
+// asynchronous I/O backed applications; axum leverages Tokio throughout.
 extern crate tokio;
 
-// Use Axum capabities.
+// Use axum capabities.
 use axum::{
     routing::get,
     Router,
@@ -100,13 +100,13 @@ You should see "Hello, World!".
 
 ## 2. Create a new route and handler function
 
-An Axum route can call an function, which is called an Axum handler. The handler
+An axum route can call an function, which is called an axum handler. The handler
 is async function returns something that can be converted into a response.
 
 Edit `main.rs` to add a handler async function that returns text:
 
 ```rust
-// Axum handler for "GET /" which returns a string, which causes Axum to
+// axum handler for "GET /" which returns a string, which causes axum to
 // immediately respond with a `200 OK` response, along with the plain text.
 async fn hello() -> String {
    "Hello, World!".to_string()
@@ -141,7 +141,7 @@ You should see "Hello, World!".
 
 For a request that fails to match anything in the router, you can use the function `fallback`.
 
-Use Axum types:
+Use axum types:
 
 ```rust
 use axum::{
@@ -164,7 +164,7 @@ let app = Router::new()
 Add a fallback handler:
 
 ```rust
-// Axum handler for any request that fails to match the router routes.
+// axum handler for any request that fails to match the router routes.
 // This implementation returns a HTTP status code 404 Not Found response.
 async fn fallback(uri: Uri) -> impl IntoResponse {
     (StatusCode::NOT_FOUND, format!("No route for {}", uri))
@@ -210,7 +210,7 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-// Axum handler that implements `IntoResponse`, which allows us to return any
+// axum handler that implements `IntoResponse`, which allows us to return any
 // HTTP status code (such as status code 200 OK) and any description string.
 async fn demo_status() -> (StatusCode, String) {
     (StatusCode::OK, "Everything is OK".to_string())
@@ -247,7 +247,7 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-// Axum handler for "GET /demo.html" which shows to return HTML text.
+// axum handler for "GET /demo.html" which shows to return HTML text.
 // The `Html` type sets an HTTP header content-type of `text/html`.
 async fn demo_uri(uri: Uri) -> String {
     format!("The URI is: {:?}", uri)
@@ -273,7 +273,7 @@ You should see "The URI is: /demo-uri!".
 
 ## 6. Create routes and handlers for HTTP verbs
 
-Axum routes can use HTTP verbs, including GET, PUT, POST, DELETE.
+axum routes can use HTTP verbs, including GET, PUT, POST, DELETE.
 
 Add routes for each HTTP verb:
 
@@ -425,7 +425,7 @@ Use Serde JSON in order to format JSON data:
 
 ```rust
 // Use Serde JSON to serialize/deserialize JSON, such as the request body.
-// Axum creates JSON payloads or extracts them by using `axum::extract::Json`.
+// axum creates JSON payloads or extracts them by using `axum::extract::Json`.
 // For the implementation, see functions `get_demo_json` and `post_demo_json`.
 use serde_json::{json, Value};
 ```
@@ -441,7 +441,7 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-// Axum handler for "GET /demo.json" which shows how to return JSON data.
+// axum handler for "GET /demo.json" which shows how to return JSON data.
 // The `Json` type sets an HTTP header content-type of `application/json`.
 // The `Json` type works with any type that implements `serde::Serialize`.
 async fn get_demo_json() -> Json<Value> {
@@ -498,9 +498,9 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-// Axum handler for "POST /demo-json" which shows how to use `aumx::extract::Json`.
+// axum handler for "POST /demo-json" which shows how to use `aumx::extract::Json`.
 // This buffers the request body then deserializes it into a `serde_json::Value`.
-// The Axum `Json` type supports any type that implements `serde::Deserialize`.
+// The axum `Json` type supports any type that implements `serde::Deserialize`.
 async fn post_demo_json(Json(payload): Json<serde_json::Value>) -> String{
     format!("Get demo JSON payload: {:?}", payload)
 }
@@ -550,7 +550,7 @@ Get demo JSON payload: Object({"a": String("b")})
 
 ## 10. Create a route that extracts query parameters
 
-An Axum "extractor" is how you pick apart the incoming request in order to get
+An axum "extractor" is how you pick apart the incoming request in order to get
 any parts that your handler needs.
 
 Add code to use `Query`:
@@ -579,7 +579,7 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-// Axum handler for "GET /item" which shows how to use `axum::extrac::Query`.
+// axum handler for "GET /item" which shows how to use `axum::extrac::Query`.
 // This extracts query parameters then deserializes them into a key-value map.
 async fn get_items(Query(params): Query<HashMap<String, String>>) -> String {
     format!("Get items with query params: {:?}", params)
@@ -622,7 +622,7 @@ use axum::{
 };
 ```
 
-Add a route using path parameter syntax, such as ":id", in order to tell Axum to
+Add a route using path parameter syntax, such as ":id", in order to tell axum to
 extract a path parameter and deserialize it into a variable named `id`:
 
 ```rust
@@ -634,7 +634,7 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-// Axum handler for "GET /item/:id" which shows how to use `axum::extract::Path`.
+// axum handler for "GET /item/:id" which shows how to use `axum::extract::Path`.
 // This extracts a path parameter then deserializes it into an integer.
 async fn get_items_id(Path(id): Path<u32>) {
     format!("Get items with id: {:?}", id).to_string()
@@ -761,7 +761,7 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-// Axum handler for "GET /books" which returns a resource index HTML page.
+// axum handler for "GET /books" which returns a resource index HTML page.
 // This demo app uses our BOOKS data; a production app could use a database.
 // This function needs to clone the BOOKS in order to sort them by title.
 async fn get_books() -> Html<String> {
@@ -819,7 +819,7 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-// Axum handler for "GET /books" which returns a resource index HTML page.
+// axum handler for "GET /books" which returns a resource index HTML page.
 // This demo app uses our BOOKS data; a production app could use a database.
 // This function needs to clone the BOOKS in order to sort them by title.
 async fn get_books() -> Html<String> {
@@ -877,7 +877,7 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-// Axum handler for "GET /books/:id" which returns one resource HTML page.
+// axum handler for "GET /books/:id" which returns one resource HTML page.
 // This demo app uses our BOOKS data, and iterates on them to find the id.
 async fn get_books_id(Path(id): Path<u32>) -> Html<String> {
     match BOOKS.lock().unwrap().iter().find(|&book| &book.id == &id) {
@@ -1008,15 +1008,15 @@ async fn main() {
 
 You learned how to:
 
-* Create a project using Rust and the Axum web framework.
+* Create a project using Rust and the axum web framework.
 
-* Create Axum router routes and their handler functions.
+* Create axum router routes and their handler functions.
 
 * Create responses with HTTP status code OK and HTML text.
 
 * Create functionality for HTTP GET and HTTP POST.
 
-* Use Axum extractors for query parameters and path parameters.
+* Use axum extractors for query parameters and path parameters.
 
 * Create a data store and access it using RESTful routes.
 
@@ -1024,6 +1024,6 @@ What's next:
 
 * [The Rust book](https://doc.rust-lang.org/stable/book/) is an excellent thorough starting point.
 
-* [The Axum crate](https://crates.io/crates/axum) has dozens of examples you can try.
+* [The axum crate](https://crates.io/crates/axum) has dozens of examples you can try.
 
 * What suggestions and feedback do you have for us?
