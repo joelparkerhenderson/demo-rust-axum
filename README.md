@@ -54,13 +54,6 @@ serde_json = "*"  # Serialization/deserialize of JSON data.
 Edit file `src/main.rs` like this:
 
 ```rust
-// axum web framework.
-extern crate axum;
-
-// Tokio provides an event-driven, non-blocking I/O platform for writing
-// asynchronous I/O backed applications; axum leverages Tokio throughout.
-extern crate tokio;
-
 // Use axum capabities.
 use axum::{
     routing::get,

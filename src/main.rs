@@ -1,10 +1,3 @@
-// axum web framework.
-extern crate axum;
-
-// Tokio provides an event-driven, non-blocking I/O platform for writing
-// asynchronous I/O backed applications; axum leverages Tokio throughout.
-extern crate tokio;
-
 // Use axum capabities.
 use axum::{
     extract::Json,
