@@ -1,4 +1,4 @@
-# Demo Rust Axum
+# Demo of Rust and Axum web framework
 
 Demonstration of:
 
