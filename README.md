@@ -586,7 +586,7 @@ Add code to use `Path`:
 ```rust
 use axum::{
     …
-    extract::Query,
+    extract::Path,
 };
 ```
 
