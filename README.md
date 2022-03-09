@@ -204,7 +204,7 @@ Add a route:
 ```rust
 let app = Router::new()
     …
-    .route("/demo-ok", get(demo_status));
+    .route("/demo-status", get(demo_status));
 ```
 
 Add a handler:
