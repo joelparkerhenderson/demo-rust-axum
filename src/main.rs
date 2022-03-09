@@ -119,6 +119,11 @@ async fn get_foo() -> String {
     "GET foo".to_string()
 }
 
+// Axum handler for "PUT /foo" which shows naming convention for PUT.
+async fn put_foo() -> String {
+    "PUT foo".to_string()
+}
+
 // Axum handler for "POST /foo" which shows naming convention for POST.
 async fn post_foo() -> String {
     "POST foo".to_string()

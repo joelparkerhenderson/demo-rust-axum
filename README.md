@@ -271,16 +271,16 @@ You should see "The URI is: /demo-uri!".
 </details>
 
 
-## 6. Create routes and handlers for GET, POST, DELETE.
+## 6. Create routes and handlers for HTTP verbs
 
-Axum uses HTTP verbs, including GET to fetch data, POST to submit data, DELETE to destroy data, etc.
+Axum routes can use HTTP verbs, including GET, PUT, POST, DELETE.
 
-Add routes for GET and POST and DELETE:
+Add routes for each HTTP verb:
 
 ```rust
 let app = Router::new()
     …
-    .route("/foo", get(get_foo).post(post_foo).delete(delete_foo))
+    .route("/foo", get(get_foo).put(put_foo).post(post_foo).delete(delete_foo))
 ```
 
 Add handlers:
@@ -288,6 +288,10 @@ Add handlers:
 ```rust
 async fn get_foo() -> String {
    "GET foo".to_string()
+}
+
+async fn put_foo() -> String {
+   "PUT foo".to_string()
 }
 
 async fn post_foo() -> String {
@@ -322,6 +326,18 @@ Output:
 
 ```sh
 GET foo
+```
+
+Shell:
+
+```sh
+curl --request PUT 'http://localhost:3000/foo'
+```
+
+Output:
+
+```sh
+PUT foo
 ```
 
 Shell:
@@ -732,10 +748,67 @@ The app should launch normally.
 </details>
 
 
-
 ## 12. Create a route to get all books
 
 Add a route:
+
+```rust
+let app = Router::new()
+    …
+    .route("/books", get(get_books));
+```
+
+Add a handler:
+
+```rust
+// Axum handler for "GET /books" which returns a resource index HTML page.
+// This demo app uses our BOOKS data; a production app could use a database.
+// This function needs to clone the BOOKS in order to sort them by title.
+async fn get_books() -> Html<String> {
+    let mut books = Vec::from_iter(BOOKS.lock().unwrap().clone());
+    books.sort_by(|a, b| a.title.cmp(&b.title));
+    Html(
+        books.iter().map(|book|
+            format!(
+                "<p>{} by {}</p>\n",
+                &book.title,
+                &book.author
+            )
+        ).collect::<String>()
+    )
+}
+```
+
+<details>
+<summary>Interactive</summary>
+<p><b>Try the demo…</b></p>
+
+Shell:
+
+```sh
+cargo run
+```
+
+Shell:
+
+```sh
+curl 'http://localhost:3000/books'
+```
+
+Output:
+
+```sh
+<p>Antigone by Sophocles</p>
+<p>Beloved by Toni Morrison</p>
+<p>Candide by Voltaire</p>
+```
+
+</details>
+
+
+## 12. Create a route to add a book
+
+Adjust a route:
 
 ```rust
 let app = Router::new()
