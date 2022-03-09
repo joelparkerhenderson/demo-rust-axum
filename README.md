@@ -456,12 +456,12 @@ use axum::{
 };
 ```
 
-Add a route:
+Append this route with post:
 
 ```rust
 let app = Router::new()
     …
-    .route("/demo-json", get(get_demo_json));
+    .route("/demo.json", get(get_demo_json).post(post_demo_json))
 ```
 
 Add a handler:
@@ -470,7 +470,7 @@ Add a handler:
 // Axum handler for "POST /demo-json" which shows how to use `aumx::extract::Json`.
 // This buffers the request body then deserializes it into a `serde_json::Value`.
 // The Axum `Json` type supports any type that implements `serde::Deserialize`.
-async fn get_demo_json(Json(payload): Json<serde_json::Value>) -> String{
+async fn post_demo_json(Json(payload): Json<serde_json::Value>) -> String{
     format!("Get demo JSON payload: {:?}", payload)
 }
 ```
@@ -488,7 +488,7 @@ To use JSON with newer versions of curl:
 
 ```sh
 curl \
---request GET 'http://localhost:3000/demo-json' \
+--request POST 'http://localhost:3000/demo-json' \
 --json '{"a":"b"}'
 ```
 
@@ -502,7 +502,7 @@ To use JSON with older versions of curl:
 
 ```sh
 curl \
---request GET 'http://localhost:3000/demo-json' \
+--request POST 'http://localhost:3000/demo-json' \
 --header "Content-Type: application/json" \
 --data '{"a":"b"}'
 ```
