@@ -659,11 +659,20 @@ Get items with id: 1
 </details>
 
 
-## 11. Create a data store of books
+## 11. Create a book struct
 
-Suppose we want our app to be a data store of books.
+Suppose we want our app to have features related to books.
 
-Create a book struct:
+We need to edit file `main.rs` to create a book struct.
+
+Use `Deserialize`:
+
+```rust
+// Use Deserialize to convert e.g. from request JSON into Book struct.
+use serde::Deserialize;
+```
+
+Create a book struct that derives what we want:
 
 ```rust
 // Demo book structure with some example fields for id, title, author.
@@ -674,7 +683,11 @@ struct Book {
     title: String,
     author: String,
 }
+```
 
+Implement `Display`:
+
+```rust
 // Display the book using the format "{title} by {author}".
 // This is a typical Rust trait and is not axum-specific.
 impl std::fmt::Display for Book {
@@ -684,9 +697,12 @@ impl std::fmt::Display for Book {
 }
 ```
 
+
+## 12. Create a data store
+
 For a production app, we could implement the data by using a database.
 
-For this demo app, we will implement the data by using a global variable `BOOKS`.
+For this demo, we will implement the data by using a global variable `DATA`.
 
 Edit file `Cargo.toml` to add the crate `once_cell` for global variables:
 
@@ -694,48 +710,45 @@ Edit file `Cargo.toml` to add the crate `once_cell` for global variables:
 once_cell = "*"
 ```
 
-Edit file `main.rs` to add:
+Edit file `main.rs` to use `Lazy` and `Mutex`:
 
 ```rust
-// Use Deserialize to convert e.g. from request JSON into Book struct.
-use serde::Deserialize;
-
-// Use once_cell for creating a global variable e.g. our BOOKS data.
+// Use once_cell for creating a global variable e.g. our DATA data.
 use once_cell::sync::Lazy;
 
-// Use Mutex for thread-safe access to a variable e.g. our BOOKS data.
+// Use Mutex for thread-safe access to a variable e.g. our DATA data.
 use std::sync::Mutex;
 
-// Use HashSet for a collection of items e.g. our BOOKS data.
-use std::collections::HashSet;
-
-// Create a data store as a global variable by using `once_cell` and `Mutex`.
-static BOOKS: Lazy<Mutex<HashSet<Book>>> = Lazy::new(|| Mutex::new({
-    let vec = vec![
-        Book { id: "1".into(), title: "Antigone".into(), author: "Sophocles".into()},
-        Book { id: "2".into(), title: "Beloved".into(), author: "Toni Morrison".into()},
-        Book { id: "3".into(), title: "Candide".into(), author: "Voltaire".into()},
-    ];
-    vec.into_iter().collect::<HashSet<_>>()
-}));
+// Use Thread for spawning a thread e.g. to acquire our DATA mutex lock.
+use std::thread;
 ```
 
-<details>
-<summary>Interactive</summary>
-<p><b>Try the demo…</b></p>
+Create a data store:
 
-Shell:
-
-```sh
-cargo run
+```rust
+// Create a data store as a global variable with `Lazy` and `Mutex`.
+// This demo implementation uses a `HashMap` for ease and speed.
+// The map key is a primary key for lookup; the map value is a Book.
+//
+// To access the data, the typical way is via a thread and lock:
+// ```
+// async fn demo() {
+//     thread::spawn(move || {
+//         let data = DATA.lock().unwrap();
+//         …
+// }).join().unwrap()
+// ```
+static DATA: Lazy<Mutex<HashMap<u32, Book>>> = Lazy::new(|| Mutex::new(
+    HashMap::from([
+        (1, Book { id: 1, title: "Antigone".into(), author: "Sophocles".into()}),
+        (2, Book { id: 2, title: "Beloved".into(), author: "Toni Morrison".into()}),
+        (3, Book { id: 3, title: "Candide".into(), author: "Voltaire".into()}),
+    ])
+));
 ```
 
-The app should launch normally.
 
-</details>
-
-
-## 12. Create a route to get all books
+## 13. Create a route to get all books
 
 Add a route:
 
@@ -749,14 +762,19 @@ Add a handler:
 
 ```rust
 // axum handler for "GET /books" which returns a resource index HTML page.
-// This demo app uses our BOOKS data; a production app could use a database.
-// This function needs to clone the BOOKS in order to sort them by title.
+// This demo uses our DATA variable; a production app could use a database.
+// This function needs to clone the DATA in order to sort them by title.
 async fn get_books() -> axum::response::Html<String> {
-    let mut books = Vec::from_iter(BOOKS.lock().unwrap().clone());
-    books.sort_by(|a, b| a.title.cmp(&b.title));
-    books.iter().map(|book|
-        format!("<p>{}</p>\n", &book)
-    ).collect::<String>().into()
+    thread::spawn(move || {
+        let data = DATA.lock().unwrap();
+        let mut books = data.values().collect::<Vec<_>>().clone();
+        books.sort_by(|a, b| a.title.cmp(&b.title));
+        axum::response::Html(
+            books.iter().map(|&book|
+                format!("<p>{}</p>\n", &book)
+            ).collect::<String>()
+        )
+    }).join().unwrap()
 }
 ```
 
@@ -787,7 +805,7 @@ Output:
 </details>
 
 
-## 12. Create a route to put a book
+## 14. Create a route to put a book
 
 Edit the route `/books` to append the function `put`:
 
@@ -846,9 +864,9 @@ Add a handler:
 
 ```rust
 // axum handler for "GET /books/:id" which returns one resource HTML page.
-// This demo app uses our BOOKS data, and iterates on them to find the id.
+// This demo app uses our DATA data, and iterates on them to find the id.
 async fn get_books_id(axum::extract::Path(id): axum::extract::Path<String>) -> axum::response::Html<String> {
-    match BOOKS.lock().unwrap().iter().find(|&book| &book.id == &id) {
+    match DATA.lock().unwrap().iter().find(|&book| &book.id == &id) {
         Some(book) => format!("<p>{}</p>\n", &book).into(),
         None => format!("<p>Book id {} not found</p>", id).into(),
     }
@@ -906,15 +924,16 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-// axum handler for "GET /books/:id/form" which returns an HTML form.
-// This demo shows how to write typical HTML form input fields.
+// axum handler for "GET /books/:id/form" which responds with an HTML form.
+// This demo shows how to write a typical HTML form with input fields.
 async fn get_books_id_form(axum::extract::Path(id): axum::extract::Path<String>) -> axum::response::Html<String> {
-    match BOOKS.lock().unwrap().iter().find(|&book| &book.id == &id) {
+    match DATA.lock().unwrap().iter().find(|&book| &book.id == &id) {
         Some(book) => format!(
             concat!(
                 "<form method=\"post\" action=\"/books/{}/form\">\n",
-                "<p><input name=\"title\" value=\"{}\"></p>\n",
-                "<p><input name=\"author\" value=\"{}\"></p>\n",
+                "<input type=\"hidden\" name=\"id\" value=\"{}\">\n",
+                "<p><input type=\"text\" name=\"title\" value=\"{}\"></p>\n",
+                "<p><input type=\"text\" name=\"author\" value=\"{}\"></p>\n",
                 "<input type=\"submit\" value=\"Save\">\n",
                 "</form>\n"
             ), 

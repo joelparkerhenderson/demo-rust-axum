@@ -146,7 +146,7 @@ async fn get_items_id(axum::extract::Path(id): axum::extract::Path<String>) -> S
 // A production app or database could use an id that is a u32, UUID, etc.
 #[derive(Debug, Deserialize, Clone, Eq, Hash, PartialEq)]
 struct Book {
-    id: String,
+    id: u32,
     title: String,
     author: String,
 }
@@ -162,64 +162,82 @@ impl std::fmt::Display for Book {
 // Use Deserialize to convert e.g. from request JSON into Book struct.
 use serde::Deserialize;
 
-// Use once_cell for creating a global variable e.g. our BOOKS data.
+// Use once_cell for creating a global variable e.g. our DATA data.
 use once_cell::sync::Lazy;
 
-// Use Mutex for thread-safe access to a variable e.g. our BOOKS data.
+// Use Mutex for thread-safe access to a variable e.g. our DATA data.
 use std::sync::Mutex;
 
-// Use HashSet for a collection of items e.g. our BOOKS data.
-use std::collections::HashSet;
+// Use Thread for spawning a thread e.g. to acquire our DATA mutex lock.
+use std::thread;
 
-// Create a data store as a global variable by using `once_cell` and `Mutex`.
-static BOOKS: Lazy<Mutex<HashSet<Book>>> = Lazy::new(|| Mutex::new({
-    let vec = vec![
-        Book { id: "1".into(), title: "Antigone".into(), author: "Sophocles".into()},
-        Book { id: "2".into(), title: "Beloved".into(), author: "Toni Morrison".into()},
-        Book { id: "3".into(), title: "Candide".into(), author: "Voltaire".into()},
-    ];
-    vec.into_iter().collect::<HashSet<_>>()
-}));
+// Create a data store as a global variable with `Lazy` and `Mutex`.
+// This demo implementation uses a `HashMap` for ease and speed.
+// The map key is a primary key for lookup; the map value is a Book.
+//
+// To access the data, the typical way is via a thread and lock:
+//
+// ```
+// async fn demo() {
+//     thread::spawn(move || {
+//         let data = DATA.lock().unwrap();
+//         …
+// }).join().unwrap()
+// ```
+static DATA: Lazy<Mutex<HashMap<u32, Book>>> = Lazy::new(|| Mutex::new(
+    HashMap::from([
+        (1, Book { id: 1, title: "Antigone".into(), author: "Sophocles".into()}),
+        (2, Book { id: 2, title: "Beloved".into(), author: "Toni Morrison".into()}),
+        (3, Book { id: 3, title: "Candide".into(), author: "Voltaire".into()}),
+    ])
+));
 
 // axum handler for "GET /books" which returns a resource index HTML page.
-// This demo app uses our BOOKS data; a production app could use a database.
-// This function needs to clone the BOOKS in order to sort them by title.
+// This demo uses our DATA variable; a production app could use a database.
+// This function needs to clone the DATA in order to sort them by title.
 async fn get_books() -> axum::response::Html<String> {
-    let mut books = Vec::from_iter(BOOKS.lock().unwrap().clone());
-    books.sort_by(|a, b| a.title.cmp(&b.title));
-    books.iter().map(|book|
-        format!("<p>{}</p>\n", &book)
-    ).collect::<String>().into()
+    thread::spawn(move || {
+        let data = DATA.lock().unwrap();
+        let mut books = data.values().collect::<Vec<_>>().clone();
+        books.sort_by(|a, b| a.title.cmp(&b.title));
+        axum::response::Html(
+            books.iter().map(|&book|
+                format!("<p>{}</p>\n", &book)
+            ).collect::<String>()
+        )
+    }).join().unwrap()
 }
 
 // axum handler for "PUT /books" which creates a new book resource.
 // This demo shows how axum can extract a JSON payload into a Book struct.
 async fn put_books(axum::extract::Json(book): axum::extract::Json<Book>) -> axum::response::Html<String> {
-    BOOKS.lock().unwrap().insert(book.clone());
+    DATA.lock().unwrap().insert(book.id, book.clone());
     format!("Put book: {}", &book).into()
 }
 
 // axum handler for "GET /books/:id" which returns one resource HTML page.
-// This demo app uses our BOOKS data, and iterates on them to find the id.
-async fn get_books_id(axum::extract::Path(id): axum::extract::Path<String>) -> axum::response::Html<String> {
-    match BOOKS.lock().unwrap().iter().find(|&book| &book.id == &id) {
+// This demo app uses our DATA data, and iterates on them to find the id.
+async fn get_books_id(axum::extract::Path(id): axum::extract::Path<u32>) -> axum::response::Html<String> {
+    match DATA.lock().unwrap().get(&id) {
         Some(book) => format!("<p>{}</p>\n", &book).into(),
         None => format!("<p>Book id {} not found</p>", id).into(),
     }
 }
 
-// axum handler for "GET /books/:id/form" which returns an HTML form.
-// This demo shows how to write typical HTML form input fields.
-async fn get_books_id_form(axum::extract::Path(id): axum::extract::Path<String>) -> axum::response::Html<String> {
-    match BOOKS.lock().unwrap().iter().find(|&book| &book.id == &id) {
+// axum handler for "GET /books/:id/form" which responds with an HTML form.
+// This demo shows how to write a typical HTML form with input fields.
+async fn get_books_id_form(axum::extract::Path(id): axum::extract::Path<u32>) -> axum::response::Html<String> {
+    match DATA.lock().unwrap().get(&id) {
         Some(book) => format!(
             concat!(
                 "<form method=\"post\" action=\"/books/{}/form\">\n",
-                "<p><input name=\"title\" value=\"{}\"></p>\n",
-                "<p><input name=\"author\" value=\"{}\"></p>\n",
+                "<input type=\"hidden\" name=\"id\" value=\"{}\">\n",
+                "<p><input type=\"text\" name=\"title\" value=\"{}\"></p>\n",
+                "<p><input type=\"text\" name=\"author\" value=\"{}\"></p>\n",
                 "<input type=\"submit\" value=\"Save\">\n",
                 "</form>\n"
             ), 
+            &book.id,
             &book.id,
             &book.title,
             &book.author
