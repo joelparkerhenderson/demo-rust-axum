@@ -3,8 +3,6 @@ use axum::{
     handler::Handler,
     http::StatusCode,
     http::Uri,
-    response::Html,
-    response::IntoResponse,
     routing::get,
     Router,
 };
@@ -58,7 +56,7 @@ async fn main() {
 
 // axum handler for any request that fails to match the router routes.
 // This implementation returns a HTTP status code 404 Not Found response.
-async fn fallback(uri: Uri) -> impl IntoResponse {
+async fn fallback(uri: Uri) -> impl axum::response::IntoResponse {
     (StatusCode::NOT_FOUND, format!("No route for {}", uri))
 }
 
@@ -82,8 +80,8 @@ async fn demo_uri(uri: Uri) -> String {
 
 // axum handler for "GET /demo.html" which shows to return HTML text.
 // The `Html` type sets an HTTP header content-type of `text/html`.
-async fn get_demo_html() -> Html<&'static str> {
-    Html("<h1>Hello</h1>")
+async fn get_demo_html() -> axum::response::Html<&'static str> {
+    "<h1>Hello</h1>".into()
 }
 
 // axum handler for "GET /demo.json" which shows how to return JSON data.
@@ -96,7 +94,7 @@ async fn get_demo_json() -> axum::extract::Json<Value> {
 // axum handler for "POST /demo-json" which shows how to use `aumx::extract::Json`.
 // This buffers the request body then deserializes it into a `serde_json::Value`.
 // The axum `Json` type supports any type that implements `serde::Deserialize`.
-async fn post_demo_json(axum::extract::Json(payload): axum::extract::Json<serde_json::Value>) -> String{
+async fn post_demo_json(axum::extract::Json(payload): axum::extract::Json<serde_json::Value>) -> String {
     format!("Get demo JSON payload: {:?}", payload)
 }
 
@@ -180,28 +178,26 @@ static BOOKS: Lazy<Mutex<HashSet<Book>>> = Lazy::new(|| Mutex::new({
 // axum handler for "GET /books" which returns a resource index HTML page.
 // This demo app uses our BOOKS data; a production app could use a database.
 // This function needs to clone the BOOKS in order to sort them by title.
-async fn get_books() -> Html<String> {
+async fn get_books() -> axum::response::Html<String> {
     let mut books = Vec::from_iter(BOOKS.lock().unwrap().clone());
     books.sort_by(|a, b| a.title.cmp(&b.title));
-    Html(
-        books.iter().map(|book|
-            format!("<p>{}</p>\n", &book)
-        ).collect::<String>()
-    )
+    books.iter().map(|book|
+        format!("<p>{}</p>\n", &book)
+    ).collect::<String>().into()
 }
 
 // axum handler for "PUT /books" which creates a new book resource.
 // This demo shows how axum can extract a JSON payload into a Book struct.
-async fn put_books(axum::extract::Json(book): axum::extract::Json<Book>) -> Html<String> {
+async fn put_books(axum::extract::Json(book): axum::extract::Json<Book>) -> axum::response::Html<String> {
     BOOKS.lock().unwrap().insert(book.clone());
-    Html(format!("PUT books: {:?}", &book))
+    format!("PUT books: {:?}", &book).into()
 }
 
 // axum handler for "GET /books/:id" which returns one resource HTML page.
 // This demo app uses our BOOKS data, and iterates on them to find the id.
-async fn get_books_id(axum::extract::Path(id): axum::extract::Path<String>) -> Html<String> {
+async fn get_books_id(axum::extract::Path(id): axum::extract::Path<String>) -> axum::response::Html<String> {
     match BOOKS.lock().unwrap().iter().find(|&book| &book.id == &id) {
-        Some(book) => Html(format!("<p>{}</p>\n", &book)),
-        None => Html("<p>Not found</p>".into()),
+        Some(book) => format!("<p>{}</p>\n", &book).into(),
+        None => format!("<p>Book id {} not found</p>", id).into(),
     }
 }

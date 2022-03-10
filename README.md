@@ -159,7 +159,6 @@ use axum::{
     handler::Handler,
     http::StatusCode,
     http::Uri,
-    response::IntoResponse,
 };
 ```
 
@@ -407,8 +406,8 @@ let app = Router::new()
 Add handler:
 
 ```rust
-async fn get_demo_html() -> Html<&'static str> {
-    Html("<h1>Hello</h1>")
+async fn get_demo_html() -> axum::response::Html<&'static str> {
+    "<h1>Hello</h1>".into()
 }
 ```
 
@@ -750,14 +749,12 @@ Add a handler:
 // axum handler for "GET /books" which returns a resource index HTML page.
 // This demo app uses our BOOKS data; a production app could use a database.
 // This function needs to clone the BOOKS in order to sort them by title.
-async fn get_books() -> Html<String> {
+async fn get_books() -> axum::response::Html<String> {
     let mut books = Vec::from_iter(BOOKS.lock().unwrap().clone());
     books.sort_by(|a, b| a.title.cmp(&b.title));
-    Html(
-        books.iter().map(|book|
-            format!("<p>{}</p>\n", &book)
-        ).collect::<String>()
-    )
+    books.iter().map(|book|
+        format!("<p>{}</p>\n", &book)
+    ).collect::<String>().into()
 }
 ```
 
@@ -848,10 +845,10 @@ Add a handler:
 ```rust
 // axum handler for "GET /books/:id" which returns one resource HTML page.
 // This demo app uses our BOOKS data, and iterates on them to find the id.
-async fn get_books_id(axum::extract::Path(id): axum::extract::Path<String>) -> Html<String> {
+async fn get_books_id(axum::extract::Path(id): axum::extract::Path<String>) -> axum::response::Html<String> {
     match BOOKS.lock().unwrap().iter().find(|&book| &book.id == &id) {
-        Some(book) => Html(format!("<p>{}</p>\n", &book)),
-        None => Html("<p>Not found</p>".into()),
+        Some(book) => format!("<p>{}</p>\n", &book).into(),
+        None => format!("<p>Book id {} not found</p>", id).into(),
     }
 }
 ```
@@ -887,7 +884,7 @@ curl 'http://localhost:3000/books/0'
 Output:
 
 ```sh
-<p>Not found</p>
+<p>Book id 0 not found</p>
 ```
 
 </details>
