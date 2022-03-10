@@ -44,7 +44,7 @@ async fn main() {
         .route("/items/:id", get(get_items_id))
         .route("/books", get(get_books).put(put_books))
         .route("/books/:id", get(get_books_id))
-        .route("/books/:id/form", get(get_books_id_form));
+        .route("/books/:id/form", get(get_books_id_form).post(post_books_id_form));
 
     // Run our application by using hyper and URL http://localhost:3000.
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
@@ -142,6 +142,9 @@ async fn get_items_id(axum::extract::Path(id): axum::extract::Path<String>) -> S
 
 //// Demo books using a struct and lazy mutex global variable.
 
+// Use Deserialize to convert e.g. from request JSON into Book struct.
+use serde::Deserialize;
+
 // Demo book structure with some example fields for id, title, author.
 // A production app or database could use an id that is a u32, UUID, etc.
 #[derive(Debug, Deserialize, Clone, Eq, Hash, PartialEq)]
@@ -159,9 +162,6 @@ impl std::fmt::Display for Book {
     }
 }
 
-// Use Deserialize to convert e.g. from request JSON into Book struct.
-use serde::Deserialize;
-
 // Use once_cell for creating a global variable e.g. our DATA data.
 use once_cell::sync::Lazy;
 
@@ -175,10 +175,10 @@ use std::thread;
 // This demo implementation uses a `HashMap` for ease and speed.
 // The map key is a primary key for lookup; the map value is a Book.
 //
-// To access the data, the typical way is via a thread and lock:
+// To access data, create a thread, spawn it, and acquire the lock:
 //
 // ```
-// async fn demo() {
+// async fn example() {
 //     thread::spawn(move || {
 //         let data = DATA.lock().unwrap();
 //         …
@@ -200,12 +200,10 @@ async fn get_books() -> axum::response::Html<String> {
         let data = DATA.lock().unwrap();
         let mut books = data.values().collect::<Vec<_>>().clone();
         books.sort_by(|a, b| a.title.cmp(&b.title));
-        axum::response::Html(
-            books.iter().map(|&book|
-                format!("<p>{}</p>\n", &book)
-            ).collect::<String>()
-        )
-    }).join().unwrap()
+        books.iter().map(|&book|
+            format!("<p>{}</p>\n", &book)
+        ).collect::<String>()
+    }).join().unwrap().into()
 }
 
 // axum handler for "PUT /books" which creates a new book resource.
@@ -216,12 +214,12 @@ async fn put_books(axum::extract::Json(book): axum::extract::Json<Book>) -> axum
 }
 
 // axum handler for "GET /books/:id" which returns one resource HTML page.
-// This demo app uses our DATA data, and iterates on them to find the id.
+// This demo app uses our DATA variable, and iterates on it to find the id.
 async fn get_books_id(axum::extract::Path(id): axum::extract::Path<u32>) -> axum::response::Html<String> {
     match DATA.lock().unwrap().get(&id) {
-        Some(book) => format!("<p>{}</p>\n", &book).into(),
-        None => format!("<p>Book id {} not found</p>", id).into(),
-    }
+        Some(book) => format!("<p>{}</p>\n", &book),
+        None => format!("<p>Book id {} not found</p>", id),
+    }.into()
 }
 
 // axum handler for "GET /books/:id/form" which responds with an HTML form.
@@ -241,7 +239,22 @@ async fn get_books_id_form(axum::extract::Path(id): axum::extract::Path<u32>) ->
             &book.id,
             &book.title,
             &book.author
-        ).into(),
-        None => format!("<p>Book id {} not found</p>", id).into(),
-    }
+        ),
+        None => format!("<p>Book id {} not found</p>", id),
+    }.into()
+}
+
+// axum handler for "POST /books/:id/form" which submits an HTML form.
+// This demo shows how to do a form submission then update a resource.
+async fn post_books_id_form(form: axum::extract::Form<Book>) -> axum::response::Html<String> {
+    let new_book: Book = form.0;
+    thread::spawn(move || {
+        let mut data = DATA.lock().unwrap();
+        if data.contains_key(&new_book.id) {
+            data.insert(new_book.id, new_book.clone());
+            format!("Post book: {}", &new_book)
+        } else {
+            format!("Book id not found: {}", &new_book.id)
+        }
+    }).join().unwrap().into()
 }

@@ -730,9 +730,9 @@ Create a data store:
 // This demo implementation uses a `HashMap` for ease and speed.
 // The map key is a primary key for lookup; the map value is a Book.
 //
-// To access the data, the typical way is via a thread and lock:
+// To access data, create a thread, spawn it, and acquire the lock:
 // ```
-// async fn demo() {
+// async fn example() {
 //     thread::spawn(move || {
 //         let data = DATA.lock().unwrap();
 //         …
@@ -769,12 +769,10 @@ async fn get_books() -> axum::response::Html<String> {
         let data = DATA.lock().unwrap();
         let mut books = data.values().collect::<Vec<_>>().clone();
         books.sort_by(|a, b| a.title.cmp(&b.title));
-        axum::response::Html(
-            books.iter().map(|&book|
-                format!("<p>{}</p>\n", &book)
-            ).collect::<String>()
-        )
-    }).join().unwrap()
+        books.iter().map(|&book|
+            format!("<p>{}</p>\n", &book)
+        ).collect::<String>()
+    }).join().unwrap().into()
 }
 ```
 
@@ -819,7 +817,11 @@ Add a handler:
 
 ```rust
 // axum handler for "PUT /books" which creates a new book resource.
-async fn put_books(Json(payload): Json<serde_json::Value>) -> Html<String> {
+// This demo shows how axum can extract a JSON payload into a Book struct.
+async fn put_books(axum::extract::Json(book): axum::extract::Json<Book>) -> axum::response::Html<String> {
+    DATA.lock().unwrap().insert(book.id, book.clone());
+    format!("Put book: {}", &book).into()
+}
 ```
 
 <details>
@@ -844,7 +846,22 @@ curl \
 Output:
 
 ```sh
-<p>Put book: Decameron by Giovanni Boccaccio</p>
+Put book: Decameron by Giovanni Boccaccio
+```
+
+Shell:
+
+```sh
+curl 'http://localhost:3000/books'
+```
+
+Output:
+
+```
+<p>Antigone by Sophocles</p>
+<p>Beloved by Toni Morrison</p>
+<p>Candide by Voltaire</p>
+<p>Decameron by Giovanni Boccaccio</p>
 ```
 
 </details>
@@ -864,12 +881,12 @@ Add a handler:
 
 ```rust
 // axum handler for "GET /books/:id" which returns one resource HTML page.
-// This demo app uses our DATA data, and iterates on them to find the id.
-async fn get_books_id(axum::extract::Path(id): axum::extract::Path<String>) -> axum::response::Html<String> {
-    match DATA.lock().unwrap().iter().find(|&book| &book.id == &id) {
-        Some(book) => format!("<p>{}</p>\n", &book).into(),
-        None => format!("<p>Book id {} not found</p>", id).into(),
-    }
+// This demo app uses our DATA variable, and iterates on it to find the id.
+async fn get_books_id(axum::extract::Path(id): axum::extract::Path<u32>) -> axum::response::Html<String> {
+    match DATA.lock().unwrap().get(&id) {
+        Some(book) => format!("<p>{}</p>\n", &book),
+        None => format!("<p>Book id {} not found</p>", id),
+    }.into()
 }
 ```
 
@@ -926,8 +943,8 @@ Add a handler:
 ```rust
 // axum handler for "GET /books/:id/form" which responds with an HTML form.
 // This demo shows how to write a typical HTML form with input fields.
-async fn get_books_id_form(axum::extract::Path(id): axum::extract::Path<String>) -> axum::response::Html<String> {
-    match DATA.lock().unwrap().iter().find(|&book| &book.id == &id) {
+async fn get_books_id_form(axum::extract::Path(id): axum::extract::Path<u32>) -> axum::response::Html<String> {
+    match DATA.lock().unwrap().get(&id) {
         Some(book) => format!(
             concat!(
                 "<form method=\"post\" action=\"/books/{}/form\">\n",
@@ -938,11 +955,12 @@ async fn get_books_id_form(axum::extract::Path(id): axum::extract::Path<String>)
                 "</form>\n"
             ), 
             &book.id,
+            &book.id,
             &book.title,
             &book.author
-        ).into(),
-        None => format!("<p>Book id {} not found</p>", id).into(),
-    }
+        ),
+        None => format!("<p>Book id {} not found</p>", id),
+    }.into()
 }
 ```
 
@@ -973,7 +991,78 @@ Output:
 ```
 
 
-## 15. Bonus: Add a Tower tracing subscriber
+## 15. Create a route to submit the form to update a book
+
+Append a route function `post`:
+
+```rust
+let app = Router::new()
+    …
+    .route("/books/:id/form", get(get_books_id_form).post(post_books_id_form));
+```
+
+Add a handler:
+
+```rust
+// axum handler for "POST /books/:id/form" which submits an HTML form.
+// This demo shows how to do a form submission then update a resource.
+async fn post_books_id_form(form: axum::extract::Form<Book>) -> axum::response::Html<String> {
+    let new_book: Book = form.0;
+    thread::spawn(move || {
+        let mut data = DATA.lock().unwrap();
+        if data.contains_key(&new_book.id) {
+            data.insert(new_book.id, new_book.clone());
+            format!("<p>{}</p>\n", &new_book)
+        } else {
+            format!("Book id not found: {}", &new_book.id)
+        }
+    }).join().unwrap().into()
+}
+```
+
+<details>
+<summary>Interactive</summary>
+<p><b>Try the demo…</b></p>
+
+Shell:
+
+```sh
+cargo run
+```
+
+Shell:
+
+```sh
+curl \
+--request POST 'http://localhost:3000/books/1' \
+--header "Content-Type: application/json" \
+--data '{"id":"1","title":"Antigone and Lysistra","author":"Sophocles of Athens"}'
+```
+
+Output:
+
+```sh
+Post book: Antigone and Lysistra by Sophocles of Athens
+```
+
+Shell:
+
+```sh
+curl 'http://localhost:3000/books'
+```
+
+Output:
+
+```
+<p>Antigone and Lysistra by Sophocles of Athens</p>
+<p>Beloved by Toni Morrison</p>
+<p>Candide by Voltaire</p>
+```
+
+</details>
+
+
+## 16. Bonus: Add a Tower tracing subscriber
 
 Edit file `Cargo.toml` to add crates:
 
@@ -1026,7 +1115,7 @@ You should see console output that shows tracing initialization such as:
 </details>
 
 
-## 16. Bonus: Refactor to use a host, port, and socket address
+## 17. Bonus: Refactor to use a host, port, and socket address
 
 To bind the server, our demo code uses a socket address string:
 
