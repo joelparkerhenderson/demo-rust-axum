@@ -39,7 +39,7 @@ async fn main() {
         .route("/demo-uri", get(demo_uri))
         .route("/demo.html", get(get_demo_html))
         .route("/demo.json", get(get_demo_json).put(put_demo_json))
-        .route("/foo", get(get_foo).put(put_foo).post(post_foo).delete(delete_foo))
+        .route("/foo", get(get_foo).put(put_foo).patch(patch_foo).post(post_foo).delete(delete_foo))
         .route("/items", get(get_items))
         .route("/items/:id", get(get_items_id))
         .route("/books", get(get_books).put(put_books))
@@ -108,6 +108,11 @@ async fn get_foo() -> String {
 // axum handler for "PUT /foo" which shows naming convention for PUT.
 async fn put_foo() -> String {
     "PUT foo".to_string()
+}
+
+// axum handler for "PATCH /foo" which shows naming convention for PATCH.
+async fn patch_foo() -> String {
+    "PATCH foo".to_string()
 }
 
 // axum handler for "POST /foo" which shows naming convention for POST.
@@ -187,7 +192,7 @@ async fn get_books() -> axum::response::Html<String> {
 }
 
 // axum handler for "PUT /books" which creates a new book resource.
-// This demo shows how axum can extract a JSON payload into a Book struct.
+// This code shows how axum can extract a JSON payload into a Book struct.
 async fn put_books(axum::extract::Json(book): axum::extract::Json<Book>) -> axum::response::Html<String> {
     BOOKS.lock().unwrap().insert(book.clone());
     format!("PUT books: {:?}", &book).into()

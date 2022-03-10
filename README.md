@@ -35,7 +35,7 @@ This demo shows how to:
 
 * Create responses with HTTP status code OK and HTML text.
 
-* Create functionality for HTTP GET, PUT, POST, DELETE.
+* Create functionality for HTTP GET, PUT, PATCH, POST, DELETE.
 
 * Use axum extractors for query parameters and path parameters.
 
@@ -282,14 +282,14 @@ You should see "The URI is: /demo-uri!".
 
 ## 6. Create routes and handlers for HTTP verbs
 
-axum routes can use HTTP verbs, including GET, PUT, POST, DELETE.
+axum routes can use HTTP verbs, including GET, PUT, PATCH, POST, DELETE.
 
 Add routes for each HTTP verb:
 
 ```rust
 let app = Router::new()
     …
-    .route("/foo", get(get_foo).put(put_foo).post(post_foo).delete(delete_foo))
+    .route("/foo", get(get_foo).put(put_foo).patch(patch_foo).post(post_foo).delete(delete_foo))
 ```
 
 Add handlers:
@@ -301,6 +301,10 @@ async fn get_foo() -> String {
 
 async fn put_foo() -> String {
    "PUT foo".to_string()
+}
+
+async fn patch_foo() -> String {
+   "PATCH foo".to_string()
 }
 
 async fn post_foo() -> String {
@@ -347,6 +351,18 @@ Output:
 
 ```sh
 PUT foo
+```
+
+Shell:
+
+```sh
+curl --request PATCH 'http://localhost:3000/foo'
+```
+
+Output:
+
+```sh
+PATCH foo
 ```
 
 Shell:
@@ -773,7 +789,7 @@ Output:
 
 ## 12. Create a route to put a book
 
-Adjust this route:
+Edit the route `/books` to append the function `put`:
 
 ```rust
 let app = Router::new()
@@ -810,7 +826,7 @@ curl \
 Output:
 
 ```sh
-<p>Decameron by Giovanni Boccaccio</p>
+<p>Put book: Decameron by Giovanni Boccaccio</p>
 ```
 
 </details>
@@ -823,7 +839,7 @@ Add a route:
 ```rust
 let app = Router::new()
     …
-    .route("/books/:id", get(get_books));
+    .route("/books/:id", get(get_books_id));
 ```
 
 Add a handler:
