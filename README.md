@@ -665,12 +665,21 @@ Suppose we want our app to be a data store of books.
 Create a book struct:
 
 ```rust
-// Demo book structure with some typical example fields.
+// Demo book structure with some example fields for id, title, author.
+// A production app or database could use an id that is a u32, UUID, etc.
 #[derive(Debug, Deserialize, Clone, Eq, Hash, PartialEq)]
 struct Book {
     id: String,
     title: String,
     author: String,
+}
+
+// Display the book using the format "{title} by {author}".
+// This is a typical Rust trait and is not axum-specific.
+impl std::fmt::Display for Book {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "{} by {}", self.title, self.author)
+    }
 }
 ```
 
@@ -746,11 +755,7 @@ async fn get_books() -> Html<String> {
     books.sort_by(|a, b| a.title.cmp(&b.title));
     Html(
         books.iter().map(|book|
-            format!(
-                "<p>{} by {}</p>\n",
-                &book.title,
-                &book.author
-            )
+            format!("<p>{}</p>\n", &book)
         ).collect::<String>()
     )
 }
@@ -845,13 +850,7 @@ Add a handler:
 // This demo app uses our BOOKS data, and iterates on them to find the id.
 async fn get_books_id(axum::extract::Path(id): axum::extract::Path<String>) -> Html<String> {
     match BOOKS.lock().unwrap().iter().find(|&book| &book.id == &id) {
-        Some(book) => Html(
-            format!(
-                "<p>{} by {}</p>\n",
-                &book.title,
-                &book.author
-            )
-        ),
+        Some(book) => Html(format!("<p>{}</p>\n", &book)),
         None => Html("<p>Not found</p>".into()),
     }
 }

@@ -44,7 +44,7 @@ async fn main() {
         .route("/foo", get(get_foo).put(put_foo).post(post_foo).delete(delete_foo))
         .route("/items", get(get_items))
         .route("/items/:id", get(get_items_id))
-        .route("/books", get(get_books))
+        .route("/books", get(get_books).put(put_books))
         .route("/books/:id", get(get_books_id));
 
     // Run our application by using hyper and URL http://localhost:3000.
@@ -52,7 +52,6 @@ async fn main() {
         .serve(app.into_make_service())
         .await
         .unwrap();
-
 }
 
 //// Demo axum handlers.
@@ -139,12 +138,21 @@ async fn get_items_id(axum::extract::Path(id): axum::extract::Path<String>) -> S
 
 //// Demo books using a struct and lazy mutex global variable.
 
-// Demo book structure with some typical example fields.
+// Demo book structure with some example fields for id, title, author.
+// A production app or database could use an id that is a u32, UUID, etc.
 #[derive(Debug, Deserialize, Clone, Eq, Hash, PartialEq)]
 struct Book {
     id: String,
     title: String,
     author: String,
+}
+
+// Display the book using the format "{title} by {author}".
+// This is a typical Rust trait and is not axum-specific.
+impl std::fmt::Display for Book {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "{} by {}", self.title, self.author)
+    }
 }
 
 // Use Deserialize to convert e.g. from request JSON into Book struct.
@@ -177,26 +185,23 @@ async fn get_books() -> Html<String> {
     books.sort_by(|a, b| a.title.cmp(&b.title));
     Html(
         books.iter().map(|book|
-            format!(
-                "<p>{} by {}</p>\n",
-                &book.title,
-                &book.author
-            )
+            format!("<p>{}</p>\n", &book)
         ).collect::<String>()
     )
+}
+
+// axum handler for "PUT /books" which creates a new book resource.
+// This demo shows how axum can extract a JSON payload into a Book struct.
+async fn put_books(axum::extract::Json(book): axum::extract::Json<Book>) -> Html<String> {
+    BOOKS.lock().unwrap().insert(book.clone());
+    Html(format!("PUT books: {:?}", &book))
 }
 
 // axum handler for "GET /books/:id" which returns one resource HTML page.
 // This demo app uses our BOOKS data, and iterates on them to find the id.
 async fn get_books_id(axum::extract::Path(id): axum::extract::Path<String>) -> Html<String> {
     match BOOKS.lock().unwrap().iter().find(|&book| &book.id == &id) {
-        Some(book) => Html(
-            format!(
-                "<p>{} by {}</p>\n",
-                &book.title,
-                &book.author
-            )
-        ),
+        Some(book) => Html(format!("<p>{}</p>\n", &book)),
         None => Html("<p>Not found</p>".into()),
     }
 }
