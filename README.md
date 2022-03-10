@@ -697,33 +697,15 @@ use std::sync::Mutex;
 // Use HashSet for a collection of items e.g. our BOOKS data.
 use std::collections::HashSet;
 
-// Create our BOOKS data by using a global variable with thread-safe access.
-static BOOKS: Lazy<Mutex<HashSet<Book>>> = Lazy::new(|| Mutex::new(HashSet::new()));
-```
-
-Add a function to initialize the BOOKS global variable with demo data:
-
-```rust
-// Initialize the BOOKS global variable by inserting demo data.
-async fn init_books() {
-    for book in vec![
+// Create a data store as a global variable by using `once_cell` and `Mutex`.
+static BOOKS: Lazy<Mutex<HashSet<Book>>> = Lazy::new(|| Mutex::new({
+    let vec = vec![
         Book { id: 1, title: "Antigone".into(), author: "Sophocles".into()},
         Book { id: 2, title: "Beloved".into(), author: "Toni Morrison".into()},
         Book { id: 3, title: "Candide".into(), author: "Voltaire".into()},
-    ] {
-        BOOKS.lock().unwrap().insert(book);
-    }
-}
-```
-
-Call the function at the start of `main()`:
-
-```rust
-async fn main() {
-    // Initialize our demo data for the examples about books.
-    init_books().await;
-    …
-}
+    ];
+    vec.into_iter().collect::<HashSet<_>>()
+}));
 ```
 
 <details>

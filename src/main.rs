@@ -36,9 +36,6 @@ async fn main() {
     .with(tracing_subscriber::fmt::layer())
     .init();
 
-    // Initialize our demo data for the examples about books.
-    init_books().await;
-
     // Build our application by creating our router.
     let app = Router::new()
         .fallback(fallback.into_service())
@@ -61,7 +58,7 @@ async fn main() {
 
 }
 
-//// Demo axum handlers
+//// Demo axum handlers.
 
 // axum handler for any request that fails to match the router routes.
 // This implementation returns a HTTP status code 404 Not Found response.
@@ -107,6 +104,8 @@ async fn post_demo_json(Json(payload): Json<serde_json::Value>) -> String{
     format!("Get demo JSON payload: {:?}", payload)
 }
 
+//// Demo axum handlers with HTTP verbs GET, PUT, POST, DELETE.
+
 // axum handler for "GET /foo" which shows naming convention for GET.
 async fn get_foo() -> String {
     "GET foo".to_string()
@@ -127,6 +126,8 @@ async fn delete_foo() -> String {
     "DELETE foo".to_string()
 }
 
+//// Demo axum handlers with extractors for query params and path params.
+
 // axum handler for "GET /items" which shows how to use `axum::extrac::Query`.
 // This extracts query parameters then deserializes them into a key-value map.
 async fn get_items(Query(params): Query<HashMap<String, String>>) -> String {
@@ -139,7 +140,7 @@ async fn get_items_id(Path(id): Path<u32>) -> String {
     format!("Get items with path id: {:?}", id)
 }
 
-//// Demo books using a struct and using data as a global variable
+//// Demo books using a struct and lazy mutex global variable.
 
 // Demo book structure that we can debug, clone, hash, and compare.
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
@@ -159,19 +160,14 @@ use std::sync::Mutex;
 use std::collections::HashSet;
 
 // Create a data store as a global variable by using `once_cell` and `Mutex`.
-// We initialize the data store in the function `init_data()`.
-static BOOKS: Lazy<Mutex<HashSet<Book>>> = Lazy::new(|| Mutex::new(HashSet::new()));
-
-// Initialize the BOOKS global variable by inserting demo data.
-async fn init_books() {
-    for book in vec![
+static BOOKS: Lazy<Mutex<HashSet<Book>>> = Lazy::new(|| Mutex::new({
+    let vec = vec![
         Book { id: 1, title: "Antigone".into(), author: "Sophocles".into()},
         Book { id: 2, title: "Beloved".into(), author: "Toni Morrison".into()},
         Book { id: 3, title: "Candide".into(), author: "Voltaire".into()},
-    ] {
-        BOOKS.lock().unwrap().insert(book);
-    }
-}
+    ];
+    vec.into_iter().collect::<HashSet<_>>()
+}));
 
 // axum handler for "GET /books" which returns a resource index HTML page.
 // This demo app uses our BOOKS data; a production app could use a database.
