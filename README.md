@@ -384,7 +384,7 @@ curl --request GET 'http://localhost:3000/foo'
 </details>
 
 
-## 7. Create a reponse with HTML text
+## 7. Create a response with HTML text
 
 Add code to use `Html`:
 
@@ -496,22 +496,22 @@ use axum::{
 };
 ```
 
-Append this route with post:
+Append this route with put:
 
 ```rust
 let app = Router::new()
     …
-    .route("/demo.json", get(get_demo_json).post(post_demo_json))
+    .route("/demo.json", get(get_demo_json).put(put_demo_json))
 ```
 
 Add a handler:
 
 ```rust
-// axum handler for "POST /demo-json" which shows how to use `aumx::extract::Json`.
+// axum handler for "PUT /demo-json" which shows how to use `aumx::extract::Json`.
 // This buffers the request body then deserializes it into a `serde_json::Value`.
 // The axum `Json` type supports any type that implements `serde::Deserialize`.
-async fn post_demo_json(axum::extract::Json(payload): axum::extract::Json<serde_json::Value>) -> String{
-    format!("Get demo JSON payload: {:?}", payload)
+async fn put_demo_json(axum::extract::Json(payload): axum::extract::Json<serde_json::Value>) -> String{
+    format!("Put demo JSON payload: {:?}", payload)
 }
 ```
 
@@ -525,25 +525,11 @@ Shell:
 cargo run
 ```
 
-To use JSON with newer versions of curl:
+Send the JSON:
 
 ```sh
 curl \
---request POST 'http://localhost:3000/demo-json' \
---json '{"a":"b"}'
-```
-
-Output:
-
-```sh
-Get demo JSON payload: Object({"a": String("b")})
-```
-
-To use JSON with older versions of curl:
-
-```sh
-curl \
---request POST 'http://localhost:3000/demo-json' \
+--request PUT 'http://localhost:3000/demo-json' \
 --header "Content-Type: application/json" \
 --data '{"a":"b"}'
 ```
@@ -551,7 +537,7 @@ curl \
 Output:
 
 ```sh
-Get demo JSON payload: Object({"a": String("b")})
+Put demo JSON payload: Object({"a": String("b")})
 ```
 
 </details>

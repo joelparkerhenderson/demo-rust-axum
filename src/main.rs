@@ -38,7 +38,7 @@ async fn main() {
         .route("/demo-status", get(demo_status))
         .route("/demo-uri", get(demo_uri))
         .route("/demo.html", get(get_demo_html))
-        .route("/demo.json", get(get_demo_json).post(post_demo_json))
+        .route("/demo.json", get(get_demo_json).put(put_demo_json))
         .route("/foo", get(get_foo).put(put_foo).post(post_foo).delete(delete_foo))
         .route("/items", get(get_items))
         .route("/items/:id", get(get_items_id))
@@ -91,11 +91,11 @@ async fn get_demo_json() -> axum::extract::Json<Value> {
     json!({"a":"b"}).into()
 }
 
-// axum handler for "POST /demo-json" which shows how to use `aumx::extract::Json`.
+// axum handler for "PUT /demo-json" which shows how to use `aumx::extract::Json`.
 // This buffers the request body then deserializes it into a `serde_json::Value`.
 // The axum `Json` type supports any type that implements `serde::Deserialize`.
-async fn post_demo_json(axum::extract::Json(payload): axum::extract::Json<serde_json::Value>) -> String {
-    format!("Get demo JSON payload: {:?}", payload)
+async fn put_demo_json(axum::extract::Json(payload): axum::extract::Json<serde_json::Value>) -> String {
+    format!("Put demo JSON payload: {:?}", payload)
 }
 
 //// Demo axum handlers with HTTP verbs GET, PUT, POST, DELETE.
