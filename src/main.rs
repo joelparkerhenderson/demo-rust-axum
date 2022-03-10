@@ -195,7 +195,7 @@ async fn get_books() -> axum::response::Html<String> {
 // This code shows how axum can extract a JSON payload into a Book struct.
 async fn put_books(axum::extract::Json(book): axum::extract::Json<Book>) -> axum::response::Html<String> {
     BOOKS.lock().unwrap().insert(book.clone());
-    format!("PUT books: {:?}", &book).into()
+    format!("Put book: {}", &book).into()
 }
 
 // axum handler for "GET /books/:id" which returns one resource HTML page.
