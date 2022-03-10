@@ -1,8 +1,5 @@
 // Use axum capabities.
 use axum::{
-    extract::Json,
-    extract::Path,
-    extract::Query,
     handler::Handler,
     http::StatusCode,
     http::Uri,
@@ -93,14 +90,14 @@ async fn get_demo_html() -> Html<&'static str> {
 // axum handler for "GET /demo.json" which shows how to return JSON data.
 // The `Json` type sets an HTTP header content-type of `application/json`.
 // The `Json` type works with any type that implements `serde::Serialize`.
-async fn get_demo_json() -> Json<Value> {
-    Json(json!({"a":"b"}))
+async fn get_demo_json() -> axum::extract::Json<Value> {
+    json!({"a":"b"}).into()
 }
 
 // axum handler for "POST /demo-json" which shows how to use `aumx::extract::Json`.
 // This buffers the request body then deserializes it into a `serde_json::Value`.
 // The axum `Json` type supports any type that implements `serde::Deserialize`.
-async fn post_demo_json(Json(payload): Json<serde_json::Value>) -> String{
+async fn post_demo_json(axum::extract::Json(payload): axum::extract::Json<serde_json::Value>) -> String{
     format!("Get demo JSON payload: {:?}", payload)
 }
 
@@ -130,25 +127,28 @@ async fn delete_foo() -> String {
 
 // axum handler for "GET /items" which shows how to use `axum::extrac::Query`.
 // This extracts query parameters then deserializes them into a key-value map.
-async fn get_items(Query(params): Query<HashMap<String, String>>) -> String {
+async fn get_items(axum::extract::Query(params): axum::extract::Query<HashMap<String, String>>) -> String {
     format!("Get items with query params: {:?}", params)
 }
 
 // axum handler for "GET /items/:id" which shows how to use `axum::extract::Path`.
-// This extracts a path parameter then deserializes it into an integer.
-async fn get_items_id(Path(id): Path<u32>) -> String {
+// This extracts a path parameter then deserializes it as needed.
+async fn get_items_id(axum::extract::Path(id): axum::extract::Path<String>) -> String {
     format!("Get items with path id: {:?}", id)
 }
 
 //// Demo books using a struct and lazy mutex global variable.
 
-// Demo book structure that we can debug, clone, hash, and compare.
-#[derive(Debug, Clone, Hash, PartialEq, Eq)]
+// Demo book structure with some typical example fields.
+#[derive(Debug, Deserialize, Clone, Eq, Hash, PartialEq)]
 struct Book {
-    id: u32,
+    id: String,
     title: String,
     author: String,
 }
+
+// Use Deserialize to convert e.g. from request JSON into Book struct.
+use serde::Deserialize;
 
 // Use once_cell for creating a global variable e.g. our BOOKS data.
 use once_cell::sync::Lazy;
@@ -162,9 +162,9 @@ use std::collections::HashSet;
 // Create a data store as a global variable by using `once_cell` and `Mutex`.
 static BOOKS: Lazy<Mutex<HashSet<Book>>> = Lazy::new(|| Mutex::new({
     let vec = vec![
-        Book { id: 1, title: "Antigone".into(), author: "Sophocles".into()},
-        Book { id: 2, title: "Beloved".into(), author: "Toni Morrison".into()},
-        Book { id: 3, title: "Candide".into(), author: "Voltaire".into()},
+        Book { id: "1".into(), title: "Antigone".into(), author: "Sophocles".into()},
+        Book { id: "2".into(), title: "Beloved".into(), author: "Toni Morrison".into()},
+        Book { id: "3".into(), title: "Candide".into(), author: "Voltaire".into()},
     ];
     vec.into_iter().collect::<HashSet<_>>()
 }));
@@ -188,7 +188,7 @@ async fn get_books() -> Html<String> {
 
 // axum handler for "GET /books/:id" which returns one resource HTML page.
 // This demo app uses our BOOKS data, and iterates on them to find the id.
-async fn get_books_id(Path(id): Path<u32>) -> Html<String> {
+async fn get_books_id(axum::extract::Path(id): axum::extract::Path<String>) -> Html<String> {
     match BOOKS.lock().unwrap().iter().find(|&book| &book.id == &id) {
         Some(book) => Html(
             format!(

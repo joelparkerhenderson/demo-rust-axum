@@ -25,6 +25,23 @@ Does this demo help your work? Donate here if you can via GitHub sponsors.
 Have an idea, suggestion, or feedback? Let us know via GitHub issues.
 
 
+## Introduction
+
+This demo shows how to:
+
+* Create a project using Rust and the axum web framework.
+
+* Create axum router routes and their handler functions.
+
+* Create responses with HTTP status code OK and HTML text.
+
+* Create functionality for HTTP GET, PUT, POST, DELETE.
+
+* Use axum extractors for query parameters and path parameters.
+
+* Create a data store and access it using RESTful routes.
+
+
 ## 1. Hello, World!
 
 Create a typical new Rust project:
@@ -437,8 +454,8 @@ Add a handler:
 // axum handler for "GET /demo.json" which shows how to return JSON data.
 // The `Json` type sets an HTTP header content-type of `application/json`.
 // The `Json` type works with any type that implements `serde::Serialize`.
-async fn get_demo_json() -> Json<Value> {
-    Json(json!({"a":"b"}))
+async fn get_demo_json() -> axum::extract::Json<Value> {
+    json!({"a":"b"}).into()
 }
 ```
 
@@ -494,7 +511,7 @@ Add a handler:
 // axum handler for "POST /demo-json" which shows how to use `aumx::extract::Json`.
 // This buffers the request body then deserializes it into a `serde_json::Value`.
 // The axum `Json` type supports any type that implements `serde::Deserialize`.
-async fn post_demo_json(Json(payload): Json<serde_json::Value>) -> String{
+async fn post_demo_json(axum::extract::Json(payload): axum::extract::Json<serde_json::Value>) -> String{
     format!("Get demo JSON payload: {:?}", payload)
 }
 ```
@@ -546,15 +563,6 @@ Get demo JSON payload: Object({"a": String("b")})
 An axum "extractor" is how you pick apart the incoming request in order to get
 any parts that your handler needs.
 
-Add code to use `Query`:
-
-```rust
-use axum::{
-    …
-    extract::Query,
-};
-```
-
 Use HashMap to deserialize query parameters into a key-value map:
 
 ```rust
@@ -574,7 +582,7 @@ Add a handler:
 ```rust
 // axum handler for "GET /item" which shows how to use `axum::extrac::Query`.
 // This extracts query parameters then deserializes them into a key-value map.
-async fn get_items(Query(params): Query<HashMap<String, String>>) -> String {
+async fn get_items(axum::extract::Query(params): axum::extract::Query<HashMap<String, String>>) -> String {
     format!("Get items with query params: {:?}", params)
 }
 ```
@@ -606,15 +614,6 @@ Get items with query params: {"a": "b"}
 
 ## 11. Create a route that extracts path parameters
 
-Add code to use `Path`:
-
-```rust
-use axum::{
-    …
-    extract::Path,
-};
-```
-
 Add a route using path parameter syntax, such as ":id", in order to tell axum to
 extract a path parameter and deserialize it into a variable named `id`:
 
@@ -627,10 +626,10 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-// axum handler for "GET /item/:id" which shows how to use `axum::extract::Path`.
-// This extracts a path parameter then deserializes it into an integer.
-async fn get_items_id(Path(id): Path<u32>) {
-    format!("Get items with id: {:?}", id).to_string()
+// axum handler for "GET /items/:id" which shows how to use `axum::extract::Path`.
+// This extracts a path parameter then deserializes it as needed.
+async fn get_items_id(axum::extract::Path(id): axum::extract::Path<String>) -> String {
+    format!("Get items with path id: {:?}", id)
 }
 ```
 
@@ -666,10 +665,10 @@ Suppose we want our app to be a data store of books.
 Create a book struct:
 
 ```rust
-// Demo book structure that we can debug, clone, hash, and compare.
-#[derive(Debug, Clone, Hash, ParialEq, Eq)]
+// Demo book structure with some typical example fields.
+#[derive(Debug, Deserialize, Clone, Eq, Hash, PartialEq)]
 struct Book {
-    id: u32,
+    id: String,
     title: String,
     author: String,
 }
@@ -688,6 +687,9 @@ once_cell = "*"
 Edit file `main.rs` to add:
 
 ```rust
+// Use Deserialize to convert e.g. from request JSON into Book struct.
+use serde::Deserialize;
+
 // Use once_cell for creating a global variable e.g. our BOOKS data.
 use once_cell::sync::Lazy;
 
@@ -700,9 +702,9 @@ use std::collections::HashSet;
 // Create a data store as a global variable by using `once_cell` and `Mutex`.
 static BOOKS: Lazy<Mutex<HashSet<Book>>> = Lazy::new(|| Mutex::new({
     let vec = vec![
-        Book { id: 1, title: "Antigone".into(), author: "Sophocles".into()},
-        Book { id: 2, title: "Beloved".into(), author: "Toni Morrison".into()},
-        Book { id: 3, title: "Candide".into(), author: "Voltaire".into()},
+        Book { id: "1".into(), title: "Antigone".into(), author: "Sophocles".into()},
+        Book { id: "2".into(), title: "Beloved".into(), author: "Toni Morrison".into()},
+        Book { id: "3".into(), title: "Candide".into(), author: "Voltaire".into()},
     ];
     vec.into_iter().collect::<HashSet<_>>()
 }));
@@ -781,35 +783,21 @@ Output:
 </details>
 
 
-## 12. Create a route to add a book
+## 12. Create a route to put a book
 
-Adjust a route:
+Adjust this route:
 
 ```rust
 let app = Router::new()
     …
-    .route("/books", get(get_books));
+    .route("/books", get(get_books).put(put_books));
 ```
 
 Add a handler:
 
 ```rust
-// axum handler for "GET /books" which returns a resource index HTML page.
-// This demo app uses our BOOKS data; a production app could use a database.
-// This function needs to clone the BOOKS in order to sort them by title.
-async fn get_books() -> Html<String> {
-    let mut books = Vec::from_iter(BOOKS.lock().unwrap().clone());
-    books.sort_by(|a, b| a.title.cmp(&b.title));
-    Html(
-        books.iter().map(|book|
-            format!(
-                "<p>{} by {}</p>\n",
-                &book.title,
-                &book.author
-            )
-        ).collect::<String>()
-    )
-}
+// axum handler for "PUT /books" which creates a new book resource.
+async fn put_books(Json(payload): Json<serde_json::Value>) -> Html<String> {
 ```
 
 <details>
@@ -825,15 +813,16 @@ cargo run
 Shell:
 
 ```sh
-curl 'http://localhost:3000/books'
+curl \
+--request PUT 'http://localhost:3000/books' \
+--header "Content-Type: application/json" \
+--data '{"id":"4","title":"Decameron","author":"Giovanni Boccaccio"}'
 ```
 
 Output:
 
 ```sh
-<p>Antigone by Sophocles</p>
-<p>Beloved by Toni Morrison</p>
-<p>Candide by Voltaire</p>
+<p>Decameron by Giovanni Boccaccio</p>
 ```
 
 </details>
@@ -854,7 +843,7 @@ Add a handler:
 ```rust
 // axum handler for "GET /books/:id" which returns one resource HTML page.
 // This demo app uses our BOOKS data, and iterates on them to find the id.
-async fn get_books_id(Path(id): Path<u32>) -> Html<String> {
+async fn get_books_id(axum::extract::Path(id): axum::extract::Path<String>) -> Html<String> {
     match BOOKS.lock().unwrap().iter().find(|&book| &book.id == &id) {
         Some(book) => Html(
             format!(
@@ -989,7 +978,7 @@ You learned how to:
 
 * Create responses with HTTP status code OK and HTML text.
 
-* Create functionality for HTTP GET and HTTP POST.
+* Create functionality for HTTP GET, PUT, POST, DELETE.
 
 * Use axum extractors for query parameters and path parameters.
 
