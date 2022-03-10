@@ -892,7 +892,69 @@ Output:
 </details>
 
 
-## 14. Bonus: Add a Tower tracing subscriber
+
+## 14. Create a route to get one book as an editable form
+
+Add a route:
+
+```rust
+let app = Router::new()
+    …
+    .route("/books/:id/form", get(get_books_id_form));
+```
+
+Add a handler:
+
+```rust
+// axum handler for "GET /books/:id/form" which returns an HTML form.
+// This demo shows how to write typical HTML form input fields.
+async fn get_books_id_form(axum::extract::Path(id): axum::extract::Path<String>) -> axum::response::Html<String> {
+    match BOOKS.lock().unwrap().iter().find(|&book| &book.id == &id) {
+        Some(book) => format!(
+            concat!(
+                "<form method=\"post\" action=\"/books/{}/form\">\n",
+                "<p><input name=\"title\" value=\"{}\"></p>\n",
+                "<p><input name=\"author\" value=\"{}\"></p>\n",
+                "<input type=\"submit\" value=\"Save\">\n",
+                "</form>\n"
+            ), 
+            &book.id,
+            &book.title,
+            &book.author
+        ).into(),
+        None => format!("<p>Book id {} not found</p>", id).into(),
+    }
+}
+```
+
+<details>
+<summary>Interactive</summary>
+<p><b>Try the demo…</b></p>
+
+Shell:
+
+```sh
+cargo run
+```
+
+Shell:
+
+```sh
+curl 'http://localhost:3000/books/1/form'
+```
+
+Output:
+
+```sh
+<form method="post" action="/books/1/form">
+<p><input name="title" value="Antigone"></p>
+<p><input name="author" value="Sophocles"></p>
+<input type="submit" value="Save">
+</form>
+```
+
+
+## 15. Bonus: Add a Tower tracing subscriber
 
 Edit file `Cargo.toml` to add crates:
 
@@ -945,7 +1007,7 @@ You should see console output that shows tracing initialization such as:
 </details>
 
 
-## 15. Bonus: Refactor to use a host, port, and socket address
+## 16. Bonus: Refactor to use a host, port, and socket address
 
 To bind the server, our demo code uses a socket address string:
 
@@ -966,7 +1028,7 @@ async fn main() {
     axum::Server::bind(&addr) …
 ```
 
-## 16. Conclusion: What you learned and what's next
+## 17. Conclusion: What you learned and what's next
 
 You learned how to:
 

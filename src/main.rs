@@ -43,7 +43,8 @@ async fn main() {
         .route("/items", get(get_items))
         .route("/items/:id", get(get_items_id))
         .route("/books", get(get_books).put(put_books))
-        .route("/books/:id", get(get_books_id));
+        .route("/books/:id", get(get_books_id))
+        .route("/books/:id/form", get(get_books_id_form));
 
     // Run our application by using hyper and URL http://localhost:3000.
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
@@ -192,7 +193,7 @@ async fn get_books() -> axum::response::Html<String> {
 }
 
 // axum handler for "PUT /books" which creates a new book resource.
-// This code shows how axum can extract a JSON payload into a Book struct.
+// This demo shows how axum can extract a JSON payload into a Book struct.
 async fn put_books(axum::extract::Json(book): axum::extract::Json<Book>) -> axum::response::Html<String> {
     BOOKS.lock().unwrap().insert(book.clone());
     format!("Put book: {}", &book).into()
@@ -203,6 +204,26 @@ async fn put_books(axum::extract::Json(book): axum::extract::Json<Book>) -> axum
 async fn get_books_id(axum::extract::Path(id): axum::extract::Path<String>) -> axum::response::Html<String> {
     match BOOKS.lock().unwrap().iter().find(|&book| &book.id == &id) {
         Some(book) => format!("<p>{}</p>\n", &book).into(),
+        None => format!("<p>Book id {} not found</p>", id).into(),
+    }
+}
+
+// axum handler for "GET /books/:id/form" which returns an HTML form.
+// This demo shows how to write typical HTML form input fields.
+async fn get_books_id_form(axum::extract::Path(id): axum::extract::Path<String>) -> axum::response::Html<String> {
+    match BOOKS.lock().unwrap().iter().find(|&book| &book.id == &id) {
+        Some(book) => format!(
+            concat!(
+                "<form method=\"post\" action=\"/books/{}/form\">\n",
+                "<p><input name=\"title\" value=\"{}\"></p>\n",
+                "<p><input name=\"author\" value=\"{}\"></p>\n",
+                "<input type=\"submit\" value=\"Save\">\n",
+                "</form>\n"
+            ), 
+            &book.id,
+            &book.title,
+            &book.author
+        ).into(),
         None => format!("<p>Book id {} not found</p>", id).into(),
     }
 }
