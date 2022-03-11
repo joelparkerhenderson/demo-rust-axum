@@ -35,7 +35,7 @@ This demo shows how to:
 
 * Create responses with HTTP status code OK and HTML text.
 
-* Create binary images and respond with custom headers.
+* Create a binary image and respond with a custom header.
 
 * Create functionality for HTTP GET, PUT, PATCH, POST, DELETE.
 
@@ -53,7 +53,9 @@ cargo new demo-rust-axum
 cd demo-rust-axum
 ```
 
-Edit file `Cargo.toml` like this:
+Edit file `Cargo.toml`.
+
+Use this kind of package and these dependencies:
 
 ```toml
 [package]
@@ -70,7 +72,9 @@ serde = { version = "1.0.136", features = ["derive"] } # A serialization/deseria
 serde_json = "1.0.79" # Serde serializion/deserialization of JSON data.
 ```
 
-Edit file `src/main.rs` like this:
+Edit file `src/main.rs`.
+
+Use axum like this:
 
 ```rust
 // Use axum capabities.
@@ -115,7 +119,9 @@ You should see "Hello, World!".
 An axum route can call an function, which is called an axum handler. The handler
 is async function returns something that can be converted into a response.
 
-Edit `main.rs` to add a handler async function that returns text:
+Edit file `main.rs`.
+
+Add a handler, which is an async function that returns a string:
 
 ```rust
 // axum handler for "GET /" which returns a string, which causes axum to
@@ -125,7 +131,7 @@ async fn hello() -> String {
 }
 ```
 
-Change the `main.rs` router to this:
+Modify the `Router` code like this:
 
 ```rust
 let app = Router::new()
@@ -153,7 +159,9 @@ You should see "Hello, World!".
 
 For a request that fails to match anything in the router, you can use the function `fallback`.
 
-Use axum types:
+Edit file `main.rs`.
+
+Add code to use axum types:
 
 ```rust
 use axum::{
@@ -164,7 +172,7 @@ use axum::{
 };
 ```
 
-Add the router fallback as the first choice:
+Modify the `Router` to add the function `fallback` as the first choice:
 
 ```rust
 let app = Router::new()
@@ -172,7 +180,7 @@ let app = Router::new()
     .route("/", get(hello));
 ```
 
-Add a fallback handler:
+Add the `fallback` handler:
 
 ```rust
 // axum handler for any request that fails to match the router routes.
@@ -200,6 +208,8 @@ You should see "No route for /whatever".
 
 
 ## 5. Create a response with HTTP status code OK
+
+Edit file `main.rs`.
 
 Add code to use `StatusCode`:
 
@@ -247,6 +257,8 @@ You should see "Everything is OK".
 
 ## 6. Create a response that echos the URI
 
+Edit file `main.rs`.
+
 Add a route:
 
 ```rust
@@ -286,7 +298,9 @@ You should see "The URI is: /demo-uri!".
 
 axum routes can use HTTP verbs, including GET, PUT, PATCH, POST, DELETE.
 
-Add routes for each HTTP verb:
+Edit file `main.rs`.
+
+Add axum routes for each HTTP verb:
 
 ```rust
 let app = Router::new()
@@ -294,7 +308,7 @@ let app = Router::new()
     .route("/foo", get(get_foo).put(put_foo).patch(patch_foo).post(post_foo).delete(delete_foo))
 ```
 
-Add handlers:
+Add axum handlers:
 
 ```rust
 async fn get_foo() -> String {
@@ -404,6 +418,8 @@ curl --request GET 'http://localhost:3000/foo'
 
 ## 8. Create a response with HTML text
 
+Edit file `main.rs`.
+
 Add code to use `Html`:
 
 ```rust
@@ -413,7 +429,7 @@ use axum::{
 };
 ```
 
-Add route:
+Add a route:
 
 ```rust
 let app = Router::new()
@@ -421,7 +437,7 @@ let app = Router::new()
     .route("/demo.html", get(get_demo_html));
 ```
 
-Add handler:
+Add a handler:
 
 ```rust
 async fn get_demo_html() -> axum::response::Html<&'static str> {
@@ -450,7 +466,7 @@ You should see HTML with headline text "Hello".
 
 Edit file `Cargo.toml`.
 
-Add these dependencies:
+Add dependencies:
 
 ```rust
 base64 = "0.13" # Encode and decode base64 as bytes or utf8.
@@ -459,7 +475,7 @@ http = "0.2.6" # Types for HTTP requests and responses.
 
 Edit file `main.rs`.
 
-Add the axum route:
+Add a route:
 
 ```rust
 let app = Router::new()
@@ -467,7 +483,7 @@ let app = Router::new()
     .route("/demo.png", get(get_demo_png))
 ```
 
-Add the axum handler:
+Add a handler:
 
 ```rust
 // axum handler for "GET /demo-png" which shows how to use a custom header.
@@ -503,7 +519,9 @@ You browser should download a a one-pixel transparent PNG image.
 
 ## 10. Create a route that gets JSON data
 
-Use Serde JSON in order to format JSON data:
+Edit file `main.rs`.
+
+Add code to use Serde JSON:
 
 ```rust
 // Use Serde JSON to serialize/deserialize JSON, such as the request body.
@@ -560,7 +578,9 @@ Output:
 
 ## 11. Create a route that extracts its JSON payload
 
-Add code to use `JSON`:
+Edit file `main.rs`.
+
+Add code to use `Json`:
 
 ```rust
 use axum::{
@@ -569,7 +589,7 @@ use axum::{
 };
 ```
 
-Append this route with put:
+Modify the route `/demo.json` to append the function `put`:
 
 ```rust
 let app = Router::new()
@@ -621,7 +641,9 @@ Put demo JSON payload: Object({"a": String("b")})
 An axum "extractor" is how you pick apart the incoming request in order to get
 any parts that your handler needs.
 
-Use HashMap to deserialize query parameters into a key-value map:
+Edit file `main.rs`.
+
+Add code to use HashMap to deserialize query parameters into a key-value map:
 
 ```rust
 use std::collections::HashMap;
@@ -673,7 +695,11 @@ Get items with query params: {"a": "b"}
 ## 13. Create a route that extracts path parameters
 
 Add a route using path parameter syntax, such as ":id", in order to tell axum to
-extract a path parameter and deserialize it into a variable named `id`:
+extract a path parameter and deserialize it into a variable named `id`.
+
+Edit file `main.rs`.
+
+Add a route:
 
 ```rust
 let app = Router::new()
@@ -720,16 +746,16 @@ Get items with id: 1
 
 Suppose we want our app to have features related to books.
 
-We create a new file `book.rs` and add the lines below.
+Create a new file `book.rs`.
 
-Use `Deserialize`:
+Add code to use deserialization:
 
 ```rust
 // Use Deserialize to convert e.g. from request JSON into Book struct.
 use serde::Deserialize;
 ```
 
-Create a book struct that derives the traits we want:
+Add code to create a book struct that derives the traits we want:
 
 ```rust
 // Demo book structure with some example fields for id, title, author.
@@ -742,7 +768,7 @@ pub struct Book {
 }
 ```
 
-Implement `Display`:
+Add code to implement `Display`:
 
 ```rust
 // Display the book using the format "{title} by {author}".
@@ -754,7 +780,9 @@ impl std::fmt::Display for Book {
 }
 ```
 
-Edit file `main.rs` to add the module and use the struct:
+Edit file `main.rs`.
+
+Add code to include the `book` module and use the `Book` struct:
 
 ```rust
 // See file book.rs, which defines the `Book` struct.
@@ -769,13 +797,17 @@ For a production app, we could implement the data by using a database.
 
 For this demo, we will implement the data by using a global variable `DATA`.
 
-Edit file `Cargo.toml` to add the crate `once_cell` for global variables:
+Edit file `Cargo.toml`.
+
+Add the dependency `once_cell` which is for our global variables:
 
 ```toml
 once_cell = "1.10.0" # Single assignment cells and lazy values.
 ```
 
-Create file `data.rs` with:
+Create file `data.rs`.
+
+Add this code:
 
 ```rust
 // Use once_cell for creating a global variable e.g. our DATA data.
@@ -805,7 +837,9 @@ static DATA: Lazy<Mutex<HashMap<u32, Book>>> = Lazy::new(|| Mutex::new(
 ));
 ```
 
-Edit file `main.rs` to add:
+Edit file `main.rs`.
+
+Add code to include the `data` module and use the `DATA` global variable:
 
 ```rust
 // See file data.rs, which defines the DATA global variable.
@@ -819,7 +853,9 @@ use std::thread;
 
 ## 16. Create a route to get all books
 
-Edit file `main.rs` to add a route:
+Edit file `main.rs`.
+
+Add a route:
 
 ```rust
 let app = Router::new()
@@ -874,7 +910,9 @@ Output:
 
 ## 17. Create a route to put a book
 
-Edit the route `/books` to append the function `put`:
+Edit file `main.rs`.
+
+Modify the route `/books` to append the function `put`:
 
 ```rust
 let app = Router::new()
@@ -938,6 +976,8 @@ Output:
 
 ## 18. Create a route to get one book id
 
+Edit file `main.rs`.
+
 Add a route:
 
 ```rust
@@ -998,7 +1038,9 @@ Output:
 
 ## 19. Create a route to delete one book id
 
-Edit the route `/books/:id` to append the function `delete`:
+Edit file `main.rs`.
+
+Modify the route `/books/:id` to append the function `delete`:
 
 ```rust
 let app = Router::new()
@@ -1065,6 +1107,8 @@ Output:
 
 ## 20. Create a route to get one book as an editable form
 
+Edit file `main.rs`.
+
 Add a route:
 
 ```rust
@@ -1128,7 +1172,9 @@ Output:
 
 ## 21. Create a route to submit the form to update a book
 
-Append a route function `post`:
+Edit file `main.rs`.
+
+Modify the route `/books/:id/form` to append the function `post`:
 
 ```rust
 let app = Router::new()
@@ -1199,14 +1245,18 @@ Output:
 
 ## 21. Bonus: Add a Tower tracing subscriber
 
-Edit file `Cargo.toml` to add crates:
+Edit file `Cargo.toml`.
+
+Add dependencies:
 
 ```toml
 tracing = "0.1.32" #  Application-level tracing for Rust.
 tracing-subscriber = { version = "0.3.9", features = ["env-filter"] } # Utilities for tracing.
 ```
 
-Edit file `main.rs` to use tracing:
+Edit file `main.rs`.
+
+Add code to use tracing:
 
 ```rust
 // Use tracing crates for application-level tracing output.
@@ -1252,13 +1302,19 @@ You should see console output that shows tracing initialization such as:
 
 ## 22. Bonus: Refactor to use a host, port, and socket address
 
-To bind the server, our demo code uses a socket address string:
+To bind the server, our demo code uses a socket address string.
+
+Edit file `main.rs`.
+
+The demo code is:
 
 ```rust
 axum::Server::bind(&"0.0.0.0:3000".parse().unwrap()) …
 ```
 
-If you prefer create a socket address step by step, then you can do this:
+If you prefer create a socket address step by step, then you can.
+
+Modify the demo code to do:
 
 ```rust
 use std::net::SocketAddr;
@@ -1271,7 +1327,8 @@ async fn main() {
     axum::Server::bind(&addr) …
 ```
 
-## 23. Conclusion: What you learned and what's next
+
+## 23. Conclusion: What you learned
 
 You learned how to:
 
@@ -1281,7 +1338,7 @@ You learned how to:
 
 * Create responses with HTTP status code OK and HTML text.
 
-* Create binary images and respond with custom headers.
+* Create a binary image and respond with a custom header.
 
 * Create functionality for HTTP GET, PUT, POST, DELETE.
 
@@ -1289,10 +1346,22 @@ You learned how to:
 
 * Create a data store and access it using RESTful routes.
 
-What's next:
+
+## 24. Epilog: What next
+
+To learn more about Rust and axum:
 
 * [The Rust book](https://doc.rust-lang.org/stable/book/) is an excellent thorough starting point.
 
 * [The axum crate](https://crates.io/crates/axum) has dozens of examples you can try.
 
-* What suggestions and feedback do you have for us?
+* [The Tokio website](https://tokio.rs/)
+
+We welcome constructive feedback via GitHub issues:
+
+* Any ideas for making this demo better?
+
+* Any requests for new demo sections or example topics?
+
+* Any bugs or issues in the demo code or documentation?
+
