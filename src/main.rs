@@ -99,6 +99,8 @@ async fn get_demo_png() -> impl axum::response::IntoResponse {
     response
 }
 
+//// axum with JSON extractor
+
 // axum handler for "GET /demo.json" which shows how to return JSON data.
 // The `Json` type sets an HTTP header content-type of `application/json`.
 // The `Json` type works with any type that implements `serde::Serialize`.

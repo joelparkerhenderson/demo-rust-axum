@@ -27,6 +27,7 @@ Have an idea, suggestion, or feedback? Let us know via GitHub issues.
 
 <div style="page-break-before:always;"></div>
 
+
 ## 1. Introduction
 
 This demo shows how to:
@@ -47,6 +48,7 @@ This demo shows how to:
 
 
 <div style="page-break-before:always;"></div>
+
 
 ## 2. Hello, World!
 
@@ -101,6 +103,7 @@ async fn main() {
 }
 ```
 
+
 ### Try the demo…
 
 Shell:
@@ -115,6 +118,7 @@ You should see "Hello, World!".
 
 
 <div style="page-break-before:always;"></div>
+
 
 ## 3. Create a new route and handler function
 
@@ -140,6 +144,7 @@ let app = Router::new()
     .route("/", get(hello));
 ```
 
+
 ### Try the demo…
 
 Shell:
@@ -154,6 +159,7 @@ You should see "Hello, World!".
 
 
 <div style="page-break-before:always;"></div>
+
 
 ## 4. Create a router fallback response "not found"
 
@@ -190,6 +196,7 @@ async fn fallback(uri: Uri) -> impl IntoResponse {
 }
 ```
 
+
 ### Try the demo…
 
 Shell:
@@ -204,6 +211,7 @@ You should see "No route for /whatever".
 
 
 <div style="page-break-before:always;"></div>
+
 
 ## 5. Create a response with HTTP status code OK
 
@@ -236,6 +244,7 @@ async fn demo_status() -> (StatusCode, String) {
 }
 ```
 
+
 ### Try the demo…
 
 Shell:
@@ -250,6 +259,7 @@ You should see "Everything is OK".
 
 
 <div style="page-break-before:always;"></div>
+
 
 ## 6. Create a response that echos the URI
 
@@ -273,6 +283,7 @@ async fn demo_uri(uri: Uri) -> String {
 }
 ```
 
+
 ### Try the demo…
 
 Shell:
@@ -287,6 +298,7 @@ You should see "The URI is: /demo-uri!".
 
 
 <div style="page-break-before:always;"></div>
+
 
 ## 7. Create routes and handlers for HTTP verbs
 
@@ -325,6 +337,7 @@ async fn delete_foo() -> String {
    "DELETE foo".to_string()
 }
 ```
+
 
 ### Try the demo…
 
@@ -408,6 +421,7 @@ curl --request GET 'http://localhost:3000/foo'
 
 <div style="page-break-before:always;"></div>
 
+
 ## 8. Create a response with HTML text
 
 Edit file `main.rs`.
@@ -437,6 +451,7 @@ async fn get_demo_html() -> axum::response::Html<&'static str> {
 }
 ```
 
+
 ### Try the demo…
 
 Shell:
@@ -451,6 +466,7 @@ You should see HTML with headline text "Hello".
 
 
 <div style="page-break-before:always;"></div>
+
 
 ## 9. Create a response with an image and header
 
@@ -490,6 +506,7 @@ async fn get_demo_png() -> impl axum::Response::IntoResponse {
 }
 ```
 
+
 ### Try the demo…
 
 Shell:
@@ -505,7 +522,19 @@ You browser should download a a one-pixel transparent PNG image.
 
 <div style="page-break-before:always;"></div>
 
+
 ## 10. Create a route that gets JSON data
+
+axum has capabilties for working with JSON data.
+
+The axum extractor for JSON can also help with a request, by deserializing a
+request body into some type that implements serde::Deserialize. If the axum
+extractor is unable to parse the request body, or the request does not contain
+the Content-Type: application/json header, then the axum extractor will reject
+the request and return a 400 Bad Request response.
+
+The axum extractor for JSON can help with a response, by formating JSON data
+then setting the response application content type.
 
 Edit file `main.rs`.
 
@@ -537,6 +566,7 @@ async fn get_demo_json() -> axum::extract::Json<Value> {
 }
 ```
 
+
 ### Try the demo…
 
 Shell:
@@ -561,6 +591,7 @@ Output:
 
 
 <div style="page-break-before:always;"></div>
+
 
 ## 11. Create a route that extracts its JSON payload
 
@@ -594,6 +625,7 @@ async fn put_demo_json(axum::extract::Json(payload): axum::extract::Json<serde_j
 }
 ```
 
+
 ### Try the demo…
 
 Shell:
@@ -619,6 +651,7 @@ Put demo JSON payload: Object({"a": String("b")})
 
 
 <div style="page-break-before:always;"></div>
+
 
 ## 12. Create a route that extracts query parameters
 
@@ -651,6 +684,7 @@ async fn get_items(axum::extract::Query(params): axum::extract::Query<HashMap<St
 }
 ```
 
+
 ### Try the demo…
 
 Shell:
@@ -673,6 +707,7 @@ Get items with query params: {"a": "b"}
 
 
 <div style="page-break-before:always;"></div>
+
 
 ## 13. Create a route that extracts path parameters
 
@@ -699,6 +734,7 @@ async fn get_items_id(axum::extract::Path(id): axum::extract::Path<String>) -> S
 }
 ```
 
+
 ### Try the demo…
 
 Shell:
@@ -721,6 +757,7 @@ Get items with id: 1
 
 
 <div style="page-break-before:always;"></div>
+
 
 ## 14. Create a book struct
 
@@ -772,6 +809,7 @@ use crate::book::Book;
 
 
 <div style="page-break-before:always;"></div>
+
 
 ## 15. Create a data store
 
@@ -835,6 +873,7 @@ use std::thread;
 
 <div style="page-break-before:always;"></div>
 
+
 ## 16. Create a route to get all books
 
 Edit file `main.rs`.
@@ -865,6 +904,7 @@ async fn get_books() -> axum::response::Html<String> {
 }
 ```
 
+
 ### Try the demo…
 
 Shell:
@@ -890,6 +930,7 @@ Output:
 
 <div style="page-break-before:always;"></div>
 
+
 ## 17. Create a route to put a book
 
 Edit file `main.rs`.
@@ -912,6 +953,7 @@ async fn put_books(axum::extract::Json(book): axum::extract::Json<Book>) -> axum
     format!("Put book: {}", &book).into()
 }
 ```
+
 
 ### Try the demo…
 
@@ -954,6 +996,7 @@ Output:
 
 <div style="page-break-before:always;"></div>
 
+
 ## 18. Create a route to get one book id
 
 Edit file `main.rs`.
@@ -978,6 +1021,7 @@ async fn get_books_id(axum::extract::Path(id): axum::extract::Path<u32>) -> axum
     }.into()
 }
 ```
+
 
 ### Try the demo…
 
@@ -1014,6 +1058,7 @@ Output:
 
 <div style="page-break-before:always;"></div>
 
+
 ## 19. Create a route to delete one book id
 
 Edit file `main.rs`.
@@ -1043,6 +1088,7 @@ async fn delete_books_id(axum::extract::Path(id): axum::extract::Path<u32>) -> a
     }).join().unwrap().into()
 }
 ```
+
 
 ### Try the demo…
 
@@ -1080,6 +1126,7 @@ Output:
 
 
 <div style="page-break-before:always;"></div>
+
 
 ## 20. Create a route to get one book as an editable form
 
@@ -1119,6 +1166,7 @@ async fn get_books_id_form(axum::extract::Path(id): axum::extract::Path<u32>) ->
 }
 ```
 
+
 ### Try the demo…
 
 Shell:
@@ -1145,6 +1193,7 @@ Output:
 
 
 <div style="page-break-before:always;"></div>
+
 
 ## 21. Create a route to submit the form to update a book
 
@@ -1176,6 +1225,7 @@ async fn post_books_id_form(form: axum::extract::Form<Book>) -> axum::response::
     }).join().unwrap().into()
 }
 ```
+
 
 ### Try the demo…
 
@@ -1217,6 +1267,7 @@ Output:
 
 <div style="page-break-before:always;"></div>
 
+
 ## 21. Bonus: Add a Tower tracing subscriber
 
 Edit file `Cargo.toml`.
@@ -1251,6 +1302,7 @@ async fn main() {
     …
 ```
 
+
 ### Try the demo…
 
 Shell:
@@ -1271,6 +1323,7 @@ You should see console output that shows tracing initialization such as:
 
 
 <div style="page-break-before:always;"></div>
+
 
 ## 22. Bonus: Refactor to use a host, port, and socket address
 
@@ -1302,6 +1355,7 @@ async fn main() {
 
 <div style="page-break-before:always;"></div>
 
+
 ## 23. Conclusion: What you learned
 
 You learned how to:
@@ -1322,6 +1376,7 @@ You learned how to:
 
 
 <div style="page-break-before:always;"></div>
+
 
 ## 24. Epilog: What next
 
