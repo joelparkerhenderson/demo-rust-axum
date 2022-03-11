@@ -25,6 +25,8 @@ Does this demo help your work? Donate here if you can via GitHub sponsors.
 Have an idea, suggestion, or feedback? Let us know via GitHub issues.
 
 
+<div style="page-break-before:always;"></div>
+
 ## 1. Introduction
 
 This demo shows how to:
@@ -43,6 +45,8 @@ This demo shows how to:
 
 * Create a data store and access it using RESTful routes.
 
+
+<div style="page-break-before:always;"></div>
 
 ## 2. Hello, World!
 
@@ -114,6 +118,8 @@ You should see "Hello, World!".
 </details>
 
 
+<div style="page-break-before:always;"></div>
+
 ## 3. Create a new route and handler function
 
 An axum route can call an function, which is called an axum handler. The handler
@@ -154,6 +160,8 @@ You should see "Hello, World!".
 
 </details>
 
+
+<div style="page-break-before:always;"></div>
 
 ## 4. Create a router fallback response "not found"
 
@@ -207,6 +215,8 @@ You should see "No route for /whatever".
 </details>
 
 
+<div style="page-break-before:always;"></div>
+
 ## 5. Create a response with HTTP status code OK
 
 Edit file `main.rs`.
@@ -255,6 +265,8 @@ You should see "Everything is OK".
 </details>
 
 
+<div style="page-break-before:always;"></div>
+
 ## 6. Create a response that echos the URI
 
 Edit file `main.rs`.
@@ -293,6 +305,8 @@ You should see "The URI is: /demo-uri!".
 
 </details>
 
+
+<div style="page-break-before:always;"></div>
 
 ## 7. Create routes and handlers for HTTP verbs
 
@@ -416,6 +430,8 @@ curl --request GET 'http://localhost:3000/foo'
 </details>
 
 
+<div style="page-break-before:always;"></div>
+
 ## 8. Create a response with HTML text
 
 Edit file `main.rs`.
@@ -461,6 +477,8 @@ You should see HTML with headline text "Hello".
 
 </details>
 
+
+<div style="page-break-before:always;"></div>
 
 ## 9. Create a response with an image and header
 
@@ -516,6 +534,8 @@ You browser should download a a one-pixel transparent PNG image.
 
 </details>
 
+
+<div style="page-break-before:always;"></div>
 
 ## 10. Create a route that gets JSON data
 
@@ -575,6 +595,8 @@ Output:
 
 </details>
 
+
+<div style="page-break-before:always;"></div>
 
 ## 11. Create a route that extracts its JSON payload
 
@@ -636,6 +658,8 @@ Put demo JSON payload: Object({"a": String("b")})
 </details>
 
 
+<div style="page-break-before:always;"></div>
+
 ## 12. Create a route that extracts query parameters
 
 An axum "extractor" is how you pick apart the incoming request in order to get
@@ -692,6 +716,8 @@ Get items with query params: {"a": "b"}
 </details>
 
 
+<div style="page-break-before:always;"></div>
+
 ## 13. Create a route that extracts path parameters
 
 Add a route using path parameter syntax, such as ":id", in order to tell axum to
@@ -742,6 +768,8 @@ Get items with id: 1
 </details>
 
 
+<div style="page-break-before:always;"></div>
+
 ## 14. Create a book struct
 
 Suppose we want our app to have features related to books.
@@ -790,6 +818,8 @@ mod book;
 use crate::book::Book;
 ```
 
+
+<div style="page-break-before:always;"></div>
 
 ## 15. Create a data store
 
@@ -851,6 +881,8 @@ use std::thread;
 ```
 
 
+<div style="page-break-before:always;"></div>
+
 ## 16. Create a route to get all books
 
 Edit file `main.rs`.
@@ -907,6 +939,8 @@ Output:
 
 </details>
 
+
+<div style="page-break-before:always;"></div>
 
 ## 17. Create a route to put a book
 
@@ -974,6 +1008,8 @@ Output:
 </details>
 
 
+<div style="page-break-before:always;"></div>
+
 ## 18. Create a route to get one book id
 
 Edit file `main.rs`.
@@ -1035,6 +1071,8 @@ Output:
 
 </details>
 
+
+<div style="page-break-before:always;"></div>
 
 ## 19. Create a route to delete one book id
 
@@ -1105,6 +1143,8 @@ Output:
 
 
 
+<div style="page-break-before:always;"></div>
+
 ## 20. Create a route to get one book as an editable form
 
 Edit file `main.rs`.
@@ -1169,6 +1209,8 @@ Output:
 </form>
 ```
 
+
+<div style="page-break-before:always;"></div>
 
 ## 21. Create a route to submit the form to update a book
 
@@ -1243,6 +1285,8 @@ Output:
 </details>
 
 
+<div style="page-break-before:always;"></div>
+
 ## 21. Bonus: Add a Tower tracing subscriber
 
 Edit file `Cargo.toml`.
@@ -1300,6 +1344,8 @@ You should see console output that shows tracing initialization such as:
 </details>
 
 
+<div style="page-break-before:always;"></div>
+
 ## 22. Bonus: Refactor to use a host, port, and socket address
 
 To bind the server, our demo code uses a socket address string.
@@ -1328,6 +1374,8 @@ async fn main() {
 ```
 
 
+<div style="page-break-before:always;"></div>
+
 ## 23. Conclusion: What you learned
 
 You learned how to:
@@ -1346,6 +1394,8 @@ You learned how to:
 
 * Create a data store and access it using RESTful routes.
 
+
+<div style="page-break-before:always;"></div>
 
 ## 24. Epilog: What next
 
