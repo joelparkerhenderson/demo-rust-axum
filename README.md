@@ -83,14 +83,14 @@ Edit file `src/main.rs`.
 Use axum like this:
 
 ```rust
-// Use axum capabities.
+/// Use axum capabities.
 use axum::{
     routing::get,
     Router,
 };
 
 #[tokio::main]
-async fn main() {
+pub async fn main() {
      // Build our application by creating our router.
     let app = Router::new()
         .route("/", get(|| async { "Hello, World!" }));
@@ -130,9 +130,9 @@ Edit file `main.rs`.
 Add a handler, which is an async function that returns a string:
 
 ```rust
-// axum handler for "GET /" which returns a string, which causes axum to
-// immediately respond with a `200 OK` response, along with the plain text.
-async fn hello() -> String {
+/// axum handler for "GET /" which returns a string, which causes axum to
+/// immediately respond with a `200 OK` response, along with the plain text.
+pub async fn hello() -> String {
    "Hello, World!".to_string()
 }
 ```
@@ -189,10 +189,10 @@ let app = Router::new()
 Add the `fallback` handler:
 
 ```rust
-// axum handler for any request that fails to match the router routes.
-// This implementation returns a HTTP status code 404 Not Found response.
-async fn fallback(uri: Uri) -> impl IntoResponse {
-    (StatusCode::NOT_FOUND, format!("No route for {}", uri))
+/// axum handler for any request that fails to match the router routes.
+/// This implementation returns a HTTP status code 404 Not Found response.
+pub async fn fallback(uri: Uri) -> impl axum::response::IntoResponse {
+    (axum::http::StatusCode::NOT_FOUND, format!("No route for {}", uri))
 }
 ```
 
@@ -237,10 +237,10 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-// axum handler that implements `IntoResponse`, which allows us to return any
-// HTTP status code (such as status code 200 OK) and any description string.
-async fn demo_status() -> (StatusCode, String) {
-    (StatusCode::OK, "Everything is OK".to_string())
+/// axum handler for "GET /demo-status" which returns a HTTP status code, such
+/// as HTTP status code 200 OK, and an arbitrary user-visible string message.
+pub async fn demo_status() -> (axum::http::StatusCode, String) {
+    (axum::http::StatusCode::OK, "Everything is OK".to_string())
 }
 ```
 
@@ -276,9 +276,9 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-// axum handler for "GET /demo.html" which shows to return HTML text.
-// The `Html` type sets an HTTP header content-type of `text/html`.
-async fn demo_uri(uri: Uri) -> String {
+/// axum handler for "GET /demo-uri" which shows the request's own URI.
+/// This shows how to write a handler that receives the URI.
+pub async fn demo_uri(uri: Uri) -> String {
     format!("The URI is: {:?}", uri)
 }
 ```
@@ -317,23 +317,33 @@ let app = Router::new()
 Add axum handlers:
 
 ```rust
-async fn get_foo() -> String {
+/// axum handler for "GET /foo" which returns a string message.
+/// This shows our naming convention for HTTP GET handlers.
+pub async fn get_foo() -> String {
    "GET foo".to_string()
 }
 
-async fn put_foo() -> String {
+/// axum handler for "PUT /foo" which returns a string message.
+/// This shows our naming convention for HTTP PUT handlers.
+pub async fn put_foo() -> String {
    "PUT foo".to_string()
 }
 
-async fn patch_foo() -> String {
+/// axum handler for "PATCH /foo" which returns a string message.
+/// This shows our naming convention for HTTP PATCH handlers.
+pub async fn patch_foo() -> String {
    "PATCH foo".to_string()
 }
 
-async fn post_foo() -> String {
+/// axum handler for "POST /foo" which returns a string message.
+/// This shows our naming convention for HTTP POST handlers.
+pub async fn post_foo() -> String {
    "POST foo".to_string()
 }
 
-async fn delete_foo() -> String {
+/// axum handler for "DELETE /foo" which returns a string message.
+/// This shows our naming convention for HTTP DELETE handlers.
+pub async fn delete_foo() -> String {
    "DELETE foo".to_string()
 }
 ```
@@ -446,7 +456,9 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-async fn get_demo_html() -> axum::response::Html<&'static str> {
+/// axum handler for "GET /demo.html" which responds with HTML text.
+/// The `Html` type sets an HTTP header content-type of `text/html`.
+pub async fn get_demo_html() -> axum::response::Html<&'static str> {
     "<h1>Hello</h1>".into()
 }
 ```
@@ -492,12 +504,13 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-// axum handler for "GET /demo-png" which shows how to use a custom header.
-// This creates an image, then responds with a new header "image/png".
-// Credit to https://github.com/ttys3/static-server/blob/main/src/main.rs
-async fn get_demo_png() -> impl axum::Response::IntoResponse {
+/// axum handler for "GET /demo.png" which responds with a PNG and header.
+/// This creates an image, then responds with a new header "image/png".
+/// Credit <https://github.com/ttys3/static-server/blob/main/src/main.rs>
+async fn get_demo_png() -> impl axum::response::IntoResponse {
     let png = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPk+89QDwADvgGOSHzRgAAAAABJRU5ErkJggg==";
-    let mut response = Response::new(Full::from(::base64::decode(png).unwrap()));
+    let body = axum::body::Full::from(::base64::decode(png).unwrap());
+    let mut response = axum::response::Response::new(body);
     response.headers_mut().insert(
         ::http::header::CONTENT_TYPE, 
         ::http::header::HeaderValue::from_static("image/png")
@@ -541,9 +554,9 @@ Edit file `main.rs`.
 Add code to use Serde JSON:
 
 ```rust
-// Use Serde JSON to serialize/deserialize JSON, such as the request body.
-// axum creates JSON payloads or extracts them by using `axum::extract::Json`.
-// For the implementation, see functions `get_demo_json` and `post_demo_json`.
+/// Use Serde JSON to serialize/deserialize JSON, such as the request body.
+/// axum creates JSON payloads or extracts them by using `axum::extract::Json`.
+/// For the implementation, see functions `get_demo_json` and `post_demo_json`.
 use serde_json::{json, Value};
 ```
 
@@ -558,10 +571,10 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-// axum handler for "GET /demo.json" which shows how to return JSON data.
-// The `Json` type sets an HTTP header content-type of `application/json`.
-// The `Json` type works with any type that implements `serde::Serialize`.
-async fn get_demo_json() -> axum::extract::Json<Value> {
+/// axum handler for "GET /demo.json" which shows how to return JSON data.
+/// The `Json` type sets an HTTP header content-type of `application/json`.
+/// The `Json` type works with any type that implements `serde::Serialize`.
+pub async fn get_demo_json() -> axum::extract::Json<Value> {
     json!({"a":"b"}).into()
 }
 ```
@@ -617,10 +630,10 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-// axum handler for "PUT /demo-json" which shows how to use `aumx::extract::Json`.
-// This buffers the request body then deserializes it into a `serde_json::Value`.
-// The axum `Json` type supports any type that implements `serde::Deserialize`.
-async fn put_demo_json(axum::extract::Json(payload): axum::extract::Json<serde_json::Value>) -> String{
+/// axum handler for "PUT /demo-json" which shows how to use `aumx::extract::Json`.
+/// This buffers the request body then deserializes it into a `serde_json::Value`.
+/// The axum `Json` type supports any type that implements `serde::Deserialize`.
+pub async fn put_demo_json(axum::extract::Json(payload): axum::extract::Json<serde_json::Value>) -> String{
     format!("Put demo JSON payload: {:?}", payload)
 }
 ```
@@ -677,9 +690,9 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-// axum handler for "GET /item" which shows how to use `axum::extrac::Query`.
-// This extracts query parameters then deserializes them into a key-value map.
-async fn get_items(axum::extract::Query(params): axum::extract::Query<HashMap<String, String>>) -> String {
+/// axum handler for "GET /item" which shows how to use `axum::extrac::Query`.
+/// This extracts query parameters then deserializes them into a key-value map.
+pub async fn get_items(axum::extract::Query(params): axum::extract::Query<HashMap<String, String>>) -> String {
     format!("Get items with query params: {:?}", params)
 }
 ```
@@ -727,9 +740,9 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-// axum handler for "GET /items/:id" which shows how to use `axum::extract::Path`.
-// This extracts a path parameter then deserializes it as needed.
-async fn get_items_id(axum::extract::Path(id): axum::extract::Path<String>) -> String {
+/// axum handler for "GET /items/:id" which shows how to use `axum::extract::Path`.
+/// This extracts a path parameter then deserializes it as needed.
+pub async fn get_items_id(axum::extract::Path(id): axum::extract::Path<String>) -> String {
     format!("Get items with path id: {:?}", id)
 }
 ```
@@ -768,15 +781,15 @@ Create a new file `book.rs`.
 Add code to use deserialization:
 
 ```rust
-// Use Deserialize to convert e.g. from request JSON into Book struct.
+/// Use Deserialize to convert e.g. from request JSON into Book struct.
 use serde::Deserialize;
 ```
 
 Add code to create a book struct that derives the traits we want:
 
 ```rust
-// Demo book structure with some example fields for id, title, author.
-// A production app or database could use an id that is a u32, UUID, etc.
+/// Demo book structure with some example fields for id, title, author.
+/// A production app or database could use an id that is a u32, UUID, etc.
 #[derive(Debug, Deserialize, Clone, Eq, Hash, PartialEq)]
 pub struct Book {
     pub id: String,
@@ -788,8 +801,8 @@ pub struct Book {
 Add code to implement `Display`:
 
 ```rust
-// Display the book using the format "{title} by {author}".
-// This is a typical Rust trait and is not axum-specific.
+/// Display the book using the format "{title} by {author}".
+/// This is a typical Rust trait and is not axum-specific.
 impl std::fmt::Display for Book {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "{} by {}", self.title, self.author)
@@ -802,7 +815,7 @@ Edit file `main.rs`.
 Add code to include the `book` module and use the `Book` struct:
 
 ```rust
-// See file book.rs, which defines the `Book` struct.
+/// See file book.rs, which defines the `Book` struct.
 mod book;
 use crate::book::Book;
 ```
@@ -830,24 +843,24 @@ Create file `data.rs`.
 Add this code:
 
 ```rust
-// Use once_cell for creating a global variable e.g. our DATA data.
+/// Use once_cell for creating a global variable e.g. our DATA data.
 use once_cell::sync::Lazy;
 
-// Use Mutex for thread-safe access to a variable e.g. our DATA data.
+/// Use Mutex for thread-safe access to a variable e.g. our DATA data.
 use std::sync::Mutex;
 
-// Create a data store as a global variable with `Lazy` and `Mutex`.
-// This demo implementation uses a `HashMap` for ease and speed.
-// The map key is a primary key for lookup; the map value is a Book.
-//
-// To access data, create a thread, spawn it, and acquire the lock:
-// ```
-// async fn example() {
-//     thread::spawn(move || {
-//         let data = DATA.lock().unwrap();
-//         …
-// }).join().unwrap()
-// ```
+/// Create a data store as a global variable with `Lazy` and `Mutex`.
+/// This demo implementation uses a `HashMap` for ease and speed.
+/// The map key is a primary key for lookup; the map value is a Book.
+///
+/// To access data, create a thread, spawn it, and acquire the lock:
+/// ```
+/// async fn example() {
+///     thread::spawn(move || {
+///         let data = DATA.lock().unwrap();
+///         …
+/// }).join().unwrap()
+/// ```
 static DATA: Lazy<Mutex<HashMap<u32, Book>>> = Lazy::new(|| Mutex::new(
     HashMap::from([
         (1, Book { id: 1, title: "Antigone".into(), author: "Sophocles".into()}),
@@ -862,11 +875,11 @@ Edit file `main.rs`.
 Add code to include the `data` module and use the `DATA` global variable:
 
 ```rust
-// See file data.rs, which defines the DATA global variable.
+/// See file data.rs, which defines the DATA global variable.
 mod data;
 use crate::data::DATA;
 
-// Use Thread for spawning a thread e.g. to acquire our DATA mutex lock.
+/// Use Thread for spawning a thread e.g. to acquire our DATA mutex lock.
 use std::thread;
 ```
 
@@ -889,10 +902,10 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-// axum handler for "GET /books" which returns a resource index HTML page.
-// This demo uses our DATA variable; a production app could use a database.
-// This function needs to clone the DATA in order to sort them by title.
-async fn get_books() -> axum::response::Html<String> {
+/// axum handler for "GET /books" which returns a resource index HTML page.
+/// This demo uses our DATA variable; a production app could use a database.
+/// This function needs to clone the DATA in order to sort them by title.
+pub async fn get_books() -> axum::response::Html<String> {
     thread::spawn(move || {
         let data = DATA.lock().unwrap();
         let mut books = data.values().collect::<Vec<_>>().clone();
@@ -946,9 +959,9 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-// axum handler for "PUT /books" which creates a new book resource.
-// This demo shows how axum can extract a JSON payload into a Book struct.
-async fn put_books(axum::extract::Json(book): axum::extract::Json<Book>) -> axum::response::Html<String> {
+/// axum handler for "PUT /books" which creates a new book resource.
+/// This demo shows how axum can extract a JSON payload into a Book struct.
+pub async fn put_books(axum::extract::Json(book): axum::extract::Json<Book>) -> axum::response::Html<String> {
     DATA.lock().unwrap().insert(book.id, book.clone());
     format!("Put book: {}", &book).into()
 }
@@ -1012,9 +1025,9 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-// axum handler for "GET /books/:id" which returns one resource HTML page.
-// This demo app uses our DATA variable, and iterates on it to find the id.
-async fn get_books_id(axum::extract::Path(id): axum::extract::Path<u32>) -> axum::response::Html<String> {
+/// axum handler for "GET /books/:id" which responds with one resource HTML page.
+/// This demo app uses our DATA variable, and iterates on it to find the id.
+pub async fn get_books_id(axum::extract::Path(id): axum::extract::Path<u32>) -> axum::response::Html<String> {
     match DATA.lock().unwrap().get(&id) {
         Some(book) => format!("<p>{}</p>\n", &book),
         None => format!("<p>Book id {} not found</p>", id),
@@ -1074,9 +1087,9 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-// axum handler for "DELETE /books/:id" which destroys an existing resource.
-// This code shows how to extract an id, then mutate the DATA variable.
-async fn delete_books_id(axum::extract::Path(id): axum::extract::Path<u32>) -> axum::response::Html<String> {
+/// axum handler for "DELETE /books/:id" which destroys an existing resource.
+/// This code shows how to extract an id, then mutate the DATA variable.
+pub async fn delete_books_id(axum::extract::Path(id): axum::extract::Path<u32>) -> axum::response::Html<String> {
     thread::spawn(move || {
         let mut data = DATA.lock().unwrap();
         if data.contains_key(&id) {
@@ -1124,7 +1137,6 @@ Output:
 ```
 
 
-
 <div style="page-break-before:always;"></div>
 
 
@@ -1143,9 +1155,9 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-// axum handler for "GET /books/:id/form" which responds with an HTML form.
-// This demo shows how to write a typical HTML form with input fields.
-async fn get_books_id_form(axum::extract::Path(id): axum::extract::Path<u32>) -> axum::response::Html<String> {
+/// axum handler for "GET /books/:id/form" which responds with an HTML form.
+/// This demo shows how to write a typical HTML form with input fields.
+pub async fn get_books_id_form(axum::extract::Path(id): axum::extract::Path<u32>) -> axum::response::Html<String> {
     match DATA.lock().unwrap().get(&id) {
         Some(book) => format!(
             concat!(
@@ -1210,9 +1222,9 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-// axum handler for "POST /books/:id/form" which submits an HTML form.
-// This demo shows how to do a form submission then update a resource.
-async fn post_books_id_form(form: axum::extract::Form<Book>) -> axum::response::Html<String> {
+/// axum handler for "POST /books/:id/form" which submits an HTML form.
+/// This demo shows how to do a form submission then update a resource.
+pub async fn post_books_id_form(form: axum::extract::Form<Book>) -> axum::response::Html<String> {
     let new_book: Book = form.0;
     thread::spawn(move || {
         let mut data = DATA.lock().unwrap();
@@ -1284,7 +1296,7 @@ Edit file `main.rs`.
 Add code to use tracing:
 
 ```rust
-// Use tracing crates for application-level tracing output.
+/// Use tracing crates for application-level tracing output.
 use tracing_subscriber::{
     layer::SubscriberExt,
     util::SubscriberInitExt,
@@ -1294,7 +1306,7 @@ use tracing_subscriber::{
 Add a tracing subscriber:
 
 ```rust
-async fn main() {
+pub async fn main() {
     // Start tracing.
     tracing_subscriber::registry()
         .with(tracing_subscriber::fmt::layer())
@@ -1344,7 +1356,7 @@ Modify the demo code to do:
 ```rust
 use std::net::SocketAddr;
 
-async fn main() {
+pub async fn main() {
     …
     let host = [127, 0, 0, 1];
     let port = 3000;
