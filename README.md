@@ -101,9 +101,7 @@ async fn main() {
 }
 ```
 
-<details>
-<summary>Interactive</summary>
-<p><b>Try the demo…</b></p>
+### Try the demo…
 
 Shell:
 
@@ -114,8 +112,6 @@ cargo run
 Browse <http://localhost:3000>
 
 You should see "Hello, World!".
-
-</details>
 
 
 <div style="page-break-before:always;"></div>
@@ -144,9 +140,7 @@ let app = Router::new()
     .route("/", get(hello));
 ```
 
-<details>
-<summary>Interactive</summary>
-<p><b>Try the demo…</b></p>
+### Try the demo…
 
 Shell:
 
@@ -157,8 +151,6 @@ cargo run
 Browse <http://localhost:3000>
 
 You should see "Hello, World!".
-
-</details>
 
 
 <div style="page-break-before:always;"></div>
@@ -198,9 +190,7 @@ async fn fallback(uri: Uri) -> impl IntoResponse {
 }
 ```
 
-<details>
-<summary>Interactive</summary>
-<p><b>Try the demo…</b></p>
+### Try the demo…
 
 Shell:
 
@@ -211,8 +201,6 @@ cargo run
 Browse <http://localhost:3000/whatever>
 
 You should see "No route for /whatever".
-
-</details>
 
 
 <div style="page-break-before:always;"></div>
@@ -248,9 +236,7 @@ async fn demo_status() -> (StatusCode, String) {
 }
 ```
 
-<details>
-<summary>Interactive</summary>
-<p><b>Try the demo…</b></p>
+### Try the demo…
 
 Shell:
 
@@ -261,8 +247,6 @@ cargo run
 Browse <http://localhost:3000/demo-status>
 
 You should see "Everything is OK".
-
-</details>
 
 
 <div style="page-break-before:always;"></div>
@@ -289,9 +273,7 @@ async fn demo_uri(uri: Uri) -> String {
 }
 ```
 
-<details>
-<summary>Interactive</summary>
-<p><b>Try the demo…</b></p>
+### Try the demo…
 
 Shell:
 
@@ -302,8 +284,6 @@ cargo run
 Browse <http://localhost:3000/demo-uri>
 
 You should see "The URI is: /demo-uri!".
-
-</details>
 
 
 <div style="page-break-before:always;"></div>
@@ -346,9 +326,7 @@ async fn delete_foo() -> String {
 }
 ```
 
-<details>
-<summary>Interactive</summary>
-<p><b>Try the demo…</b></p>
+### Try the demo…
 
 Shell:
 
@@ -427,8 +405,6 @@ curl 'http://localhost:3000/foo'
 curl --request GET 'http://localhost:3000/foo'
 ```
 
-</details>
-
 
 <div style="page-break-before:always;"></div>
 
@@ -461,9 +437,7 @@ async fn get_demo_html() -> axum::response::Html<&'static str> {
 }
 ```
 
-<details>
-<summary>Interactive</summary>
-<p><b>Try the demo…</b></p>
+### Try the demo…
 
 Shell:
 
@@ -474,8 +448,6 @@ cargo run
 Browse <http://localhost:3000/demo.html>
 
 You should see HTML with headline text "Hello".
-
-</details>
 
 
 <div style="page-break-before:always;"></div>
@@ -518,9 +490,7 @@ async fn get_demo_png() -> impl axum::Response::IntoResponse {
 }
 ```
 
-<details>
-<summary>Interactive</summary>
-<p><b>Try the demo…</b></p>
+### Try the demo…
 
 Shell:
 
@@ -531,8 +501,6 @@ cargo run
 Browse <http://localhost:3000/demo.png>
 
 You browser should download a a one-pixel transparent PNG image.
-
-</details>
 
 
 <div style="page-break-before:always;"></div>
@@ -569,9 +537,7 @@ async fn get_demo_json() -> axum::extract::Json<Value> {
 }
 ```
 
-<details>
-<summary>Interactive</summary>
-<p><b>Try the demo…</b></p>
+### Try the demo…
 
 Shell:
 
@@ -592,8 +558,6 @@ Output:
 ```sh
 {"a":"b"}
 ```
-
-</details>
 
 
 <div style="page-break-before:always;"></div>
@@ -630,9 +594,7 @@ async fn put_demo_json(axum::extract::Json(payload): axum::extract::Json<serde_j
 }
 ```
 
-<details>
-<summary>Interactive</summary>
-<p><b>Try the demo…</b></p>
+### Try the demo…
 
 Shell:
 
@@ -654,8 +616,6 @@ Output:
 ```sh
 Put demo JSON payload: Object({"a": String("b")})
 ```
-
-</details>
 
 
 <div style="page-break-before:always;"></div>
@@ -691,9 +651,7 @@ async fn get_items(axum::extract::Query(params): axum::extract::Query<HashMap<St
 }
 ```
 
-<details>
-<summary>Interactive</summary>
-<p><b>Try the demo…</b></p>
+### Try the demo…
 
 Shell:
 
@@ -712,8 +670,6 @@ Output:
 ```sh
 Get items with query params: {"a": "b"}
 ```
-
-</details>
 
 
 <div style="page-break-before:always;"></div>
@@ -743,9 +699,7 @@ async fn get_items_id(axum::extract::Path(id): axum::extract::Path<String>) -> S
 }
 ```
 
-<details>
-<summary>Interactive</summary>
-<p><b>Try the demo…</b></p>
+### Try the demo…
 
 Shell:
 
@@ -764,8 +718,6 @@ Ouput:
 ```sh
 Get items with id: 1
 ```
-
-</details>
 
 
 <div style="page-break-before:always;"></div>
@@ -913,9 +865,7 @@ async fn get_books() -> axum::response::Html<String> {
 }
 ```
 
-<details>
-<summary>Interactive</summary>
-<p><b>Try the demo…</b></p>
+### Try the demo…
 
 Shell:
 
@@ -936,8 +886,6 @@ Output:
 <p>Beloved by Toni Morrison</p>
 <p>Candide by Voltaire</p>
 ```
-
-</details>
 
 
 <div style="page-break-before:always;"></div>
@@ -965,9 +913,7 @@ async fn put_books(axum::extract::Json(book): axum::extract::Json<Book>) -> axum
 }
 ```
 
-<details>
-<summary>Interactive</summary>
-<p><b>Try the demo…</b></p>
+### Try the demo…
 
 Shell:
 
@@ -1005,8 +951,6 @@ Output:
 <p>Decameron by Giovanni Boccaccio</p>
 ```
 
-</details>
-
 
 <div style="page-break-before:always;"></div>
 
@@ -1035,9 +979,7 @@ async fn get_books_id(axum::extract::Path(id): axum::extract::Path<u32>) -> axum
 }
 ```
 
-<details>
-<summary>Interactive</summary>
-<p><b>Try the demo…</b></p>
+### Try the demo…
 
 Shell:
 
@@ -1068,8 +1010,6 @@ Output:
 ```sh
 <p>Book id 0 not found</p>
 ```
-
-</details>
 
 
 <div style="page-break-before:always;"></div>
@@ -1104,9 +1044,7 @@ async fn delete_books_id(axum::extract::Path(id): axum::extract::Path<u32>) -> a
 }
 ```
 
-<details>
-<summary>Interactive</summary>
-<p><b>Try the demo…</b></p>
+### Try the demo…
 
 Shell:
 
@@ -1138,8 +1076,6 @@ Output:
 <p>Beloved by Toni Morrison</p>
 <p>Candide by Voltaire</p>
 ```
-
-</details>
 
 
 
@@ -1183,9 +1119,7 @@ async fn get_books_id_form(axum::extract::Path(id): axum::extract::Path<u32>) ->
 }
 ```
 
-<details>
-<summary>Interactive</summary>
-<p><b>Try the demo…</b></p>
+### Try the demo…
 
 Shell:
 
@@ -1243,9 +1177,7 @@ async fn post_books_id_form(form: axum::extract::Form<Book>) -> axum::response::
 }
 ```
 
-<details>
-<summary>Interactive</summary>
-<p><b>Try the demo…</b></p>
+### Try the demo…
 
 Shell:
 
@@ -1281,8 +1213,6 @@ Output:
 <p>Beloved by Toni Morrison</p>
 <p>Candide by Voltaire</p>
 ```
-
-</details>
 
 
 <div style="page-break-before:always;"></div>
@@ -1321,9 +1251,7 @@ async fn main() {
     …
 ```
 
-<details>
-<summary>Interactive</summary>
-<p><b>Try the demo…</b></p>
+### Try the demo…
 
 Shell:
 
@@ -1340,8 +1268,6 @@ You should see console output that shows tracing initialization such as:
     token=Token(1),
     interests=READABLE | WRITABLE
 ```
-
-</details>
 
 
 <div style="page-break-before:always;"></div>
