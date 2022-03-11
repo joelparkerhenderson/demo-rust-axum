@@ -663,7 +663,7 @@ Get items with id: 1
 
 Suppose we want our app to have features related to books.
 
-We need to edit file `main.rs` to create a book struct.
+We create a new file `book.rs` and add the lines below.
 
 Use `Deserialize`:
 
@@ -672,16 +672,16 @@ Use `Deserialize`:
 use serde::Deserialize;
 ```
 
-Create a book struct that derives what we want:
+Create a book struct that derives the traits we want:
 
 ```rust
 // Demo book structure with some example fields for id, title, author.
 // A production app or database could use an id that is a u32, UUID, etc.
 #[derive(Debug, Deserialize, Clone, Eq, Hash, PartialEq)]
-struct Book {
-    id: String,
-    title: String,
-    author: String,
+pub struct Book {
+    pub id: String,
+    pub title: String,
+    pub author: String,
 }
 ```
 
@@ -697,6 +697,14 @@ impl std::fmt::Display for Book {
 }
 ```
 
+Edit file `main.rs` to add the module and use the struct:
+
+```rust
+// See file book.rs, which defines the `Book` struct.
+mod book;
+use crate::book::Book;
+```
+
 
 ## 12. Create a data store
 
@@ -710,7 +718,7 @@ Edit file `Cargo.toml` to add the crate `once_cell` for global variables:
 once_cell = "*"
 ```
 
-Edit file `main.rs` to use `Lazy` and `Mutex`:
+Create file `data.rs` with:
 
 ```rust
 // Use once_cell for creating a global variable e.g. our DATA data.
@@ -719,13 +727,6 @@ use once_cell::sync::Lazy;
 // Use Mutex for thread-safe access to a variable e.g. our DATA data.
 use std::sync::Mutex;
 
-// Use Thread for spawning a thread e.g. to acquire our DATA mutex lock.
-use std::thread;
-```
-
-Create a data store:
-
-```rust
 // Create a data store as a global variable with `Lazy` and `Mutex`.
 // This demo implementation uses a `HashMap` for ease and speed.
 // The map key is a primary key for lookup; the map value is a Book.
@@ -747,10 +748,21 @@ static DATA: Lazy<Mutex<HashMap<u32, Book>>> = Lazy::new(|| Mutex::new(
 ));
 ```
 
+Edit file `main.rs` to add:
+
+```rust
+// See file data.rs, which defines the DATA global variable.
+mod data;
+use crate::data::DATA;
+
+// Use Thread for spawning a thread e.g. to acquire our DATA mutex lock.
+use std::thread;
+```
+
 
 ## 13. Create a route to get all books
 
-Add a route:
+Edit file `main.rs` to add a route:
 
 ```rust
 let app = Router::new()
@@ -927,8 +939,74 @@ Output:
 </details>
 
 
+## 14. Create a route to delete one book id
 
-## 14. Create a route to get one book as an editable form
+Edit the route `/books/:id` to append the function `delete`:
+
+```rust
+let app = Router::new()
+    …
+    .route("/books/:id", get(get_books_id).delete(delete_books_id));
+```
+
+Add a handler:
+
+```rust
+// axum handler for "DELETE /books/:id" which destroys an existing resource.
+// This code shows how to extract an id, then mutate the DATA variable.
+async fn delete_books_id(axum::extract::Path(id): axum::extract::Path<u32>) -> axum::response::Html<String> {
+    thread::spawn(move || {
+        let mut data = DATA.lock().unwrap();
+        if data.contains_key(&id) {
+            data.remove(&id);
+            format!("Delete book id: {}", &id)
+        } else {
+            format!("Book id not found: {}", &id)
+        }
+    }).join().unwrap().into()
+}
+```
+
+<details>
+<summary>Interactive</summary>
+<p><b>Try the demo…</b></p>
+
+Shell:
+
+```sh
+cargo run
+```
+
+Shell:
+
+```sh
+curl --request DELETE 'http://localhost:3000/books/1'
+```
+
+Output:
+
+```sh
+<p>Delete book id: 1</p>
+```
+
+Shell:
+
+```sh
+curl 'http://localhost:3000/books'
+```
+
+Output:
+
+```
+<p>Beloved by Toni Morrison</p>
+<p>Candide by Voltaire</p>
+```
+
+</details>
+
+
+
+## 15. Create a route to get one book as an editable form
 
 Add a route:
 
@@ -991,7 +1069,7 @@ Output:
 ```
 
 
-## 15. Create a route to submit the form to update a book
+## 16. Create a route to submit the form to update a book
 
 Append a route function `post`:
 
@@ -1062,7 +1140,7 @@ Output:
 </details>
 
 
-## 16. Bonus: Add a Tower tracing subscriber
+## 17. Bonus: Add a Tower tracing subscriber
 
 Edit file `Cargo.toml` to add crates:
 
@@ -1115,7 +1193,7 @@ You should see console output that shows tracing initialization such as:
 </details>
 
 
-## 17. Bonus: Refactor to use a host, port, and socket address
+## 18. Bonus: Refactor to use a host, port, and socket address
 
 To bind the server, our demo code uses a socket address string:
 
