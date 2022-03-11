@@ -62,12 +62,12 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-axum = "*"  # Web framework that focuses on ergonomics and modularity.
-hyper = "*"  # A fast and correct HTTP library.
-tokio = { version = "*", features = ["full"] }  # Event-driven, non-blocking I/O platform.
-tower = "*"  # Components for building robust clients and servers.
-serde = { version = "*", features = ["derive"] }  # Serialization/deserialization framework.
-serde_json = "*"  # Serialization/deserialize of JSON data.
+axum = "0.4.8" # Web framework that focuses on ergonomics and modularity.
+hyper = { version = "0.14.17", features = ["full"] } # A fast and correct HTTP library.
+tokio = { version = "1.17.0", features = ["full"] } # Event-driven, non-blocking I/O platform.
+tower = "0.4.12" # Modular reusable components for building robust clients and servers.
+serde = { version = "1.0.136", features = ["derive"] } # A serialization/deserialization framework.
+serde_json = "1.0.79" # Serde serializion/deserialization of JSON data.
 ```
 
 Edit file `src/main.rs` like this:
@@ -772,7 +772,7 @@ For this demo, we will implement the data by using a global variable `DATA`.
 Edit file `Cargo.toml` to add the crate `once_cell` for global variables:
 
 ```toml
-once_cell = "*"
+once_cell = "1.10.0" # Single assignment cells and lazy values.
 ```
 
 Create file `data.rs` with:
@@ -1202,8 +1202,8 @@ Output:
 Edit file `Cargo.toml` to add crates:
 
 ```toml
-tracing = "*"
-tracing-subscriber = { version = "*", features = ["env-filter"] }
+tracing = "0.1.32" #  Application-level tracing for Rust.
+tracing-subscriber = { version = "0.3.9", features = ["env-filter"] } # Utilities for tracing.
 ```
 
 Edit file `main.rs` to use tracing:
