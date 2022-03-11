@@ -25,7 +25,7 @@ Does this demo help your work? Donate here if you can via GitHub sponsors.
 Have an idea, suggestion, or feedback? Let us know via GitHub issues.
 
 
-## Introduction
+## 1. Introduction
 
 This demo shows how to:
 
@@ -35,6 +35,8 @@ This demo shows how to:
 
 * Create responses with HTTP status code OK and HTML text.
 
+* Create binary images and respond with custom headers.
+
 * Create functionality for HTTP GET, PUT, PATCH, POST, DELETE.
 
 * Use axum extractors for query parameters and path parameters.
@@ -42,7 +44,7 @@ This demo shows how to:
 * Create a data store and access it using RESTful routes.
 
 
-## 1. Hello, World!
+## 2. Hello, World!
 
 Create a typical new Rust project:
 
@@ -108,7 +110,7 @@ You should see "Hello, World!".
 </details>
 
 
-## 2. Create a new route and handler function
+## 3. Create a new route and handler function
 
 An axum route can call an function, which is called an axum handler. The handler
 is async function returns something that can be converted into a response.
@@ -147,7 +149,7 @@ You should see "Hello, World!".
 </details>
 
 
-## 3. Create a router fallback response "not found"
+## 4. Create a router fallback response "not found"
 
 For a request that fails to match anything in the router, you can use the function `fallback`.
 
@@ -197,7 +199,7 @@ You should see "No route for /whatever".
 </details>
 
 
-## 4. Create a response with HTTP status code OK
+## 5. Create a response with HTTP status code OK
 
 Add code to use `StatusCode`:
 
@@ -243,7 +245,7 @@ You should see "Everything is OK".
 </details>
 
 
-## 5. Create a response that echos the URI
+## 6. Create a response that echos the URI
 
 Add a route:
 
@@ -280,7 +282,7 @@ You should see "The URI is: /demo-uri!".
 </details>
 
 
-## 6. Create routes and handlers for HTTP verbs
+## 7. Create routes and handlers for HTTP verbs
 
 axum routes can use HTTP verbs, including GET, PUT, PATCH, POST, DELETE.
 
@@ -400,7 +402,7 @@ curl --request GET 'http://localhost:3000/foo'
 </details>
 
 
-## 7. Create a response with HTML text
+## 8. Create a response with HTML text
 
 Add code to use `Html`:
 
@@ -444,7 +446,62 @@ You should see HTML with headline text "Hello".
 </details>
 
 
-## 8. Create a route that gets JSON data
+## 9. Create a response with an image and header
+
+Edit file `Cargo.toml`.
+
+Add these dependencies:
+
+```rust
+base64 = "0.13" # Encode and decode base64 as bytes or utf8.
+http = "0.2.6" # Types for HTTP requests and responses.
+```
+
+Edit file `main.rs`.
+
+Add the axum route:
+
+```rust
+let app = Router::new()
+    …
+    .route("/demo.png", get(get_demo_png))
+```
+
+Add the axum handler:
+
+```rust
+// axum handler for "GET /demo-png" which shows how to use a custom header.
+// This creates an image, then responds with a new header "image/png".
+// Credit to https://github.com/ttys3/static-server/blob/main/src/main.rs
+async fn get_demo_png() -> impl axum::Response::IntoResponse {
+    let png = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPk+89QDwADvgGOSHzRgAAAAABJRU5ErkJggg==";
+    let mut response = Response::new(Full::from(::base64::decode(png).unwrap()));
+    response.headers_mut().insert(
+        ::http::header::CONTENT_TYPE, 
+        ::http::header::HeaderValue::from_static("image/png")
+    );
+    response
+}
+```
+
+<details>
+<summary>Interactive</summary>
+<p><b>Try the demo…</b></p>
+
+Shell:
+
+```sh
+cargo run
+```
+
+Browse <http://localhost:3000/demo.png>
+
+You browser should download a a one-pixel transparent PNG image.
+
+</details>
+
+
+## 10. Create a route that gets JSON data
 
 Use Serde JSON in order to format JSON data:
 
@@ -501,7 +558,7 @@ Output:
 </details>
 
 
-## 9. Create a route that extracts its JSON payload
+## 11. Create a route that extracts its JSON payload
 
 Add code to use `JSON`:
 
@@ -559,7 +616,7 @@ Put demo JSON payload: Object({"a": String("b")})
 </details>
 
 
-## 10. Create a route that extracts query parameters
+## 12. Create a route that extracts query parameters
 
 An axum "extractor" is how you pick apart the incoming request in order to get
 any parts that your handler needs.
@@ -613,7 +670,7 @@ Get items with query params: {"a": "b"}
 </details>
 
 
-## 11. Create a route that extracts path parameters
+## 13. Create a route that extracts path parameters
 
 Add a route using path parameter syntax, such as ":id", in order to tell axum to
 extract a path parameter and deserialize it into a variable named `id`:
@@ -659,7 +716,7 @@ Get items with id: 1
 </details>
 
 
-## 11. Create a book struct
+## 14. Create a book struct
 
 Suppose we want our app to have features related to books.
 
@@ -706,7 +763,7 @@ use crate::book::Book;
 ```
 
 
-## 12. Create a data store
+## 15. Create a data store
 
 For a production app, we could implement the data by using a database.
 
@@ -760,7 +817,7 @@ use std::thread;
 ```
 
 
-## 13. Create a route to get all books
+## 16. Create a route to get all books
 
 Edit file `main.rs` to add a route:
 
@@ -815,7 +872,7 @@ Output:
 </details>
 
 
-## 14. Create a route to put a book
+## 17. Create a route to put a book
 
 Edit the route `/books` to append the function `put`:
 
@@ -879,7 +936,7 @@ Output:
 </details>
 
 
-## 13. Create a route to get one book id
+## 18. Create a route to get one book id
 
 Add a route:
 
@@ -939,7 +996,7 @@ Output:
 </details>
 
 
-## 14. Create a route to delete one book id
+## 19. Create a route to delete one book id
 
 Edit the route `/books/:id` to append the function `delete`:
 
@@ -1006,7 +1063,7 @@ Output:
 
 
 
-## 15. Create a route to get one book as an editable form
+## 20. Create a route to get one book as an editable form
 
 Add a route:
 
@@ -1069,7 +1126,7 @@ Output:
 ```
 
 
-## 16. Create a route to submit the form to update a book
+## 21. Create a route to submit the form to update a book
 
 Append a route function `post`:
 
@@ -1140,7 +1197,7 @@ Output:
 </details>
 
 
-## 17. Bonus: Add a Tower tracing subscriber
+## 21. Bonus: Add a Tower tracing subscriber
 
 Edit file `Cargo.toml` to add crates:
 
@@ -1193,7 +1250,7 @@ You should see console output that shows tracing initialization such as:
 </details>
 
 
-## 18. Bonus: Refactor to use a host, port, and socket address
+## 22. Bonus: Refactor to use a host, port, and socket address
 
 To bind the server, our demo code uses a socket address string:
 
@@ -1214,7 +1271,7 @@ async fn main() {
     axum::Server::bind(&addr) …
 ```
 
-## 17. Conclusion: What you learned and what's next
+## 23. Conclusion: What you learned and what's next
 
 You learned how to:
 
@@ -1223,6 +1280,8 @@ You learned how to:
 * Create axum router routes and their handler functions.
 
 * Create responses with HTTP status code OK and HTML text.
+
+* Create binary images and respond with custom headers.
 
 * Create functionality for HTTP GET, PUT, POST, DELETE.
 

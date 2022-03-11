@@ -37,6 +37,7 @@ async fn main() {
         .route("/demo-status", get(demo_status))
         .route("/demo-uri", get(demo_uri))
         .route("/demo.html", get(get_demo_html))
+        .route("/demo.png", get(get_demo_png))
         .route("/demo.json", get(get_demo_json).put(put_demo_json))
         .route("/foo", get(get_foo).put(put_foo).patch(patch_foo).post(post_foo).delete(delete_foo))
         .route("/items", get(get_items))
@@ -78,10 +79,24 @@ pub async fn demo_uri(uri: Uri) -> String {
     format!("The URI is: {:?}", uri)
 }
 
-// axum handler for "GET /demo.html" which shows to return HTML text.
+// axum handler for "GET /demo.html" that responds with HTML text.
 // The `Html` type sets an HTTP header content-type of `text/html`.
 pub async fn get_demo_html() -> axum::response::Html<&'static str> {
     "<h1>Hello</h1>".into()
+}
+
+// axum handler for "GET /demo.png" that response with a PNG and header.
+// This creates an image, then responds with a new header "image/png".
+// Credit to https://github.com/ttys3/static-server/blob/main/src/main.rs
+async fn get_demo_png() -> impl axum::response::IntoResponse {
+    let png = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPk+89QDwADvgGOSHzRgAAAAABJRU5ErkJggg==";
+    let body = axum::body::Full::from(::base64::decode(png).unwrap());
+    let mut response = axum::response::Response::new(body);
+    response.headers_mut().insert(
+        ::http::header::CONTENT_TYPE, 
+        ::http::header::HeaderValue::from_static("image/png")
+    );
+    response
 }
 
 // axum handler for "GET /demo.json" which shows how to return JSON data.
