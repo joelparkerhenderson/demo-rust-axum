@@ -648,11 +648,11 @@ Shell:
 cargo run
 ```
 
-To JSON with curl, set a custom HTTP header like this:
+To request JSON with curl, set a custom HTTP header like this:
 
 ```sh
 curl \
---header "Content-Type: application/json" \
+--header "Accept: application/json" \
 --request GET 'http://localhost:3000/demo-json'
 ```
 
