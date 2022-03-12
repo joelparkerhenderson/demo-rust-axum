@@ -32,13 +32,13 @@ Have an idea, suggestion, or feedback? Let us know via GitHub issues.
 
 axum is a web application framework that focuses on ergonomics and modularity.
 
-axum features include:
+Features include:
 
 * Web request routes, async handlers, and parsers/extractors.
 
 * Simple predictable error handling, such as for HTTP 404 not found.
 
-* Ability to use the `tower` crate ecosystem for middleware.
+* Utilization of dependencies and their ecosystems: [tower](https://github.com/tower-rs), [hyper](https://hyper.rs/), [tokio](https://tokio.rs), [serde](https://crates.io/crates/serde).
 
 This demo shows how to:
 
