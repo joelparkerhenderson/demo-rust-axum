@@ -296,7 +296,6 @@ use axum::{
     …
     handler::Handler,
     http::StatusCode,
-    http::Uri,
 };
 ```
 
@@ -313,7 +312,7 @@ Add the `fallback` handler:
 ```rust
 /// axum handler for any request that fails to match the router routes.
 /// This implementation returns a HTTP status code 404 Not Found response.
-pub async fn fallback(uri: Uri) -> impl axum::response::IntoResponse {
+pub async fn fallback(uri: axum::http::Uri) -> impl axum::response::IntoResponse {
     (axum::http::StatusCode::NOT_FOUND, format!("No route for {}", uri))
 }
 ```
@@ -400,7 +399,7 @@ Add a handler:
 ```rust
 /// axum handler for "GET /demo-uri" which shows the request's own URI.
 /// This shows how to write a handler that receives the URI.
-pub async fn demo_uri(uri: Uri) -> String {
+pub async fn demo_uri(uri: axum::http::Uri) -> String {
     format!("The URI is: {:?}", uri)
 }
 ```
