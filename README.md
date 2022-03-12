@@ -627,18 +627,14 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-/// axum handler for "GET /demo.png" which responds with a PNG and header.
-/// This creates an image, then responds with a new header "image/png".
-/// Credit <https://github.com/ttys3/static-server/blob/main/src/main.rs>
+/// axum handler for "GET /demo.png" which responds with an image PNG.
+/// This sets a header "image/png" then sends the decoded image data.
 async fn get_demo_png() -> impl axum::response::IntoResponse {
     let png = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPk+89QDwADvgGOSHzRgAAAAABJRU5ErkJggg==";
-    let body = axum::body::Full::from(::base64::decode(png).unwrap());
-    let mut response = axum::response::Response::new(body);
-    response.headers_mut().insert(
-        ::http::header::CONTENT_TYPE,
-        ::http::header::HeaderValue::from_static("image/png")
-    );
-    response
+    ( 
+        axum::response::Headers([(axum::http::header::CONTENT_TYPE, "image/png")]),
+        base64::decode(png).unwrap(),
+    )
 }
 ```
 
