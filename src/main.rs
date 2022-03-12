@@ -56,6 +56,7 @@ async fn main() {
     let app = Router::new()
         .fallback(fallback.into_service())
         .route("/", get(hello))
+        .route("/hello.html", get(hello_html))
         .route("/demo-status", get(demo_status))
         .route("/demo-uri", get(demo_uri))
         .route("/demo.html", get(get_demo_html))
@@ -93,6 +94,14 @@ pub async fn fallback(uri: Uri) -> impl axum::response::IntoResponse {
 /// immediately respond with a `200 OK` response, along with the plain text.
 pub async fn hello() -> String {
     "Hello, World!".to_string()
+}
+
+/// axum handler that responds with a typical HTML file.
+/// This uses the Rust `std::include_str` macro to include a UTF-8 file
+/// as `&'static str` in compile time; the path is relative to `main.rs`.
+/// Credit <https://github.com/programatik29/axum-tutorial>
+async fn hello_html() -> axum::response::Html<&'static str> {
+    include_str!("hello.html").into()
 }
 
 /// axum handler for "GET /demo-status" which returns a HTTP status code, such
