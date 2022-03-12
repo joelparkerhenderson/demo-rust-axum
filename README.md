@@ -30,6 +30,16 @@ Have an idea, suggestion, or feedback? Let us know via GitHub issues.
 
 ## 1. Introduction
 
+axum is a web application framework that focuses on ergonomics and modularity.
+
+axum features include:
+
+* Web request routes, async handlers, and parsers/extractors.
+
+* Simple predictable error handling, such as for HTTP 404 not found.
+
+* Ability to use the `tower` crate ecosystem for middleware.
+
 This demo shows how to:
 
 * Create a project using Rust and the axum web framework.
