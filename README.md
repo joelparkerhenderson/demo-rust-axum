@@ -8,13 +8,13 @@ Demonstration of:
 
 * [Tower](https://crates.io/crates/tower): library of modular and reusable components for building robust clients and servers.
 
+* [Hyper](https://hyper.rs/): fast and safe HTTP library for the Rust language.
+
+* [Tokio](https://tokio.rs): event-driven, non-blocking I/O platform for writing asynchronous I/O backed applications.
+
 * [Serde](https://crates.io/crates/serde): serialization/deserialization framework.
 
 <!--
-
-* [Tokio](https://crates.io/crates/tokio): event-driven, non-blocking I/O platform for writing asynchronous I/O backed applications.
-
-* [Hyper](https://crates.io/crates/hyper): fast and correct HTTP library.
 
 -->
 
@@ -106,6 +106,8 @@ pub async fn main() {
         .route("/", get(|| async { "Hello, World!" }));
 
     // Run our application by using hyper and URL http://localhost:3000.
+    // The `Server` is a hyper server, which means you can use any hyper
+    // server functions, such as `bind`, `with_graceful_fallback`, etc.
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
         .serve(app.into_make_service())
         .await
@@ -178,7 +180,7 @@ Create file `hello.html`.
 Add this:
 
 ```html
-<h1>Hello</h1> 
+<h1>Hello</h1>
 This is our demo.
 ```
 
@@ -572,7 +574,7 @@ async fn get_demo_png() -> impl axum::response::IntoResponse {
     let body = axum::body::Full::from(::base64::decode(png).unwrap());
     let mut response = axum::response::Response::new(body);
     response.headers_mut().insert(
-        ::http::header::CONTENT_TYPE, 
+        ::http::header::CONTENT_TYPE,
         ::http::header::HeaderValue::from_static("image/png")
     );
     response
@@ -1227,7 +1229,7 @@ pub async fn get_books_id_form(axum::extract::Path(id): axum::extract::Path<u32>
                 "<p><input type=\"text\" name=\"author\" value=\"{}\"></p>\n",
                 "<input type=\"submit\" value=\"Save\">\n",
                 "</form>\n"
-            ), 
+            ),
             &book.id,
             &book.id,
             &book.title,
