@@ -1,31 +1,30 @@
 //! Demo of Rust and axum web framework.
-//! 
+//!
 //! <https://github.com/joelparkerhenderson/demo-rust-axum>
-//! 
+//!
 //! This demo shows how to:
-//! 
+//!
 //! * Create a project using Rust and the axum web framework.
-//! 
+//!
 //! * Create axum router routes and their handler functions.
-//! 
+//!
 //! * Create responses with HTTP status code OK and HTML text.
-//! 
+//!
 //! * Create a binary image and respond with a custom header.
-//! 
+//!
 //! * Create functionality for HTTP GET, PUT, PATCH, POST, DELETE.
-//! 
+//!
 //! * Use axum extractors for query parameters and path parameters.
-//! 
+//!
 //! * Create a data store and access it using RESTful routes.
 //!
 //! For more see the file `README.md` in the project root.
 
 /// Use axum capabities.
 use axum::{
+    routing::get,
     handler::Handler,
     http::Uri,
-    routing::get,
-    Router,
 };
 
 /// Use tracing crates for application-level tracing output.
@@ -53,7 +52,7 @@ async fn main() {
     .init();
 
     // Build our application by creating our router.
-    let app = Router::new()
+    let app = axum::Router::new()
         .fallback(fallback.into_service())
         .route("/", get(hello))
         .route("/hello.html", get(hello_html))
@@ -70,10 +69,22 @@ async fn main() {
         .route("/books/:id/form", get(get_books_id_form).post(post_books_id_form));
 
     // Run our application by using hyper and URL http://localhost:3000.
+    // The `Server` is a hyper server, which means you can use any hyper
+    // server functions, such as `bind`, `with_graceful_fallback`, etc.
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
         .serve(app.into_make_service())
+        .with_graceful_shutdown(shutdown_signal())
         .await
         .unwrap();
+}
+
+/// Tokio signal handler that will wait for a user to press CTRL+C.
+/// We use this in our hyper `Server` method `with_graceful_shutdown`.
+async fn shutdown_signal() {
+    tokio::signal::ctrl_c()
+        .await
+        .expect("Expect shutdown signal handler");
+    println!("signal shutdown");
 }
 
 ////
@@ -130,13 +141,13 @@ async fn get_demo_png() -> impl axum::response::IntoResponse {
     let body = axum::body::Full::from(::base64::decode(png).unwrap());
     let mut response = axum::response::Response::new(body);
     response.headers_mut().insert(
-        ::http::header::CONTENT_TYPE, 
+        ::http::header::CONTENT_TYPE,
         ::http::header::HeaderValue::from_static("image/png")
     );
     response
 }
 
-//// 
+////
 // Demo axum JSON extractor
 //
 // axum has capabilties for working with JSON data.
@@ -205,7 +216,7 @@ pub async fn delete_foo() -> String {
     "DELETE foo".to_string()
 }
 
-//// 
+////
 // Demo axum handlers with extractors for query params and path params.
 //
 // axum can automatically extract paramters from a request,
@@ -224,7 +235,7 @@ pub async fn get_items_id(axum::extract::Path(id): axum::extract::Path<String>) 
     format!("Get items with path id: {:?}", id)
 }
 
-///// 
+/////
 /// Demo books using RESTful routes and a data store.
 ///
 /// This section uses a `Book` struct, a `DATA` variable
@@ -299,7 +310,7 @@ pub async fn get_books_id_form(axum::extract::Path(id): axum::extract::Path<u32>
                 "<p><input type=\"text\" name=\"author\" value=\"{}\"></p>\n",
                 "<input type=\"submit\" value=\"Save\">\n",
                 "</form>\n"
-            ), 
+            ),
             &book.id,
             &book.id,
             &book.title,
