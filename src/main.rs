@@ -21,10 +21,8 @@
 //! For more see the file `README.md` in the project root.
 
 /// Use axum capabities.
-use axum::{
-    routing::get,
-    handler::Handler,
-};
+use axum::routing::get;
+use axum::handler::Handler;
 
 /// Use tracing crates for application-level tracing output.
 use tracing_subscriber::{

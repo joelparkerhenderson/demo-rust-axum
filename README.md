@@ -199,6 +199,12 @@ is async function returns something that can be converted into a response.
 
 Edit file `main.rs`.
 
+The demo will use the axum routing `get` function, quite often, so add code to use it:
+
+```rust
+use axum::routing::get;
+```
+
 Add a handler, which is an async function that returns a string:
 
 ```rust
@@ -289,14 +295,10 @@ For a request that fails to match anything in the router, you can use the functi
 
 Edit file `main.rs`.
 
-Add code to use axum types:
+Add code for the fallback handler trait:
 
 ```rust
-use axum::{
-    …
-    handler::Handler,
-    http::StatusCode,
-};
+use axum::handler::Handler;
 ```
 
 Modify the `Router` to add the function `fallback` as the first choice:
