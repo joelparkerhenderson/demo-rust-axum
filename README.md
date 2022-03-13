@@ -1509,7 +1509,7 @@ You learned how to:
 <div style="page-break-before:always;"></div>
 
 
-## 27. Epilog: What next
+## 27. Epilogue: What next
 
 To learn more about Rust and axum:
 
