@@ -554,6 +554,10 @@ You should see "No route for /whatever".
 
 We want our demo server to be able to do graceful shutdown.
 
+  * [Read tokio documentation about graceful shutdown](https://tokio.rs/tokio/topics/shutdown)
+
+  * [Read hyper documentation about graceful shutdown](https://hyper.rs/guides/server/graceful-shutdown/)
+
 Tokio graceful shutdown generally does these steps:
 
   * Find out when to shut down.
@@ -562,8 +566,6 @@ Tokio graceful shutdown generally does these steps:
 
   * Wait for each part of the program to shut down.
 
-  * [Read tokio documentation about graceful shutdown]https://tokio.rs/tokio/topics/shutdown
-
 Hyper graceful shutdown generally does these steps:
 
   * The server stops accepting new requests.
@@ -571,8 +573,6 @@ Hyper graceful shutdown generally does these steps:
   * The server waits for all in-progress requests to complete.
 
   * Then the server shuts down.
-
-  * [Read hyper documentation about graceful shutdown](https://hyper.rs/guides/server/graceful-shutdown/)
 
 Edit file `main.rs`.
 
