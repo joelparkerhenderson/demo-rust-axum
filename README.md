@@ -1274,6 +1274,27 @@ Get items with id: 1
 <div style="page-break-before:always;"></div>
 
 
+# RESTful routes and resources
+
+This section demonstrates how to:
+
+* Create a book struct
+
+* Create a data store
+
+* Get all books
+
+* Get one book
+
+* Put one book
+
+* Get one book as a web form
+
+* Post one book as a web form
+
+* Delete one book
+
+
 ## Create a book struct
 
 Suppose we want our app to have features related to books.
@@ -1389,7 +1410,7 @@ use std::thread;
 <div style="page-break-before:always;"></div>
 
 
-## Create a route to get all books
+## Get all books
 
 Edit file `main.rs`.
 
@@ -1398,7 +1419,9 @@ Add a route:
 ```rust
 let app = Router::new()
     …
-    .route("/books", get(get_books));
+    .route("/books",
+        get(get_books)
+    );
 ```
 
 Add a handler:
@@ -1446,7 +1469,73 @@ Output:
 <div style="page-break-before:always;"></div>
 
 
-## Create a route to put a book
+## Get one book
+
+Edit file `main.rs`.
+
+Add a route:
+
+```rust
+let app = Router::new()
+    …
+    .route("/books/:id",
+        get(get_books_id)
+    );
+```
+
+Add a handler:
+
+```rust
+/// axum handler for "GET /books/:id" which responds with one resource HTML page.
+/// This demo app uses our DATA variable, and iterates on it to find the id.
+pub async fn get_books_id(
+    axum::extract::Path(id): axum::extract::Path<u32>
+) -> axum::response::Html<String> {
+    match DATA.lock().unwrap().get(&id) {
+        Some(book) => format!("<p>{}</p>\n", &book),
+        None => format!("<p>Book id {} not found</p>", id),
+    }.into()
+}
+```
+
+
+### Try the demo…
+
+Shell:
+
+```sh
+cargo run
+```
+
+Shell:
+
+```sh
+curl 'http://localhost:3000/books/1'
+```
+
+Output:
+
+```sh
+<p>Antigone by Sophocles</p>
+```
+
+Shell:
+
+```sh
+curl 'http://localhost:3000/books/0'
+```
+
+Output:
+
+```sh
+<p>Book id 0 not found</p>
+```
+
+
+<div style="page-break-before:always;"></div>
+
+
+## Put one book
 
 Edit file `main.rs`.
 
@@ -1455,7 +1544,10 @@ Modify the route `/books` to append the function `put`:
 ```rust
 let app = Router::new()
     …
-    .route("/books", get(get_books).put(put_books));
+    .route("/books",
+        get(get_books)
+        .put(put_books)
+    );
 ```
 
 Add a handler:
@@ -1463,7 +1555,9 @@ Add a handler:
 ```rust
 /// axum handler for "PUT /books" which creates a new book resource.
 /// This demo shows how axum can extract a JSON payload into a Book struct.
-pub async fn put_books(axum::extract::Json(book): axum::extract::Json<Book>) -> axum::response::Html<String> {
+pub async fn put_books(
+    axum::extract::Json(book): axum::extract::Json<Book>
+) -> axum::response::Html<String> {
     DATA.lock().unwrap().insert(book.id, book.clone());
     format!("Put book: {}", &book).into()
 }
@@ -1512,7 +1606,7 @@ Output:
 <div style="page-break-before:always;"></div>
 
 
-## Create a route to get one book id
+## Get one book as a web form
 
 Edit file `main.rs`.
 
@@ -1521,137 +1615,9 @@ Add a route:
 ```rust
 let app = Router::new()
     …
-    .route("/books/:id", get(get_books_id));
-```
-
-Add a handler:
-
-```rust
-/// axum handler for "GET /books/:id" which responds with one resource HTML page.
-/// This demo app uses our DATA variable, and iterates on it to find the id.
-pub async fn get_books_id(axum::extract::Path(id): axum::extract::Path<u32>) -> axum::response::Html<String> {
-    match DATA.lock().unwrap().get(&id) {
-        Some(book) => format!("<p>{}</p>\n", &book),
-        None => format!("<p>Book id {} not found</p>", id),
-    }.into()
-}
-```
-
-
-### Try the demo…
-
-Shell:
-
-```sh
-cargo run
-```
-
-Shell:
-
-```sh
-curl 'http://localhost:3000/books/1'
-```
-
-Output:
-
-```sh
-<p>Antigone by Sophocles</p>
-```
-
-Shell:
-
-```sh
-curl 'http://localhost:3000/books/0'
-```
-
-Output:
-
-```sh
-<p>Book id 0 not found</p>
-```
-
-
-<div style="page-break-before:always;"></div>
-
-
-## Create a route to delete one book id
-
-Edit file `main.rs`.
-
-Modify the route `/books/:id` to append the function `delete`:
-
-```rust
-let app = Router::new()
-    …
-    .route("/books/:id", get(get_books_id).delete(delete_books_id));
-```
-
-Add a handler:
-
-```rust
-/// axum handler for "DELETE /books/:id" which destroys an existing resource.
-/// This code shows how to extract an id, then mutate the DATA variable.
-pub async fn delete_books_id(axum::extract::Path(id): axum::extract::Path<u32>) -> axum::response::Html<String> {
-    thread::spawn(move || {
-        let mut data = DATA.lock().unwrap();
-        if data.contains_key(&id) {
-            data.remove(&id);
-            format!("Delete book id: {}", &id)
-        } else {
-            format!("Book id not found: {}", &id)
-        }
-    }).join().unwrap().into()
-}
-```
-
-
-### Try the demo…
-
-Shell:
-
-```sh
-cargo run
-```
-
-Shell:
-
-```sh
-curl --request DELETE 'http://localhost:3000/books/1'
-```
-
-Output:
-
-```sh
-<p>Delete book id: 1</p>
-```
-
-Shell:
-
-```sh
-curl 'http://localhost:3000/books'
-```
-
-Output:
-
-```
-<p>Beloved by Toni Morrison</p>
-<p>Candide by Voltaire</p>
-```
-
-
-<div style="page-break-before:always;"></div>
-
-
-## Create a route to get one book as an editable form
-
-Edit file `main.rs`.
-
-Add a route:
-
-```rust
-let app = Router::new()
-    …
-    .route("/books/:id/form", get(get_books_id_form));
+    .route("/books/:id/form",
+        get(get_books_id_form)
+    );
 ```
 
 Add a handler:
@@ -1659,7 +1625,9 @@ Add a handler:
 ```rust
 /// axum handler for "GET /books/:id/form" which responds with an HTML form.
 /// This demo shows how to write a typical HTML form with input fields.
-pub async fn get_books_id_form(axum::extract::Path(id): axum::extract::Path<u32>) -> axum::response::Html<String> {
+pub async fn get_books_id_form(
+    axum::extract::Path(id): axum::extract::Path<u32>
+) -> axum::response::Html<String> {
     match DATA.lock().unwrap().get(&id) {
         Some(book) => format!(
             concat!(
@@ -1709,7 +1677,7 @@ Output:
 <div style="page-break-before:always;"></div>
 
 
-## Create a route to submit the form to update a book
+## Post one book as a web form
 
 Edit file `main.rs`.
 
@@ -1718,7 +1686,10 @@ Modify the route `/books/:id/form` to append the function `post`:
 ```rust
 let app = Router::new()
     …
-    .route("/books/:id/form", get(get_books_id_form).post(post_books_id_form));
+    .route("/books/:id/form",
+        get(get_books_id_form)
+        .post(post_books_id_form)
+    );
 ```
 
 Add a handler:
@@ -1726,7 +1697,9 @@ Add a handler:
 ```rust
 /// axum handler for "POST /books/:id/form" which submits an HTML form.
 /// This demo shows how to do a form submission then update a resource.
-pub async fn post_books_id_form(form: axum::extract::Form<Book>) -> axum::response::Html<String> {
+pub async fn post_books_id_form(
+    form: axum::extract::Form<Book>
+) -> axum::response::Html<String> {
     let new_book: Book = form.0;
     thread::spawn(move || {
         let mut data = DATA.lock().unwrap();
@@ -1774,6 +1747,79 @@ Output:
 
 ```
 <p>Antigone and Lysistra by Sophocles of Athens</p>
+<p>Beloved by Toni Morrison</p>
+<p>Candide by Voltaire</p>
+```
+
+
+<div style="page-break-before:always;"></div>
+
+
+## Delete one book
+
+Edit file `main.rs`.
+
+Modify the route `/books/:id` to append the function `delete`:
+
+```rust
+let app = Router::new()
+    …
+    .route("/books/:id",
+        get(get_books_id)
+        .delete(delete_books_id)
+    );
+```
+
+Add a handler:
+
+```rust
+/// axum handler for "DELETE /books/:id" which destroys an existing resource.
+/// This code shows how to extract an id, then mutate the DATA variable.
+pub async fn delete_books_id(
+    axum::extract::Path(id): axum::extract::Path<u32>
+) -> axum::response::Html<String> {
+    thread::spawn(move || {
+        let mut data = DATA.lock().unwrap();
+        if data.contains_key(&id) {
+            data.remove(&id);
+            format!("Delete book id: {}", &id)
+        } else {
+            format!("Book id not found: {}", &id)
+        }
+    }).join().unwrap().into()
+}
+```
+
+
+### Try the demo…
+
+Shell:
+
+```sh
+cargo run
+```
+
+Shell:
+
+```sh
+curl --request DELETE 'http://localhost:3000/books/1'
+```
+
+Output:
+
+```sh
+<p>Delete book id: 1</p>
+```
+
+Shell:
+
+```sh
+curl 'http://localhost:3000/books'
+```
+
+Output:
+
+```
 <p>Beloved by Toni Morrison</p>
 <p>Candide by Voltaire</p>
 ```
