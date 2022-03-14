@@ -6,23 +6,27 @@ Demonstration of:
 
 * [axum](https://crates.io/crates/axum): web framework that focuses on ergonomics and modularity.
 
-* [Tower](https://crates.io/crates/tower): library of modular and reusable components for building robust clients and servers.
+* [tower](https://crates.io/crates/tower): library for building robust clients and servers.
 
-* [Hyper](https://hyper.rs/): fast and safe HTTP library for the Rust language.
+* [hyper](https://hyper.rs/): fast and safe HTTP library for the Rust language.
 
-* [Tokio](https://tokio.rs): event-driven, non-blocking I/O platform for writing asynchronous I/O backed applications.
+* [tokio](https://tokio.rs): platform for writing asynchronous I/O backed applications.
 
 * [Serde](https://crates.io/crates/serde): serialization/deserialization framework.
 
-<!--
 
--->
+### Thanks
 
 Thanks to all the above projects and their authors. Donate to them if you can.
 
 Does this demo help your work? Donate here if you can via GitHub sponsors.
 
+
+### Feedback
+
 Have an idea, suggestion, or feedback? Let us know via GitHub issues.
+
+Have a code improvement or bug fix? We welcome GitHub pull requests.
 
 
 <div style="page-break-before:always;"></div>
