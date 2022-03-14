@@ -497,6 +497,59 @@ In your shell, press CTRL-C to shut down.
 <div style="page-break-before:always;"></div>
 
 
+## Create a router fallback
+
+For a request that fails to match anything in the router, you can use the function `fallback`.
+
+Edit file `main.rs`.
+
+Add code for the fallback handler trait:
+
+```rust
+use axum::handler::Handler;
+```
+
+Modify the `Router` to add the function `fallback` as the first choice:
+
+```rust
+let app = Router::new()
+    .fallback(
+        fallback.into_service()
+    ),
+    .route("/",
+        get(hello)
+    );
+```
+
+Add the `fallback` handler:
+
+```rust
+/// axum handler for any request that fails to match the router routes.
+/// This implementation returns HTTP status code Not Found (404).
+pub async fn fallback(
+    uri: axum::http::Uri
+) -> impl axum::response::IntoResponse {
+    (axum::http::StatusCode::NOT_FOUND, format!("No route for {}", uri))
+}
+```
+
+
+### Try the demo…
+
+Shell:
+
+```sh
+cargo run
+```
+
+Browse <http://localhost:3000/whatever>
+
+You should see "No route for /whatever".
+
+
+<div style="page-break-before:always;"></div>
+
+
 ## Graceful shutdown
 
 We want our demo server to be able to do graceful shutdown.
@@ -612,53 +665,6 @@ cargo run
 Browse <http://localhost:3000/hello.html>
 
 You should see the headline "Hello" and text "This is our demo.".
-
-
-<div style="page-break-before:always;"></div>
-
-
-## Create a router fallback response "not found"
-
-For a request that fails to match anything in the router, you can use the function `fallback`.
-
-Edit file `main.rs`.
-
-Add code for the fallback handler trait:
-
-```rust
-use axum::handler::Handler;
-```
-
-Modify the `Router` to add the function `fallback` as the first choice:
-
-```rust
-let app = Router::new()
-    .fallback(fallback.into_service()),
-    .route("/", get(hello));
-```
-
-Add the `fallback` handler:
-
-```rust
-/// axum handler for any request that fails to match the router routes.
-/// This implementation returns a HTTP status code 404 Not Found response.
-pub async fn fallback(uri: axum::http::Uri) -> impl axum::response::IntoResponse {
-    (axum::http::StatusCode::NOT_FOUND, format!("No route for {}", uri))
-}
-```
-
-
-### Try the demo…
-
-Shell:
-
-```sh
-cargo run
-```
-
-Browse <http://localhost:3000/whatever>
-
-You should see "No route for /whatever".
 
 
 <div style="page-break-before:always;"></div>
