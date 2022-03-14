@@ -620,6 +620,55 @@ Your shell should print "^Csignal shutdown" or possibly just "Csignal shutdown".
 <div style="page-break-before:always;"></div>
 
 
+## The whole code
+
+```rust
+use axum::routing::get;
+
+#[tokio::main]
+pub async fn main() {
+     // Build our application by creating our router.
+    let app = axum::Router::new()
+        .fallback(
+            fallback.into_service()
+        ),
+        .route("/",
+            get(hello)
+        );
+
+    // Run our application as a hyper server on http://localhost:3000.
+    axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
+        .serve(app.into_make_service())
+        .with_graceful_shutdown(shutdown_signal())
+        .await
+        .unwrap();
+}
+
+/// Tokio signal handler that will wait for a user to press CTRL+C.
+/// We use this in our hyper `Server` method `with_graceful_shutdown`.
+async fn signal_shutdown() {
+    tokio::signal::ctrl_c()
+        .await
+        .expect("expect tokio signal ctrl-c");
+    println!("signal shutdown");
+}
+
+/// axum handler for any request that fails to match the router routes.
+/// This implementation returns a HTTP status code 404 Not Found response.
+pub async fn fallback(
+    uri: axum::http::Uri
+) -> impl axum::response::IntoResponse {
+    (axum::http::StatusCode::NOT_FOUND, format!("No route for {}", uri))
+}
+
+/// axum handler for "GET /" which returns a string, which causes axum to
+/// immediately respond with a `200 OK` response, along with the plain text.
+pub async fn hello() -> String {
+    "Hello, World!".to_string()
+}
+```
+
+
 ## Create a route that responds with a HTML file
 
 Create file `hello.html`.
