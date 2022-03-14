@@ -32,21 +32,18 @@ Have a code improvement or bug fix? We welcome GitHub pull requests.
 <div style="page-break-before:always;"></div>
 
 
-## Introduction
+## What is this?
 
-axum is a web application framework that focuses on ergonomics and modularity.
+This demo is a tutorial that teaches how to build features from the groung up
+with axum and its ecosystem of tower middleware, hyper HTTP library, tokio
+asynchronous platform, and Serde data conversions.
 
-Features include:
 
-* Web request routes, async handlers, and parsers/extractors.
-
-* Simple predictable error handling, such as for HTTP 404 not found.
-
-* Utilization of dependencies and their ecosystems: [tower](https://github.com/tower-rs), [hyper](https://hyper.rs/), [tokio](https://tokio.rs), [serde](https://crates.io/crates/serde).
-
-This demo shows how to:
+### What will you learn?
 
 * Create a project using Rust and the axum web framework.
+
+* Leverage capabilties of a hyper server and tower middleware.
 
 * Create axum router routes and their handler functions.
 
@@ -54,11 +51,49 @@ This demo shows how to:
 
 * Create a binary image and respond with a custom header.
 
-* Create functionality for HTTP GET, PUT, PATCH, POST, DELETE.
+* Handle HTTP verbs including GET, PUT, PATCH, POST, DELETE.
 
 * Use axum extractors for query parameters and path parameters.
 
-* Create a data store and access it using RESTful routes.
+* Manage a data store and access it using RESTful routes.
+
+
+### What is required?
+
+Some knowledge of Rust programming is required, such as:
+
+* How to create a Rust project, build it, and run it.
+  
+* How to write functions and their parameters
+
+* How to use shell command line tools such as curl.
+
+Some knowledge about web frameworks is required, such as:
+
+* The general concepts of HTTP requests and responses.
+
+* The general concepts of of RESTful routes and resources.
+
+* The general concepts of formats for HTML, JSON, and text.
+
+
+### What is helpful?
+
+Some knowledge of web frameworks is hepful, such as:
+
+* Rust web frameworks, such as Actix, Rocket, Warp, etc.
+
+* Other languages' web frameworks, such as Rails, Phoenix, Express, etc.
+
+* Other web-related frameworks, such as React, Vue, Svelte, etc.
+
+Some knowledge of this stack can be helpful, such as:
+
+* middleware programming e.g. withv tower 
+
+* asynchronous application programming e.g. with tokio
+
+* HTTP services programming e.g. with hyper
 
 
 <div style="page-break-before:always;"></div>
