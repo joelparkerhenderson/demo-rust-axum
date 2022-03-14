@@ -1946,7 +1946,10 @@ pub async fn main() {
 <div style="page-break-before:always;"></div>
 
 
-## Conclusion: What you learned
+# Conclusion
+
+
+## What you learned
 
 You learned how to:
 
@@ -1968,15 +1971,32 @@ You learned how to:
 <div style="page-break-before:always;"></div>
 
 
-## Epilogue: What next
+## What's next
 
-To learn more about Rust and axum:
+To learn more about Rust, axum, tower, hyper, tokio, and Serde:
 
-* [The Rust book](https://doc.rust-lang.org/stable/book/) is an excellent thorough starting point.
+* [The Rust website](https://www.rust-lang.org)
 
-* [The axum crate](https://crates.io/crates/axum) has dozens of examples you can try.
+* [The Rust book](https://doc.rust-lang.org/stable/book/) are excellent and thorough.
 
-* [The Tokio website](https://tokio.rs/)
+* [The book Asynchronous Programming in Rust](https://rust-lang.github.io/async-book/)
+
+* [The axum repo](https://github.com/tokio-rs/axum)
+  and [axux crate](https://crates.io/crates/axum) provide dozens of runnable examples.
+
+* [The tower website](https://tower.rs)
+  and [tower crate](https://crates.io/crates/tower)
+
+* [The hyper website](https://hyper.rs/)
+  and [hyper crate](https://crates.io/crates/hyper).
+
+* [The tokio website](https://tokio.rs/)
+  and [tokio crate](https://crates.io/crates/tokio).
+
+* [The Serde crate](https://crates.io/crates/serde)
+
+
+### Feedback
 
 We welcome constructive feedback via GitHub issues:
 
@@ -1985,4 +2005,3 @@ We welcome constructive feedback via GitHub issues:
 * Any requests for new demo sections or example topics?
 
 * Any bugs or issues in the demo code or documentation?
-
