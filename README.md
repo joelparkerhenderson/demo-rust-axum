@@ -28,7 +28,7 @@ Have an idea, suggestion, or feedback? Let us know via GitHub issues.
 <div style="page-break-before:always;"></div>
 
 
-## 1. Introduction
+## Introduction
 
 axum is a web application framework that focuses on ergonomics and modularity.
 
@@ -60,7 +60,7 @@ This demo shows how to:
 <div style="page-break-before:always;"></div>
 
 
-## 2. Hello, World!
+## Hello, World!
 
 Create a typical new Rust project:
 
@@ -122,7 +122,7 @@ You should see "Hello, World!".
 In your shell, press CTRL-C to shut down.
 
 
-## 3. Graceful shutdown
+## Graceful shutdown
 
 We want our demo server to be able to do graceful shutdown. 
 
@@ -192,7 +192,7 @@ Your shell should print "^Csignal shutdown" or possibly just "Csignal shutdown".
 <div style="page-break-before:always;"></div>
 
 
-## 4. Create a new route and handler function
+## Create a new route and handler function
 
 An axum route can call an function, which is called an axum handler. The handler
 is async function returns something that can be converted into a response.
@@ -239,7 +239,7 @@ You should see "Hello, World!".
 <div style="page-break-before:always;"></div>
 
 
-## 5. Create a route that responds with a HTML file
+## Create a route that responds with a HTML file
 
 Create file `hello.html`.
 
@@ -289,7 +289,7 @@ You should see the headline "Hello" and text "This is our demo.".
 <div style="page-break-before:always;"></div>
 
 
-## 6. Create a router fallback response "not found"
+## Create a router fallback response "not found"
 
 For a request that fails to match anything in the router, you can use the function `fallback`.
 
@@ -336,7 +336,7 @@ You should see "No route for /whatever".
 <div style="page-break-before:always;"></div>
 
 
-## 7. Create a response with HTTP status code OK
+## Create a response with HTTP status code OK
 
 Edit file `main.rs`.
 
@@ -384,7 +384,7 @@ You should see "Everything is OK".
 <div style="page-break-before:always;"></div>
 
 
-## 8. Create a response that echos the URI
+## Create a response that echos the URI
 
 Edit file `main.rs`.
 
@@ -423,7 +423,7 @@ You should see "The URI is: /demo-uri!".
 <div style="page-break-before:always;"></div>
 
 
-## 9. Create routes and handlers for HTTP verbs
+## Create routes and handlers for HTTP verbs
 
 axum routes can use HTTP verbs, including GET, PUT, PATCH, POST, DELETE.
 
@@ -555,7 +555,7 @@ curl --request GET 'http://localhost:3000/foo'
 <div style="page-break-before:always;"></div>
 
 
-## 10. Create a response with HTML text
+## Create a response with HTML text
 
 Edit file `main.rs`.
 
@@ -603,7 +603,7 @@ You should see HTML with headline text "Hello".
 <div style="page-break-before:always;"></div>
 
 
-## 11. Create a response with an image and header
+## Create a response with an image and header
 
 Edit file `Cargo.toml`.
 
@@ -655,7 +655,7 @@ You browser should download a a one-pixel transparent PNG image.
 <div style="page-break-before:always;"></div>
 
 
-## 12. Create a route that gets JSON data
+## Create a route that gets JSON data
 
 axum has capabilties for working with JSON data.
 
@@ -725,7 +725,7 @@ Output:
 <div style="page-break-before:always;"></div>
 
 
-## 13. Create a route that extracts its JSON payload
+## Create a route that extracts its JSON payload
 
 Edit file `main.rs`.
 
@@ -785,7 +785,7 @@ Put demo JSON payload: Object({"a": String("b")})
 <div style="page-break-before:always;"></div>
 
 
-## 14. Create a route that extracts query parameters
+## Create a route that extracts query parameters
 
 An axum "extractor" is how you pick apart the incoming request in order to get
 any parts that your handler needs.
@@ -841,7 +841,7 @@ Get items with query params: {"a": "b"}
 <div style="page-break-before:always;"></div>
 
 
-## 15. Create a route that extracts path parameters
+## Create a route that extracts path parameters
 
 Add a route using path parameter syntax, such as ":id", in order to tell axum to
 extract a path parameter and deserialize it into a variable named `id`.
@@ -891,7 +891,7 @@ Get items with id: 1
 <div style="page-break-before:always;"></div>
 
 
-## 16. Create a book struct
+## Create a book struct
 
 Suppose we want our app to have features related to books.
 
@@ -943,7 +943,7 @@ use crate::book::Book;
 <div style="page-break-before:always;"></div>
 
 
-## 17. Create a data store
+## Create a data store
 
 For a production app, we could implement the data by using a database.
 
@@ -1006,7 +1006,7 @@ use std::thread;
 <div style="page-break-before:always;"></div>
 
 
-## 18. Create a route to get all books
+## Create a route to get all books
 
 Edit file `main.rs`.
 
@@ -1063,7 +1063,7 @@ Output:
 <div style="page-break-before:always;"></div>
 
 
-## 19. Create a route to put a book
+## Create a route to put a book
 
 Edit file `main.rs`.
 
@@ -1129,7 +1129,7 @@ Output:
 <div style="page-break-before:always;"></div>
 
 
-## 20. Create a route to get one book id
+## Create a route to get one book id
 
 Edit file `main.rs`.
 
@@ -1191,7 +1191,7 @@ Output:
 <div style="page-break-before:always;"></div>
 
 
-## 21. Create a route to delete one book id
+## Create a route to delete one book id
 
 Edit file `main.rs`.
 
@@ -1259,7 +1259,7 @@ Output:
 <div style="page-break-before:always;"></div>
 
 
-## 22. Create a route to get one book as an editable form
+## Create a route to get one book as an editable form
 
 Edit file `main.rs`.
 
@@ -1326,7 +1326,7 @@ Output:
 <div style="page-break-before:always;"></div>
 
 
-## 23. Create a route to submit the form to update a book
+## Create a route to submit the form to update a book
 
 Edit file `main.rs`.
 
@@ -1399,7 +1399,7 @@ Output:
 <div style="page-break-before:always;"></div>
 
 
-## 24. Bonus: Add a Tower tracing subscriber
+## Bonus: Add a Tower tracing subscriber
 
 Edit file `Cargo.toml`.
 
@@ -1456,7 +1456,7 @@ You should see console output that shows tracing initialization such as:
 <div style="page-break-before:always;"></div>
 
 
-## 25. Bonus: Refactor to use a host, port, and socket address
+## Bonus: Refactor to use a host, port, and socket address
 
 To bind the server, our demo code uses a socket address string.
 
@@ -1487,7 +1487,7 @@ pub async fn main() {
 <div style="page-break-before:always;"></div>
 
 
-## 26. Conclusion: What you learned
+## Conclusion: What you learned
 
 You learned how to:
 
@@ -1509,7 +1509,7 @@ You learned how to:
 <div style="page-break-before:always;"></div>
 
 
-## 27. Epilogue: What next
+## Epilogue: What next
 
 To learn more about Rust and axum:
 
