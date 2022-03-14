@@ -63,7 +63,7 @@ asynchronous platform, and Serde data conversions.
 Some knowledge of Rust programming is required, such as:
 
 * How to create a Rust project, build it, and run it.
-  
+ 
 * How to write functions and their parameters
 
 * How to use shell command line tools such as curl.
@@ -89,7 +89,7 @@ Some knowledge of web frameworks is hepful, such as:
 
 Some knowledge of this stack can be helpful, such as:
 
-* middleware programming e.g. withv tower 
+* middleware programming e.g. withv tower
 
 * asynchronous application programming e.g. with tokio
 
@@ -118,9 +118,9 @@ High level features:
 
 The tower ecosystem is what sets axum apart from other frameworks:
 
-* axum doesn’t have its own middleware system but instead uses tower::Service. 
+* axum doesn’t have its own middleware system but instead uses tower::Service.
 
-* axum gets timeouts, tracing, compression, authorization, and more, for free. 
+* axum gets timeouts, tracing, compression, authorization, and more, for free.
 
 * axum can share middleware with applications written using hyper or tonic.
 
@@ -131,10 +131,10 @@ The tower ecosystem is what sets axum apart from other frameworks:
 battle-tested libraries for middleware, asynchronous programming, and HTTP.
 
 * axum is primed to reach developers who are currently using
-other Rust web frameworks, such as Actix, Rocket, Warp, and others. 
+other Rust web frameworks, such as Actix, Rocket, Warp, and others.
 
 * axum is likely to appeal to programmers are seeking afaster
-web framework and who want closer-to-the-metal capabilties.  
+web framework and who want closer-to-the-metal capabilties. 
 
 
 ### Hello, World!
@@ -143,7 +143,7 @@ web framework and who want closer-to-the-metal capabilties.
 #[tokio::main]
 async fn main() {
     // Build our application with a single route.
-    let app = axum::Router::new().route("/", 
+    let app = axum::Router::new().route("/",
         axum::handler::get(|| async { "Hello, World!" }));
 
     // Run our application as a hyper server on http://localhost:3000.
@@ -160,14 +160,14 @@ async fn main() {
 
 ## What is tower?
 
-Tower is a library of modular and reusable components for building robust networking clients and servers.  
+Tower is a library of modular and reusable components for building robust networking clients and servers. 
 
 Tower aims to make it as easy as possible to build robust networking clients and servers. It is protocol agnostic, but is designed around a request / response pattern. If your protocol is entirely stream based, Tower may not be a good fit.
 
 
 ### Service
 
-At Tower's core is the Service trait. A Service is an asynchronous function that takes a request and produces a response. 
+At Tower's core is the Service trait. A Service is an asynchronous function that takes a request and produces a response.
 
 ```rust
 pub trait Service<Request> {
@@ -225,9 +225,9 @@ let response = service
 
 hyper is a relatively low-level library, meant to be a building block for libraries and applications.
 
-If you are looking for a convenient HTTP client, then you may wish to consider [reqwest](https://github.com/seanmonstar/reqwest). 
+If you are looking for a convenient HTTP client, then you may wish to consider [reqwest](https://github.com/seanmonstar/reqwest).
 
-If you are looking for a convenient HTTP server, then you may wish to consider [warp](https://github.com/seanmonstar/warp). 
+If you are looking for a convenient HTTP server, then you may wish to consider [warp](https://github.com/seanmonstar/warp).
 
 Both are built on top of hyper.
 
@@ -266,13 +266,13 @@ async fn main() {
 
 ## What is tokio?
 
-[tokio](https://tokio.rs/) is an asynchronous runtime for the Rust programming language. 
+[tokio](https://tokio.rs/) is an asynchronous runtime for the Rust programming language.
 
-* Building blocks for writing network applications. 
+* Building blocks for writing network applications.
 
 * Flexibility to target a wide range of systems.
 
-* Memory-safe, thread-safe, and misuse-resistant. 
+* Memory-safe, thread-safe, and misuse-resistant.
 
 The tokio stack includes:
 
@@ -282,7 +282,7 @@ The tokio stack includes:
 
 * Tonic: A boilerplate-free gRPC client and server library for network APIS.
 
-* Tower: Modular components for building reliable clients and servers. 
+* Tower: Modular components for building reliable clients and servers.
 
 * Mio: Minimal portable API on top of the operating-system's evented I/O API.
 
@@ -329,20 +329,20 @@ async fn main() -> Result<()> {
 
 Serde is a framework for serializing and deserializing Rust data structures efficiently and generically.
 
-* The Serde ecosystem consists of data structures that know how to serialize and deserialize themselves along with data formats that know how to serialize and deserialize other things. 
+* The Serde ecosystem consists of data structures that know how to serialize and deserialize themselves along with data formats that know how to serialize and deserialize other things.
 
 * Serde provides the layer by which these two groups interact with each other, allowing any supported data structure to be serialized and deserialized using any supported data format.
 
 
 ### Design
 
-Serde is built on Rust's powerful trait system. 
+Serde is built on Rust's powerful trait system.
 
 * Serde provides the `Serialize` trait and `Deserialize` trait for data structures.
 
-* Serde provides `derive` attributes, to generate implementations at compile time. 
+* Serde provides `derive` attributes, to generate implementations at compile time.
 
-* Serde has no runtime overhead such as reflection or runtime type information. 
+* Serde has no runtime overhead such as reflection or runtime type information.
 
 * In many situations the interaction between data structure and data format can be completely optimized away by the Rust compiler.
 
@@ -392,12 +392,23 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-axum = "0.4.8" # Web framework that focuses on ergonomics and modularity.
-hyper = { version = "0.14.17", features = ["full"] } # A fast and correct HTTP library.
-tokio = { version = "1.17.0", features = ["full"] } # Event-driven, non-blocking I/O platform.
-tower = "0.4.12" # Modular reusable components for building robust clients and servers.
-serde = { version = "1.0.136", features = ["derive"] } # A serialization/deserialization framework.
-serde_json = "1.0.79" # Serde serializion/deserialization of JSON data.
+# Web framework that focuses on ergonomics and modularity.
+axum = "0.4.8"
+
+# Modular reusable components for building robust clients and servers.
+tower = "0.4.12"
+
+# A fast and correct HTTP library.
+hyper = { version = "0.14.17", features = ["full"] }
+
+# Event-driven, non-blocking I/O platform.
+tokio = { version = "1.17.0", features = ["full"] }
+
+# A serialization/deserialization framework.
+serde = { version = "1.0.136", features = ["derive"] }
+
+# Serde serializion/deserialization of JSON data.
+serde_json = "1.0.79"
 ```
 
 Edit file `src/main.rs`.
@@ -407,17 +418,18 @@ Edit file `src/main.rs`.
 pub async fn main() {
      // Build our application by creating our router.
     let app = axum::Router::new()
-        .route("/", axum::routing::get(|| async { "Hello, World!" }));
+        .route("/",
+            axum::routing::get(|| async { "Hello, World!" })
+        );
 
-    // Run our application by using hyper and URL http://localhost:3000.
-    // The `Server` is a hyper server, which means you can use any hyper
-    // server functions, such as `bind`, `with_graceful_fallback`, etc.
+    // Run our application as a hyper server on http://localhost:3000.
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
         .serve(app.into_make_service())
         .await
         .unwrap();
 }
 ```
+
 
 ### Try the demo…
 
@@ -436,7 +448,7 @@ In your shell, press CTRL-C to shut down.
 
 ## Graceful shutdown
 
-We want our demo server to be able to do graceful shutdown. 
+We want our demo server to be able to do graceful shutdown.
 
 Tokio graceful shutdown generally does these steps:
 
@@ -943,7 +955,7 @@ Add a handler:
 /// This sets a header "image/png" then sends the decoded image data.
 async fn get_demo_png() -> impl axum::response::IntoResponse {
     let png = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPk+89QDwADvgGOSHzRgAAAAABJRU5ErkJggg==";
-    ( 
+    (
         axum::response::Headers([(axum::http::header::CONTENT_TYPE, "image/png")]),
         base64::decode(png).unwrap(),
     )
