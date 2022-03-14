@@ -669,7 +669,80 @@ pub async fn hello() -> String {
 ```
 
 
-## Create a route that responds with a HTML file
+<div style="page-break-before:always;"></div>
+
+
+# Create axum routes and axum handlers
+
+This section shows how to:
+
+* Respond with HTML text
+
+* Respond with a HTML file
+
+* Respond with HTTP status code OK
+
+* Respond with the request URI
+
+* Respond with a custom header and image
+
+* Respond to mutiple HTTP verbs
+
+
+<div style="page-break-before:always;"></div>
+
+
+##  Respond with HTML text
+
+Edit file `main.rs`.
+
+Add code to use `Html`:
+
+```rust
+use axum::{
+    …
+    response::Html,
+};
+```
+
+Add a route:
+
+```rust
+let app = Router::new()
+    …
+    .route("/demo.html",
+        get(get_demo_html)
+    );
+```
+
+Add a handler:
+
+```rust
+/// axum handler for "GET /demo.html" which responds with HTML text.
+/// The `Html` type sets an HTTP header content-type of `text/html`.
+pub async fn get_demo_html() -> axum::response::Html<&'static str> {
+    "<h1>Hello</h1>".into()
+}
+```
+
+
+### Try the demo…
+
+Shell:
+
+```sh
+cargo run
+```
+
+Browse <http://localhost:3000/demo.html>
+
+You should see HTML with headline text "Hello".
+
+
+<div style="page-break-before:always;"></div>
+
+
+## Respond with a HTML file
 
 Create file `hello.html`.
 
@@ -687,16 +760,17 @@ Add route:
 ```rust
 let app = Router::new()
     …
-    .route("/hello.html", get(hello_html))
+    .route("/hello.html",
+        get(hello_html)
+    )
 ```
 
 Add handler:
 
 ```rust
-/// axum handler that responds with a typical HTML file.
-/// This uses the Rust `std::include_str` macro to include a UTF-8 file
-/// as `&'static str` in compile time; the path is relative to `main.rs`.
-/// Credit <https://github.com/programatik29/axum-tutorial>
+/// axum handler that responds with typical HTML coming from a file.
+/// This uses the Rust macro `std::include_str` to include a UTF-8 file
+/// path, relative to `main.rs`, as a `&'static str` at compile time.
 async fn hello_html() -> axum::response::Html<&'static str> {
     include_str!("hello.html").into()
 }
@@ -719,7 +793,7 @@ You should see the headline "Hello" and text "This is our demo.".
 <div style="page-break-before:always;"></div>
 
 
-## Create a response with HTTP status code OK
+## Respond with HTTP status code OK
 
 Edit file `main.rs`.
 
@@ -737,14 +811,16 @@ Add a route:
 ```rust
 let app = Router::new()
     …
-    .route("/demo-status", get(demo_status));
+    .route("/demo-status",
+        get(demo_status)
+    );
 ```
 
 Add a handler:
 
 ```rust
-/// axum handler for "GET /demo-status" which returns a HTTP status code, such
-/// as HTTP status code 200 OK, and an arbitrary user-visible string message.
+/// axum handler for "GET /demo-status" which returns a HTTP status
+/// code, such as OK (200), and a custom user-visible string message.
 pub async fn demo_status() -> (axum::http::StatusCode, String) {
     (axum::http::StatusCode::OK, "Everything is OK".to_string())
 }
@@ -767,7 +843,7 @@ You should see "Everything is OK".
 <div style="page-break-before:always;"></div>
 
 
-## Create a response that echos the URI
+## Respond with the request URI
 
 Edit file `main.rs`.
 
@@ -776,7 +852,9 @@ Add a route:
 ```rust
 let app = Router::new()
     …
-    .route("/demo-uri", get(demo_uri));
+    .route("/demo-uri",
+        get(demo_uri)
+    );
 ```
 
 Add a handler:
@@ -806,7 +884,67 @@ You should see "The URI is: /demo-uri!".
 <div style="page-break-before:always;"></div>
 
 
-## Respond to HTTP verbs
+## Respond with a custom header and image
+
+Edit file `Cargo.toml`.
+
+Add dependencies:
+
+```rust
+base64 = "0.13" # Encode and decode base64 as bytes or utf8.
+http = "0.2.6" # Types for HTTP requests and responses.
+```
+
+Edit file `main.rs`.
+
+Add a route:
+
+```rust
+let app = Router::new()
+    …
+    .route("/demo.png",
+        get(get_demo_png)
+    )
+```
+
+Add a handler:
+
+```rust
+/// axum handler for "GET /demo.png" which responds with an image PNG.
+/// This sets a header "image/png" then sends the decoded image data.
+async fn get_demo_png() -> impl axum::response::IntoResponse {
+    let png = concat!(
+        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB",
+        "CAYAAAAfFcSJAAAADUlEQVR42mPk+89Q",
+        "DwADvgGOSHzRgAAAAABJRU5ErkJggg=="
+    );
+    (
+        axum::response::Headers([
+            (axum::http::header::CONTENT_TYPE, "image/png"),
+        ]),
+        base64::decode(png).unwrap(),
+    )
+}
+```
+
+
+### Try the demo…
+
+Shell:
+
+```sh
+cargo run
+```
+
+Browse <http://localhost:3000/demo.png>
+
+You browser should download a a one-pixel transparent PNG image.
+
+
+<div style="page-break-before:always;"></div>
+
+
+## Respond to multiple HTTP verbs
 
 axum routes can use HTTP verbs, including GET, PUT, PATCH, POST, DELETE.
 
@@ -939,106 +1077,6 @@ curl 'http://localhost:3000/foo'
 
 curl --request GET 'http://localhost:3000/foo'
 ```
-
-
-<div style="page-break-before:always;"></div>
-
-
-## Create a response with HTML text
-
-Edit file `main.rs`.
-
-Add code to use `Html`:
-
-```rust
-use axum::{
-    …
-    response::Html,
-};
-```
-
-Add a route:
-
-```rust
-let app = Router::new()
-    …
-    .route("/demo.html", get(get_demo_html));
-```
-
-Add a handler:
-
-```rust
-/// axum handler for "GET /demo.html" which responds with HTML text.
-/// The `Html` type sets an HTTP header content-type of `text/html`.
-pub async fn get_demo_html() -> axum::response::Html<&'static str> {
-    "<h1>Hello</h1>".into()
-}
-```
-
-
-### Try the demo…
-
-Shell:
-
-```sh
-cargo run
-```
-
-Browse <http://localhost:3000/demo.html>
-
-You should see HTML with headline text "Hello".
-
-
-<div style="page-break-before:always;"></div>
-
-
-## Create a response with an image and header
-
-Edit file `Cargo.toml`.
-
-Add dependencies:
-
-```rust
-base64 = "0.13" # Encode and decode base64 as bytes or utf8.
-http = "0.2.6" # Types for HTTP requests and responses.
-```
-
-Edit file `main.rs`.
-
-Add a route:
-
-```rust
-let app = Router::new()
-    …
-    .route("/demo.png", get(get_demo_png))
-```
-
-Add a handler:
-
-```rust
-/// axum handler for "GET /demo.png" which responds with an image PNG.
-/// This sets a header "image/png" then sends the decoded image data.
-async fn get_demo_png() -> impl axum::response::IntoResponse {
-    let png = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPk+89QDwADvgGOSHzRgAAAAABJRU5ErkJggg==";
-    (
-        axum::response::Headers([(axum::http::header::CONTENT_TYPE, "image/png")]),
-        base64::decode(png).unwrap(),
-    )
-}
-```
-
-
-### Try the demo…
-
-Shell:
-
-```sh
-cargo run
-```
-
-Browse <http://localhost:3000/demo.png>
-
-You browser should download a a one-pixel transparent PNG image.
 
 
 <div style="page-break-before:always;"></div>
