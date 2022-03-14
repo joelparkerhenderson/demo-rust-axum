@@ -806,7 +806,7 @@ You should see "The URI is: /demo-uri!".
 <div style="page-break-before:always;"></div>
 
 
-## Create routes and handlers for HTTP verbs
+## Respond to HTTP verbs
 
 axum routes can use HTTP verbs, including GET, PUT, PATCH, POST, DELETE.
 
@@ -817,7 +817,13 @@ Add axum routes for each HTTP verb:
 ```rust
 let app = Router::new()
     …
-    .route("/foo", get(get_foo).put(put_foo).patch(patch_foo).post(post_foo).delete(delete_foo))
+    .route("/foo",
+        get(get_foo)
+        .put(put_foo)
+        .patch(patch_foo)
+        .post(post_foo)
+        .delete(delete_foo)
+    )
 ```
 
 Add axum handlers:
