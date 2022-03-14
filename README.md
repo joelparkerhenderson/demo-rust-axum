@@ -1038,46 +1038,51 @@ You browser should download a a one-pixel transparent PNG image.
 <div style="page-break-before:always;"></div>
 
 
-## Create a route that gets JSON data
+# Extrators
 
-axum has capabilties for working with JSON data.
+An axum "extractor" is how you pick apart the incoming request in order to get
+any parts that your handler needs.
 
-The axum extractor for JSON can also help with a request, by deserializing a
-request body into some type that implements serde::Deserialize. If the axum
-extractor is unable to parse the request body, or the request does not contain
-the Content-Type: application/json header, then the axum extractor will reject
-the request and return a 400 Bad Request response.
+TODO: write this section's introduction
 
-The axum extractor for JSON can help with a response, by formating JSON data
-then setting the response application content type.
+This section shows how to:
+
+* Extract path parameters
+
+* Extract query parameters
+
+* Extract a JSON payload
+
+* Respond with a JSON payload
+
+
+## Extract path parameters
+
+Add a route using path parameter syntax, such as ":id", in order to tell axum to
+extract a path parameter and deserialize it into a variable named `id`.
 
 Edit file `main.rs`.
-
-Add code to use Serde JSON:
-
-```rust
-/// Use Serde JSON to serialize/deserialize JSON, such as the request body.
-/// axum creates JSON payloads or extracts them by using `axum::extract::Json`.
-/// For the implementation, see functions `get_demo_json` and `post_demo_json`.
-use serde_json::{json, Value};
-```
 
 Add a route:
 
 ```rust
 let app = Router::new()
     …
-    .route("/demo-json", get(get_demo_json));
+    .route("/items/:id",
+        get(get_items_id)
+    );
 ```
 
 Add a handler:
 
 ```rust
-/// axum handler for "GET /demo.json" which shows how to return JSON data.
-/// The `Json` type sets an HTTP header content-type of `application/json`.
-/// The `Json` type works with any type that implements `serde::Serialize`.
-pub async fn get_demo_json() -> axum::extract::Json<Value> {
-    json!({"a":"b"}).into()
+/// axum handler for "GET /items/:id" which uses `axum::extract::Path`.
+/// This extracts a path parameter then deserializes it as needed.
+pub async fn get_items_id(
+    axum::extract::Path(id):
+        axum::extract::Path<String>
+) -> String {
+    format!("Get items with path id: {:?}", id)
 }
 ```
 
@@ -1090,25 +1095,87 @@ Shell:
 cargo run
 ```
 
-To request JSON with curl, set a custom HTTP header like this:
+Shell:
 
 ```sh
-curl \
---header "Accept: application/json" \
---request GET 'http://localhost:3000/demo-json'
+curl 'http://localhost:3000/items/1'
 ```
 
-Output:
+Ouput:
 
 ```sh
-{"a":"b"}
+Get items with id: 1
 ```
 
 
 <div style="page-break-before:always;"></div>
 
 
-## Create a route that extracts its JSON payload
+## Extract query parameters
+
+Edit file `main.rs`.
+
+Add code to use HashMap to deserialize query parameters into a key-value map:
+
+```rust
+use std::collections::HashMap;
+```
+
+Add a route:
+
+```rust
+let app = Router::new()
+    …
+    .route("/items",
+        get(get_items)
+    );
+```
+
+Add a handler:
+
+```rust
+/// axum handler for "GET /items" which uses `axum::extract::Query`.
+/// This extracts query parameters and creates a key-value pair map.
+pub async fn get_items(
+    axum::extract::Query(params):
+        axum::extract::Query<HashMap<String, String>>
+) -> String {
+    format!("Get items with query params: {:?}", params)
+}
+```
+
+
+### Try the demo…
+
+Shell:
+
+```sh
+cargo run
+```
+
+Shell:
+
+```sh
+curl 'http://localhost:3000/items?a=b'
+```
+
+Output:
+
+```sh
+Get items with query params: {"a": "b"}
+```
+
+
+<div style="page-break-before:always;"></div>
+
+
+## Extract a JSON payload
+
+The axum extractor for JSON can deserializing a request body into some type that
+implements serde::Deserialize. If the extractor is unable to parse the
+request body, or the request does not contain the `Content-Type: application/json
+header`, then the extractor will reject the request and respond with `400 Bad
+Request`.
 
 Edit file `main.rs`.
 
@@ -1126,7 +1193,10 @@ Modify the route `/demo.json` to append the function `put`:
 ```rust
 let app = Router::new()
     …
-    .route("/demo.json", get(get_demo_json).put(put_demo_json))
+    .route("/demo.json",
+        get(get_demo_json)
+        .put(put_demo_json)
+    )
 ```
 
 Add a handler:
@@ -1135,7 +1205,9 @@ Add a handler:
 /// axum handler for "PUT /demo-json" which shows how to use `aumx::extract::Json`.
 /// This buffers the request body then deserializes it into a `serde_json::Value`.
 /// The axum `Json` type supports any type that implements `serde::Deserialize`.
-pub async fn put_demo_json(axum::extract::Json(payload): axum::extract::Json<serde_json::Value>) -> String{
+pub async fn put_demo_json(
+    axum::extract::Json(payload): axum::extract::Json<serde_json::Value>
+) -> String{
     format!("Put demo JSON payload: {:?}", payload)
 }
 ```
@@ -1168,17 +1240,20 @@ Put demo JSON payload: Object({"a": String("b")})
 <div style="page-break-before:always;"></div>
 
 
-## Create a route that extracts query parameters
+## Respond with a JSON payload
 
-An axum "extractor" is how you pick apart the incoming request in order to get
-any parts that your handler needs.
+The axum extractor for JSON can help with a response, by formating JSON data
+then setting the response application content type.
 
 Edit file `main.rs`.
 
-Add code to use HashMap to deserialize query parameters into a key-value map:
+Add code to use Serde JSON:
 
 ```rust
-use std::collections::HashMap;
+/// Use Serde JSON to serialize/deserialize JSON, such as in a request.
+/// axum creates JSON or extracts it by using `axum::extract::Json`.
+/// For this demo, see functions `get_demo_json` and `post_demo_json`.
+use serde_json::{json, Value};
 ```
 
 Add a route:
@@ -1186,16 +1261,19 @@ Add a route:
 ```rust
 let app = Router::new()
     …
-    .route("/items", get(get_items));
+    .route("/demo-json",
+        get(get_demo_json)
+    );
 ```
 
 Add a handler:
 
 ```rust
-/// axum handler for "GET /item" which shows how to use `axum::extrac::Query`.
-/// This extracts query parameters then deserializes them into a key-value map.
-pub async fn get_items(axum::extract::Query(params): axum::extract::Query<HashMap<String, String>>) -> String {
-    format!("Get items with query params: {:?}", params)
+/// axum handler for "PUT /demo-json" which uses `aumx::extract::Json`.
+/// This buffers the request body then deserializes it bu using serde.
+/// The `Json` type supports types that implements `serde::Deserialize`.
+pub async fn get_demo_json() -> axum::extract::Json<Value> {
+    json!({"a":"b"}).into()
 }
 ```
 
@@ -1208,66 +1286,18 @@ Shell:
 cargo run
 ```
 
-Shell:
+To request JSON with curl, set a custom HTTP header like this:
 
 ```sh
-curl 'http://localhost:3000/items?a=b'
+curl \
+--header "Accept: application/json" \
+--request GET 'http://localhost:3000/demo-json'
 ```
 
 Output:
 
 ```sh
-Get items with query params: {"a": "b"}
-```
-
-
-<div style="page-break-before:always;"></div>
-
-
-## Create a route that extracts path parameters
-
-Add a route using path parameter syntax, such as ":id", in order to tell axum to
-extract a path parameter and deserialize it into a variable named `id`.
-
-Edit file `main.rs`.
-
-Add a route:
-
-```rust
-let app = Router::new()
-    …
-    .route("/items/:id", get(get_items_id));
-```
-
-Add a handler:
-
-```rust
-/// axum handler for "GET /items/:id" which shows how to use `axum::extract::Path`.
-/// This extracts a path parameter then deserializes it as needed.
-pub async fn get_items_id(axum::extract::Path(id): axum::extract::Path<String>) -> String {
-    format!("Get items with path id: {:?}", id)
-}
-```
-
-
-### Try the demo…
-
-Shell:
-
-```sh
-cargo run
-```
-
-Shell:
-
-```sh
-curl 'http://localhost:3000/items/1'
-```
-
-Ouput:
-
-```sh
-Get items with id: 1
+{"a":"b"}
 ```
 
 
