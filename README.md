@@ -446,6 +446,57 @@ You should see "Hello, World!".
 In your shell, press CTRL-C to shut down.
 
 
+## Create a handler function
+
+An axum route can call an axum handler, which is an async function that returns
+anything that axum can convert into a response.
+
+Edit file `main.rs`.
+
+Our demos will use the axum routing `get` function, very often, so add code to use it:
+
+```rust
+use axum::routing::get;
+```
+
+Add a handler, which is an async function that returns a string:
+
+```rust
+/// axum handler for "GET /" which returns a string and causes axum to
+/// immediately respond with status code `200 OK` and with the string.
+pub async fn hello() -> String {
+   "Hello, World!".into()
+}
+```
+
+Modify the `Router` code like this:
+
+```rust
+let app = Router::new()
+    .route("/",
+        get(hello)
+    );
+```
+
+
+### Try the demo…
+
+Shell:
+
+```sh
+cargo run
+```
+
+Browse <http://localhost:3000>
+
+You should see "Hello, World!".
+
+In your shell, press CTRL-C to shut down.
+
+
+<div style="page-break-before:always;"></div>
+
+
 ## Graceful shutdown
 
 We want our demo server to be able to do graceful shutdown.
@@ -511,53 +562,6 @@ You should see "Hello, World!".
 In your shell, press CTRL-C.
 
 Your shell should print "^Csignal shutdown" or possibly just "Csignal shutdown".
-
-
-<div style="page-break-before:always;"></div>
-
-
-## Create a new route and handler function
-
-An axum route can call an function, which is called an axum handler. The handler
-is async function returns something that can be converted into a response.
-
-Edit file `main.rs`.
-
-The demo will use the axum routing `get` function, quite often, so add code to use it:
-
-```rust
-use axum::routing::get;
-```
-
-Add a handler, which is an async function that returns a string:
-
-```rust
-/// axum handler for "GET /" which returns a string, which causes axum to
-/// immediately respond with a `200 OK` response, along with the plain text.
-pub async fn hello() -> String {
-   "Hello, World!".to_string()
-}
-```
-
-Modify the `Router` code like this:
-
-```rust
-let app = Router::new()
-    .route("/", get(hello));
-```
-
-
-### Try the demo…
-
-Shell:
-
-```sh
-cargo run
-```
-
-Browse <http://localhost:3000>
-
-You should see "Hello, World!".
 
 
 <div style="page-break-before:always;"></div>
