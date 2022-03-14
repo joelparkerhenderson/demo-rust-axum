@@ -1858,7 +1858,16 @@ Output:
 <div style="page-break-before:always;"></div>
 
 
-## Bonus: Add a Tower tracing subscriber
+# Extras
+
+This section shows how to:
+
+* Add a Tower tracing subscriber
+
+* Use a host, port, and socket address
+
+
+## Add a Tower tracing subscriber
 
 Edit file `Cargo.toml`.
 
@@ -1915,7 +1924,7 @@ You should see console output that shows tracing initialization such as:
 <div style="page-break-before:always;"></div>
 
 
-## Bonus: Refactor to use a host, port, and socket address
+## Use a host, port, and socket address
 
 To bind the server, our demo code uses a socket address string.
 
