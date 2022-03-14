@@ -2056,3 +2056,8 @@ The axum source code repository includes many project examples, and these exampl
 * [validator](https://github.com/tokio-rs/axum/tree/main/examples/validator)
 * [versioning](https://github.com/tokio-rs/axum/tree/main/examples/versioning)
 * [websockets](https://github.com/tokio-rs/axum/tree/main/examples/websockets)
+
+
+## About the demo author
+
+Joel Parker Henderson is a programmer who specializes in techology consulting. They have coded with Ruby on Rails, Phoenix for Elixir, Express for JavaScript, and other web frameworks. They create open source projects, including [Git Alias](https://github.com/gitalias/gitalias) for advanced git users, [Num Command](https://github.com/numcommand/num) for unix command-line statistics, and [Architecture Decision Record](https://github.com/joelparkerhenderson/architecture-decision-record) for software teams. See <https://linkedin.com/in/joelparkerhenderson> and <https://github.com/joelparkerhenderson>.
