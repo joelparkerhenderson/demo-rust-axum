@@ -35,9 +35,9 @@ use tracing_subscriber::{
 /// For the implementation, see function `get_query`.
 use std::collections::HashMap;
 
-/// Use Serde JSON to serialize/deserialize JSON, such as the request body.
-/// axum creates JSON payloads or extracts them by using `axum::extract::Json`.
-/// For the implementation, see functions `get_demo_json` and `post_demo_json`.
+/// Use Serde JSON to serialize/deserialize JSON, such as in a request.
+/// axum creates JSON or extracts it by using `axum::extract::Json`.
+/// For this demo, see functions `get_demo_json` and `post_demo_json`.
 use serde_json::{json, Value};
 
 #[tokio::main]
@@ -50,24 +50,58 @@ async fn main() {
 
     // Build our application by creating our router.
     let app = axum::Router::new()
-        .fallback(fallback.into_service())
-        .route("/", get(hello))
-        .route("/hello.html", get(hello_html))
-        .route("/demo-status", get(demo_status))
-        .route("/demo-uri", get(demo_uri))
-        .route("/demo.html", get(get_demo_html))
-        .route("/demo.png", get(get_demo_png))
-        .route("/demo.json", get(get_demo_json).put(put_demo_json))
-        .route("/foo", get(get_foo).put(put_foo).patch(patch_foo).post(post_foo).delete(delete_foo))
-        .route("/items", get(get_items))
-        .route("/items/:id", get(get_items_id))
-        .route("/books", get(get_books).put(put_books))
-        .route("/books/:id", get(get_books_id).delete(delete_books_id))
-        .route("/books/:id/form", get(get_books_id_form).post(post_books_id_form));
+        .fallback(
+            fallback.into_service()
+        )
+        .route("/",
+            get(hello)
+        )
+        .route("/hello.html",
+            get(hello_html)
+        )
+        .route("/demo-status",
+            get(demo_status)
+        )
+        .route("/demo-uri",
+            get(demo_uri)
+        )
+        .route("/demo.html",
+        get(get_demo_html)
+        )
+        .route("/demo.png",
+            get(get_demo_png)
+        )
+        .route("/demo.json",
+        get(get_demo_json)
+            .put(put_demo_json)
+        )
+        .route("/foo",
+        get(get_foo)
+                .put(put_foo)
+                .patch(patch_foo)
+                .post(post_foo)
+                .delete(delete_foo)
+        )
+        .route("/items",
+         get(get_items)
+        )
+        .route("/items/:id",
+         get(get_items_id)
+        )
+        .route("/books",
+        get(get_books)
+            .put(put_books)
+        )
+        .route("/books/:id",
+            get(get_books_id)
+            .delete(delete_books_id)
+        )
+        .route("/books/:id/form",
+            get(get_books_id_form)
+            .post(post_books_id_form)
+        );
 
-    // Run our application by using hyper and URL http://localhost:3000.
-    // The `Server` is a hyper server, which means you can use any hyper
-    // server functions, such as `bind`, `with_graceful_fallback`, etc.
+    // Run our application as a hyper server on http://localhost:3000.
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
         .serve(app.into_make_service())
         .with_graceful_shutdown(shutdown_signal())
@@ -93,27 +127,31 @@ async fn shutdown_signal() {
 ////
 
 /// axum handler for any request that fails to match the router routes.
-/// This implementation returns a HTTP status code 404 Not Found response.
-pub async fn fallback(uri: axum::http::Uri) -> impl axum::response::IntoResponse {
-    (axum::http::StatusCode::NOT_FOUND, format!("No route for {}", uri))
+/// This implementation returns HTTP status code Not Found (404).
+pub async fn fallback(
+    uri: axum::http::Uri
+) -> impl axum::response::IntoResponse {
+    (
+        axum::http::StatusCode::NOT_FOUND,
+        format!("No route for {}", uri)
+    )
 }
 
-/// axum handler for "GET /" which returns a string, which causes axum to
-/// immediately respond with a `200 OK` response, along with the plain text.
+/// axum handler for "GET /" which returns a string and causes axum to
+/// immediately respond with status code `200 OK` and with the string.
 pub async fn hello() -> String {
     "Hello, World!".to_string()
 }
 
-/// axum handler that responds with a typical HTML file.
-/// This uses the Rust `std::include_str` macro to include a UTF-8 file
-/// as `&'static str` in compile time; the path is relative to `main.rs`.
-/// Credit <https://github.com/programatik29/axum-tutorial>
+/// axum handler that responds with typical HTML coming from a file.
+/// This uses the Rust macro `std::include_str` to include a UTF-8 file
+/// path, relative to `main.rs`, as a `&'static str` at compile time.
 async fn hello_html() -> axum::response::Html<&'static str> {
     include_str!("hello.html").into()
 }
 
-/// axum handler for "GET /demo-status" which returns a HTTP status code, such
-/// as HTTP status code 200 OK, and an arbitrary user-visible string message.
+/// axum handler for "GET /demo-status" which returns a HTTP status
+/// code, such as OK (200), and a custom user-visible string message.
 pub async fn demo_status() -> (axum::http::StatusCode, String) {
     (axum::http::StatusCode::OK, "Everything is OK".to_string())
 }
@@ -134,7 +172,7 @@ pub async fn get_demo_html() -> axum::response::Html<&'static str> {
 /// This sets a header "image/png" then sends the decoded image data.
 async fn get_demo_png() -> impl axum::response::IntoResponse {
     let png = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPk+89QDwADvgGOSHzRgAAAAABJRU5ErkJggg==";
-    ( 
+    (
         axum::response::Headers([(axum::http::header::CONTENT_TYPE, "image/png")]),
         base64::decode(png).unwrap(),
     )
@@ -155,17 +193,19 @@ async fn get_demo_png() -> impl axum::response::IntoResponse {
 // then setting the response application content type.
 ////
 
-/// axum handler for "GET /demo.json" which shows how to return JSON data.
-/// The `Json` type sets an HTTP header content-type of `application/json`.
-/// The `Json` type works with any type that implements `serde::Serialize`.
+/// axum handler for "GET /demo.json" which returns JSON data.
+/// The `Json` type sets an HTTP header content-type `application/json`.
+/// The `Json` type works with types that implements `serde::Serialize`.
 pub async fn get_demo_json() -> axum::extract::Json<Value> {
     json!({"a":"b"}).into()
 }
 
-/// axum handler for "PUT /demo-json" which shows how to use `aumx::extract::Json`.
-/// This buffers the request body then deserializes it into a `serde_json::Value`.
-/// The axum `Json` type supports any type that implements `serde::Deserialize`.
-pub async fn put_demo_json(axum::extract::Json(payload): axum::extract::Json<serde_json::Value>) -> String {
+/// axum handler for "PUT /demo-json" which uses `aumx::extract::Json`.
+/// This buffers the request body then deserializes it bu using serde.
+/// The `Json` type supports types that implements `serde::Deserialize`.
+pub async fn put_demo_json(
+    axum::extract::Json(payload): axum::extract::Json<serde_json::Value>
+) -> String {
     format!("Put demo JSON payload: {:?}", payload)
 }
 
@@ -216,15 +256,21 @@ pub async fn delete_foo() -> String {
 // and then pass them to a handler, using function parameters.
 ////
 
-/// axum handler for "GET /items" which shows how to use `axum::extrac::Query`.
-/// This extracts query parameters then deserializes them into a key-value map.
-pub async fn get_items(axum::extract::Query(params): axum::extract::Query<HashMap<String, String>>) -> String {
+/// axum handler for "GET /items" which uses `axum::extract::Query`.
+/// This extracts query parameters and creates a key-value pair map.
+pub async fn get_items(
+    axum::extract::Query(params):
+        axum::extract::Query<HashMap<String, String>>
+) -> String {
     format!("Get items with query params: {:?}", params)
 }
 
-/// axum handler for "GET /items/:id" which shows how to use `axum::extract::Path`.
+/// axum handler for "GET /items/:id" which uses `axum::extract::Path`.
 /// This extracts a path parameter then deserializes it as needed.
-pub async fn get_items_id(axum::extract::Path(id): axum::extract::Path<String>) -> String {
+pub async fn get_items_id(
+    axum::extract::Path(id):
+        axum::extract::Path<String>
+) -> String {
     format!("Get items with path id: {:?}", id)
 }
 
@@ -263,14 +309,18 @@ pub async fn get_books() -> axum::response::Html<String> {
 
 /// axum handler for "PUT /books" which creates a new book resource.
 /// This demo shows how axum can extract a JSON payload into a Book struct.
-pub async fn put_books(axum::extract::Json(book): axum::extract::Json<Book>) -> axum::response::Html<String> {
+pub async fn put_books(
+    axum::extract::Json(book): axum::extract::Json<Book>
+) -> axum::response::Html<String> {
     DATA.lock().unwrap().insert(book.id, book.clone());
     format!("Put book: {}", &book).into()
 }
 
 /// axum handler for "GET /books/:id" which responds with one resource HTML page.
 /// This demo app uses our crate::DATA variable, and iterates on it to find the id.
-pub async fn get_books_id(axum::extract::Path(id): axum::extract::Path<u32>) -> axum::response::Html<String> {
+pub async fn get_books_id(
+    axum::extract::Path(id): axum::extract::Path<u32>
+) -> axum::response::Html<String> {
     match DATA.lock().unwrap().get(&id) {
         Some(book) => format!("<p>{}</p>\n", &book),
         None => format!("<p>Book id {} not found</p>", id),
@@ -279,7 +329,9 @@ pub async fn get_books_id(axum::extract::Path(id): axum::extract::Path<u32>) -> 
 
 /// axum handler for "DELETE /books/:id" which destroys an existing resource.
 /// This code shows how to extract an id, then mutate the crate::DATA variable.
-pub async fn delete_books_id(axum::extract::Path(id): axum::extract::Path<u32>) -> axum::response::Html<String> {
+pub async fn delete_books_id(
+    axum::extract::Path(id): axum::extract::Path<u32>
+) -> axum::response::Html<String> {
     thread::spawn(move || {
         let mut data = DATA.lock().unwrap();
         if data.contains_key(&id) {
@@ -293,7 +345,9 @@ pub async fn delete_books_id(axum::extract::Path(id): axum::extract::Path<u32>) 
 
 /// axum handler for "GET /books/:id/form" which responds with an HTML form.
 /// This demo shows how to write a typical HTML form with input fields.
-pub async fn get_books_id_form(axum::extract::Path(id): axum::extract::Path<u32>) -> axum::response::Html<String> {
+pub async fn get_books_id_form(
+    axum::extract::Path(id): axum::extract::Path<u32>
+) -> axum::response::Html<String> {
     match DATA.lock().unwrap().get(&id) {
         Some(book) => format!(
             concat!(
@@ -315,7 +369,9 @@ pub async fn get_books_id_form(axum::extract::Path(id): axum::extract::Path<u32>
 
 /// axum handler for "POST /books/:id/form" which submits an HTML form.
 /// This demo shows how to do a form submission then update a resource.
-pub async fn post_books_id_form(form: axum::extract::Form<Book>) -> axum::response::Html<String> {
+pub async fn post_books_id_form(
+    form: axum::extract::Form<Book>
+) -> axum::response::Html<String> {
     let new_book: Book = form.0;
     thread::spawn(move || {
         let mut data = DATA.lock().unwrap();
