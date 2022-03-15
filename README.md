@@ -29,6 +29,19 @@ Have an idea, suggestion, or feedback? Let us know via GitHub issues.
 Have a code improvement or bug fix? We welcome GitHub pull requests.
 
 
+### License
+
+This demo uses the license Creative Commons Share-and-Share-Alike.
+
+
+
+### Contact
+
+Have feedback? Have thoughts about this? Want to contribute?
+
+Contact the maintainer at joel@joelparkerhenderson.com
+
+
 <div style="page-break-before:always;"></div>
 
 
@@ -531,7 +544,7 @@ Add the `fallback` handler:
 pub async fn fallback(
     uri: axum::http::Uri
 ) -> impl axum::response::IntoResponse {
-    (axum::http::StatusCode::NOT_FOUND, format!("No route for {}", uri))
+    (axum::http::StatusCode::NOT_FOUND, format!("No route {}", uri))
 }
 ```
 
@@ -546,7 +559,7 @@ cargo run
 
 Browse <http://localhost:3000/whatever>
 
-You should see "No route for /whatever".
+You should see "No route /whatever".
 
 
 <div style="page-break-before:always;"></div>
@@ -660,7 +673,7 @@ async fn signal_shutdown() {
 pub async fn fallback(
     uri: axum::http::Uri
 ) -> impl axum::response::IntoResponse {
-    (axum::http::StatusCode::NOT_FOUND, format!("No route for {}", uri))
+    (axum::http::StatusCode::NOT_FOUND, format!("No route {}", uri))
 }
 
 /// axum handler for "GET /" which returns a string, which causes axum to
