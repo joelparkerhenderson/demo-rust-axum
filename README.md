@@ -301,7 +301,9 @@ async fn main() {
         .unwrap();
     loop {
         let (socket, _address) = listener.accept().await.unwrap();
-        process(socket).await;
+        tokio::spawn(async move {
+            process(socket).await;
+        });
     }
 }
 
