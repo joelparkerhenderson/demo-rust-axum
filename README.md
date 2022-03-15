@@ -344,9 +344,9 @@ async fn main() -> Result<()> {
 
 Serde is a framework for serializing and deserializing Rust data structures efficiently and generically.
 
-* The Serde ecosystem consists of data structures that know how to serialize and deserialize themselves along with data formats that know how to serialize and deserialize other things.
+The Serde ecosystem consists of data structures that know how to serialize and deserialize themselves along with data formats that know how to serialize and deserialize other things.
 
-* Serde provides the layer by which these two groups interact with each other, allowing any supported data structure to be serialized and deserialized using any supported data format.
+Serde provides the layer by which these two groups interact with each other, allowing any supported data structure to be serialized and deserialized using any supported data format.
 
 
 ### Design
@@ -378,11 +378,15 @@ fn main() {
 
     // Convert the Point to a JSON string.
     let serialized = serde_json::to_string(&point).unwrap();
-    println!("{}", serialized); // prints {"x":1,"y":2}
+
+    // Print {"x":1,"y":2}
+    println!("{}", serialized);
 
     // Convert the JSON string back to a Point.
     let deserialized: Point = serde_json::from_str(&serialized).unwrap();
-    println!("{:?}", deserialized); // prints Point { x: 1, y: 2 }
+
+    // Print Point { x: 1, y: 2 }
+    println!("{:?}", deserialized);
 }
 ```
 
@@ -559,7 +563,7 @@ cargo run
 
 Browse <http://localhost:3000/whatever>
 
-You should see "No route /whatever".
+You should see "No route for /whatever".
 
 
 <div style="page-break-before:always;"></div>
@@ -669,15 +673,15 @@ async fn signal_shutdown() {
 }
 
 /// axum handler for any request that fails to match the router routes.
-/// This implementation returns a HTTP status code 404 Not Found response.
+/// This implementation returns HTTP status code Not Found (404).
 pub async fn fallback(
     uri: axum::http::Uri
 ) -> impl axum::response::IntoResponse {
     (axum::http::StatusCode::NOT_FOUND, format!("No route {}", uri))
 }
 
-/// axum handler for "GET /" which returns a string, which causes axum to
-/// immediately respond with a `200 OK` response, along with the plain text.
+/// axum handler for "GET /" which returns a string and causes axum to
+/// immediately respond with status code `200 OK` and with the string.
 pub async fn hello() -> String {
     "Hello, World!".to_string()
 }
@@ -906,8 +910,11 @@ Edit file `Cargo.toml`.
 Add dependencies:
 
 ```rust
-base64 = "0.13" # Encode and decode base64 as bytes or utf8.
-http = "0.2.6" # Types for HTTP requests and responses.
+# Encode and decode base64 as bytes or utf8.
+base64 = "0.13"
+
+# Types for HTTP requests and responses.
+http = "0.2.6" 
 ```
 
 Edit file `main.rs`.
@@ -1102,8 +1109,6 @@ curl --request GET 'http://localhost:3000/foo'
 An axum "extractor" is how you pick apart the incoming request in order to get
 any parts that your handler needs.
 
-TODO: write this section's introduction
-
 This section shows how to:
 
 * Extract path parameters
@@ -1230,22 +1235,12 @@ Get items with query params: {"a": "b"}
 
 ## Extract a JSON payload
 
-The axum extractor for JSON can deserializing a request body into some type that
-implements serde::Deserialize. If the extractor is unable to parse the
-request body, or the request does not contain the `Content-Type: application/json
-header`, then the extractor will reject the request and respond with `400 Bad
-Request`.
+The axum extractor for JSON deserializes a request body into any type that
+implements `serde::Deserialize`. If the extractor is unable to parse the request
+body, or if the request is missing the header `Content-Type: application/json`,
+ then the extractor returns HTTP `BAD_REQUEST` (404).
 
 Edit file `main.rs`.
-
-Add code to use `Json`:
-
-```rust
-use axum::{
-    …
-    extract::Json,
-};
-```
 
 Modify the route `/demo.json` to append the function `put`:
 
@@ -1261,13 +1256,13 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-/// axum handler for "PUT /demo-json" which shows how to use `aumx::extract::Json`.
-/// This buffers the request body then deserializes it into a `serde_json::Value`.
-/// The axum `Json` type supports any type that implements `serde::Deserialize`.
+/// axum handler for "PUT /demo-json" which uses `aumx::extract::Json`.
+/// This buffers the request body then deserializes it using serde.
+/// The `Json` type supports types that implements `serde::Deserialize`.
 pub async fn put_demo_json(
-    axum::extract::Json(payload): axum::extract::Json<serde_json::Value>
+    axum::extract::Json(data): axum::extract::Json<serde_json::Value>
 ) -> String{
-    format!("Put demo JSON payload: {:?}", payload)
+    format!("Put demo JSON data: {:?}", data)
 }
 ```
 
@@ -1292,7 +1287,7 @@ curl \
 Output:
 
 ```sh
-Put demo JSON payload: Object({"a": String("b")})
+Put demo JSON data: Object({"a": String("b")})
 ```
 
 
