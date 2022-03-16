@@ -1364,7 +1364,9 @@ This section demonstrates how to:
 
 * Create a book struct
 
-* Create a data store
+* Create the data store
+
+* Use the data store
 
 * Get all books
 
@@ -1396,7 +1398,7 @@ Add code to create a book struct that derives the traits we want:
 
 ```rust
 /// Demo book structure with some example fields for id, title, author.
-/// A production app or database could use an id that is a u32, UUID, etc.
+// A production app could prefer an id to be type u32, UUID, etc.
 #[derive(Debug, Deserialize, Clone, Eq, Hash, PartialEq)]
 pub struct Book {
     pub id: String,
@@ -1431,7 +1433,7 @@ use crate::book::Book;
 <div style="page-break-before:always;"></div>
 
 
-## Create a data store
+## Create the data store
 
 For a production app, we could implement the data by using a database.
 
@@ -1442,7 +1444,8 @@ Edit file `Cargo.toml`.
 Add the dependency `once_cell` which is for our global variables:
 
 ```toml
-once_cell = "1.10.0" # Single assignment cells and lazy values.
+# Single assignment cells and lazy values.
+once_cell = "1.10.0"
 ```
 
 Create file `data.rs`.
@@ -1459,23 +1462,28 @@ use std::sync::Mutex;
 /// Create a data store as a global variable with `Lazy` and `Mutex`.
 /// This demo implementation uses a `HashMap` for ease and speed.
 /// The map key is a primary key for lookup; the map value is a Book.
-///
-/// To access data, create a thread, spawn it, and acquire the lock:
-/// ```
-/// async fn example() {
-///     thread::spawn(move || {
-///         let data = DATA.lock().unwrap();
-///         …
-/// }).join().unwrap()
-/// ```
 static DATA: Lazy<Mutex<HashMap<u32, Book>>> = Lazy::new(|| Mutex::new(
     HashMap::from([
-        (1, Book { id: 1, title: "Antigone".into(), author: "Sophocles".into()}),
-        (2, Book { id: 2, title: "Beloved".into(), author: "Toni Morrison".into()}),
-        (3, Book { id: 3, title: "Candide".into(), author: "Voltaire".into()}),
+        (1, Book { 
+            id: 1, 
+            title: "Antigone".into(), 
+            author: "Sophocles".into()
+        }),
+        (2, Book { 
+            id: 2, title: 
+            "Beloved".into(), 
+            author: "Toni Morrison".into()
+        }),
+        (3, Book { 
+            id: 3, title: 
+            "Candide".into(), 
+            author: "Voltaire".into()
+        }),
     ])
 ));
 ```
+
+## Use the data store
 
 Edit file `main.rs`.
 
@@ -1488,6 +1496,42 @@ use crate::data::DATA;
 
 /// Use Thread for spawning a thread e.g. to acquire our DATA mutex lock.
 use std::thread;
+
+/// To access data, create a thread, spawn it, then get the lock.
+/// When you're done, then join the thread with its parent thread.
+async fn print_data() {
+    thread::spawn(move || {
+        let data = DATA.lock().unwrap();
+        println!("data: {:?}" ,data);
+    }).join().unwrap()
+}
+```
+
+If you want to see all the data now, then add function to `main`:
+
+```rust
+async fn main() {
+    print_data().await;
+    …
+```
+
+
+### Try the demo…
+
+Shell:
+
+```sh
+cargo run
+```
+
+Output:
+
+```sh
+data: {
+    1: Book { id: 1, title: "Antigone", author: "Sophocles" }, 
+    2: Book { id: 2, title: "Beloved", author: "Toni Morrison" }, 
+    3: Book { id: 3, title: "Candide", author: "Voltaire" }
+}
 ```
 
 
