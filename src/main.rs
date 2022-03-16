@@ -133,7 +133,7 @@ pub async fn fallback(
 ) -> impl axum::response::IntoResponse {
     (
         axum::http::StatusCode::NOT_FOUND,
-        format!("No route for {}", uri)
+        format!("No route {}", uri)
     )
 }
 
@@ -195,18 +195,18 @@ async fn get_demo_png() -> impl axum::response::IntoResponse {
 
 /// axum handler for "GET /demo.json" which returns JSON data.
 /// The `Json` type sets an HTTP header content-type `application/json`.
-/// The `Json` type works with types that implements `serde::Serialize`.
+/// The `Json` type supports types that implement `serde::Deserialize`.
 pub async fn get_demo_json() -> axum::extract::Json<Value> {
     json!({"a":"b"}).into()
 }
 
 /// axum handler for "PUT /demo-json" which uses `aumx::extract::Json`.
-/// This buffers the request body then deserializes it bu using serde.
-/// The `Json` type supports types that implements `serde::Deserialize`.
+/// This buffers the request body then deserializes it using serde.
+/// The `Json` type supports types that implement `serde::Deserialize`.
 pub async fn put_demo_json(
-    axum::extract::Json(payload): axum::extract::Json<serde_json::Value>
+    axum::extract::Json(data): axum::extract::Json<serde_json::Value>
 ) -> String {
-    format!("Put demo JSON payload: {:?}", payload)
+    format!("Put demo JSON data: {:?}", data)
 }
 
 ////
@@ -293,9 +293,18 @@ use crate::data::DATA;
 /// Use Thread for spawning a thread e.g. to acquire our crate::DATA mutex lock.
 use std::thread;
 
-/// axum handler for "GET /books" which returns a resource index HTML page.
-/// This demo uses our crate::DATA variable; a production app could use a database.
-/// This function needs to clone the crate::DATA in order to sort them by title.
+/// To access data, create a thread, spawn it, then get the lock.
+/// When you're done, then join the thread with its parent thread.
+async fn print_data() {
+    thread::spawn(move || {
+        let data = DATA.lock().unwrap();
+        println!("data: {:?}" ,data);
+    }).join().unwrap()
+}
+
+/// axum handler for "GET /books" which responds with a resource page.
+/// This demo uses our DATA; a production app could use a database.
+/// This demo must clone the DATA in order to sort items by title.
 pub async fn get_books() -> axum::response::Html<String> {
     thread::spawn(move || {
         let data = DATA.lock().unwrap();

@@ -1555,9 +1555,9 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-/// axum handler for "GET /books" which returns a resource index HTML page.
-/// This demo uses our DATA variable; a production app could use a database.
-/// This function needs to clone the DATA in order to sort them by title.
+/// axum handler for "GET /books" which responds with a resource page.
+/// This demo uses our DATA; a production app could use a database.
+/// This demo must clone the DATA in order to sort items by title.
 pub async fn get_books() -> axum::response::Html<String> {
     thread::spawn(move || {
         let data = DATA.lock().unwrap();
@@ -1682,7 +1682,7 @@ Add a handler:
 
 ```rust
 /// axum handler for "PUT /books" which creates a new book resource.
-/// This demo shows how axum can extract a JSON payload into a Book struct.
+/// This demo shows how axum can extract JSON data into a Book struct.
 pub async fn put_books(
     axum::extract::Json(book): axum::extract::Json<Book>
 ) -> axum::response::Html<String> {
@@ -1751,7 +1751,7 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-/// axum handler for "GET /books/:id/form" which responds with an HTML form.
+/// axum handler for "GET /books/:id/form" which responds with a form.
 /// This demo shows how to write a typical HTML form with input fields.
 pub async fn get_books_id_form(
     axum::extract::Path(id): axum::extract::Path<u32>
@@ -1761,8 +1761,8 @@ pub async fn get_books_id_form(
             concat!(
                 "<form method=\"post\" action=\"/books/{}/form\">\n",
                 "<input type=\"hidden\" name=\"id\" value=\"{}\">\n",
-                "<p><input type=\"text\" name=\"title\" value=\"{}\"></p>\n",
-                "<p><input type=\"text\" name=\"author\" value=\"{}\"></p>\n",
+                "<p><input name=\"title\" value=\"{}\"></p>\n",
+                "<p><input name=\"author\" value=\"{}\"></p>\n",
                 "<input type=\"submit\" value=\"Save\">\n",
                 "</form>\n"
             ),
@@ -1856,7 +1856,7 @@ Shell:
 curl \
 --request POST 'http://localhost:3000/books/1' \
 --header "Content-Type: application/json" \
---data '{"id":"1","title":"Antigone and Lysistra","author":"Sophocles of Athens"}'
+--data '{"id":"1","title":"Another Title","author":"Someone Else"}'
 ```
 
 Output:
@@ -1873,8 +1873,8 @@ curl 'http://localhost:3000/books'
 
 Output:
 
-```
-<p>Antigone and Lysistra by Sophocles of Athens</p>
+```sh
+<p>Another Title by Someone Else</p>
 <p>Beloved by Toni Morrison</p>
 <p>Candide by Voltaire</p>
 ```
@@ -1901,8 +1901,8 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-/// axum handler for "DELETE /books/:id" which destroys an existing resource.
-/// This code shows how to extract an id, then mutate the DATA variable.
+/// axum handler for "DELETE /books/:id" which destroys a resource.
+/// This demo extracts an id, then mutates the book in the DATA store.
 pub async fn delete_books_id(
     axum::extract::Path(id): axum::extract::Path<u32>
 ) -> axum::response::Html<String> {
@@ -1947,7 +1947,7 @@ curl 'http://localhost:3000/books'
 
 Output:
 
-```
+```sh
 <p>Beloved by Toni Morrison</p>
 <p>Candide by Voltaire</p>
 ```
@@ -2114,6 +2114,20 @@ We welcome constructive feedback via GitHub issues:
 * Any bugs or issues in the demo code or documentation?
 
 
+### Contact
+
+Joel Parker Henderson
+
+joel@joelparkerhenderson
+
+<https://linkedin.com/in/joelparkerhenderson>
+
+<https://github.com/joelparkerhenderson>
+
+
+<div style="page-break-before:always;"></div>
+
+
 ## axum examples
 
 The axum source code repository includes many project examples, and these examples are fully runnable.
@@ -2154,8 +2168,3 @@ The axum source code repository includes many project examples, and these exampl
 * [validator](https://github.com/tokio-rs/axum/tree/main/examples/validator)
 * [versioning](https://github.com/tokio-rs/axum/tree/main/examples/versioning)
 * [websockets](https://github.com/tokio-rs/axum/tree/main/examples/websockets)
-
-
-## About the demo author
-
-Joel Parker Henderson is a programmer who specializes in techology consulting. They have coded with Ruby on Rails, Phoenix for Elixir, Express for JavaScript, and other web frameworks. They create open source projects, including [Git Alias](https://github.com/gitalias/gitalias) for advanced git users, [Num Command](https://github.com/numcommand/num) for unix command-line statistics, and [Architecture Decision Record](https://github.com/joelparkerhenderson/architecture-decision-record) for software teams. See <https://linkedin.com/in/joelparkerhenderson> and <https://github.com/joelparkerhenderson>.

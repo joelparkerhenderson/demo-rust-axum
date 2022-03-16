@@ -2,7 +2,7 @@
 use serde::Deserialize;
 
 // Demo book structure with some example fields for id, title, author.
-// A production app or database could use an id that is a u32, UUID, etc.
+// A production app could prefer an id to be type u32, UUID, etc.
 #[derive(Debug, Deserialize, Clone, Eq, Hash, PartialEq)]
 pub struct Book {
     pub id: u32,
