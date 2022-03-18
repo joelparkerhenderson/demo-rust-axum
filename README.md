@@ -2022,7 +2022,7 @@ cargo run
 
 You should see console output that shows tracing initialization such as:
 
-```
+```sh
 2022-03-08T00:13:54.483877Z
     TRACE mio::poll:
     registering event source with poller:
