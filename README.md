@@ -1619,10 +1619,13 @@ Add a handler:
 pub async fn get_books_id(
     axum::extract::Path(id): axum::extract::Path<u32>
 ) -> axum::response::Html<String> {
-    match DATA.lock().unwrap().get(&id) {
-        Some(book) => format!("<p>{}</p>\n", &book),
-        None => format!("<p>Book id {} not found</p>", id),
-    }.into()
+    thread::spawn(move || {
+        let data = DATA.lock().unwrap();
+        match data.get(&id) {
+            Some(book) => format!("<p>{}</p>\n", &book),
+            None => format!("<p>Book id {} not found</p>", id),
+        }
+    }).join().unwrap().into()
 }
 ```
 
@@ -1686,8 +1689,11 @@ Add a handler:
 pub async fn put_books(
     axum::extract::Json(book): axum::extract::Json<Book>
 ) -> axum::response::Html<String> {
-    DATA.lock().unwrap().insert(book.id, book.clone());
-    format!("Put book: {}", &book).into()
+    thread::spawn(move || {
+        let mut data = DATA.lock().unwrap();
+        data.insert(book.id, book.clone());
+        format!("Put book: {}", &book)
+    }).join().unwrap().into()
 }
 ```
 
@@ -1756,23 +1762,26 @@ Add a handler:
 pub async fn get_books_id_form(
     axum::extract::Path(id): axum::extract::Path<u32>
 ) -> axum::response::Html<String> {
-    match DATA.lock().unwrap().get(&id) {
-        Some(book) => format!(
-            concat!(
-                "<form method=\"post\" action=\"/books/{}/form\">\n",
-                "<input type=\"hidden\" name=\"id\" value=\"{}\">\n",
-                "<p><input name=\"title\" value=\"{}\"></p>\n",
-                "<p><input name=\"author\" value=\"{}\"></p>\n",
-                "<input type=\"submit\" value=\"Save\">\n",
-                "</form>\n"
+    thread::spawn(move || {
+        let data = DATA.lock().unwrap();
+        match data.get(&id) {
+            Some(book) => format!(
+                concat!(
+                    "<form method=\"post\" action=\"/books/{}/form\">\n",
+                    "<input type=\"hidden\" name=\"id\" value=\"{}\">\n",
+                    "<p><input name=\"title\" value=\"{}\"></p>\n",
+                    "<p><input name=\"author\" value=\"{}\"></p>\n",
+                    "<input type=\"submit\" value=\"Save\">\n",
+                    "</form>\n"
+                ),
+                &book.id,
+                &book.id,
+                &book.title,
+                &book.author
             ),
-            &book.id,
-            &book.id,
-            &book.title,
-            &book.author
-        ),
-        None => format!("<p>Book id {} not found</p>", id),
-    }.into()
+            None => format!("<p>Book id {} not found</p>", id),
+        }
+    }).join().unwrap().into()
 }
 ```
 
@@ -1972,8 +1981,11 @@ Edit file `Cargo.toml`.
 Add dependencies:
 
 ```toml
-tracing = "0.1.32" #  Application-level tracing for Rust.
-tracing-subscriber = { version = "0.3.9", features = ["env-filter"] } # Utilities for tracing.
+# Application-level tracing for Rust.
+tracing = "0.1.32" 
+
+# Utilities for implementing and composing `tracing` subscribers. 
+tracing-subscriber = { version = "0.3.9", features = ["env-filter"] } 
 ```
 
 Edit file `main.rs`.

@@ -295,6 +295,7 @@ use std::thread;
 
 /// To access data, create a thread, spawn it, then get the lock.
 /// When you're done, then join the thread with its parent thread.
+#[allow(dead_code)]
 async fn print_data() {
     thread::spawn(move || {
         let data = DATA.lock().unwrap();
@@ -317,12 +318,15 @@ pub async fn get_books() -> axum::response::Html<String> {
 }
 
 /// axum handler for "PUT /books" which creates a new book resource.
-/// This demo shows how axum can extract a JSON payload into a Book struct.
+/// This demo shows how axum can extract JSON data into a Book struct.
 pub async fn put_books(
     axum::extract::Json(book): axum::extract::Json<Book>
 ) -> axum::response::Html<String> {
-    DATA.lock().unwrap().insert(book.id, book.clone());
-    format!("Put book: {}", &book).into()
+    thread::spawn(move || {
+        let mut data = DATA.lock().unwrap();
+        data.insert(book.id, book.clone());
+        format!("Put book: {}", &book)
+    }).join().unwrap().into()
 }
 
 /// axum handler for "GET /books/:id" which responds with one resource HTML page.
@@ -330,14 +334,17 @@ pub async fn put_books(
 pub async fn get_books_id(
     axum::extract::Path(id): axum::extract::Path<u32>
 ) -> axum::response::Html<String> {
-    match DATA.lock().unwrap().get(&id) {
-        Some(book) => format!("<p>{}</p>\n", &book),
-        None => format!("<p>Book id {} not found</p>", id),
-    }.into()
+    thread::spawn(move || {
+        let data = DATA.lock().unwrap();
+        match data.get(&id) {
+            Some(book) => format!("<p>{}</p>\n", &book),
+            None => format!("<p>Book id {} not found</p>", id),
+        }
+    }).join().unwrap().into()
 }
 
-/// axum handler for "DELETE /books/:id" which destroys an existing resource.
-/// This code shows how to extract an id, then mutate the crate::DATA variable.
+/// axum handler for "DELETE /books/:id" which destroys a resource.
+/// This demo extracts an id, then mutates the book in the DATA store.
 pub async fn delete_books_id(
     axum::extract::Path(id): axum::extract::Path<u32>
 ) -> axum::response::Html<String> {
@@ -352,28 +359,31 @@ pub async fn delete_books_id(
     }).join().unwrap().into()
 }
 
-/// axum handler for "GET /books/:id/form" which responds with an HTML form.
+/// axum handler for "GET /books/:id/form" which responds with a form.
 /// This demo shows how to write a typical HTML form with input fields.
 pub async fn get_books_id_form(
     axum::extract::Path(id): axum::extract::Path<u32>
 ) -> axum::response::Html<String> {
-    match DATA.lock().unwrap().get(&id) {
-        Some(book) => format!(
-            concat!(
-                "<form method=\"post\" action=\"/books/{}/form\">\n",
-                "<input type=\"hidden\" name=\"id\" value=\"{}\">\n",
-                "<p><input type=\"text\" name=\"title\" value=\"{}\"></p>\n",
-                "<p><input type=\"text\" name=\"author\" value=\"{}\"></p>\n",
-                "<input type=\"submit\" value=\"Save\">\n",
-                "</form>\n"
+    thread::spawn(move || {
+        let data = DATA.lock().unwrap();
+        match data.get(&id) {
+            Some(book) => format!(
+                concat!(
+                    "<form method=\"post\" action=\"/books/{}/form\">\n",
+                    "<input type=\"hidden\" name=\"id\" value=\"{}\">\n",
+                    "<p><input name=\"title\" value=\"{}\"></p>\n",
+                    "<p><input name=\"author\" value=\"{}\"></p>\n",
+                    "<input type=\"submit\" value=\"Save\">\n",
+                    "</form>\n"
+                ),
+                &book.id,
+                &book.id,
+                &book.title,
+                &book.author
             ),
-            &book.id,
-            &book.id,
-            &book.title,
-            &book.author
-        ),
-        None => format!("<p>Book id {} not found</p>", id),
-    }.into()
+            None => format!("<p>Book id {} not found</p>", id),
+        }
+    }).join().unwrap().into()
 }
 
 /// axum handler for "POST /books/:id/form" which submits an HTML form.
