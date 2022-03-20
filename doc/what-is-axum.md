@@ -1,6 +1,6 @@
 ## What is axum?
 
-High level features:
+[axum](https://crates.io/crates/axum) is a web framework with high level features:
 
 * Route requests to handlers with a macro free API.
 
