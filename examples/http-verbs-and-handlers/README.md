@@ -123,11 +123,3 @@ Output:
 ```sh
 DELETE foo
 ```
-
-The command `curl` uses GET by default i.e. these are equivalent:
-
-```sh
-curl 'http://localhost:3000/foo'
-
-curl --request GET 'http://localhost:3000/foo'
-```
