@@ -1,5 +1,5 @@
 [package]
-name = "demo-rust-axum-examples-axum-extract-json"
+name = "demo-rust-axum-examples-graceful-shutdown"
 version = "1.1.0"
 edition = "2021"
 
@@ -8,5 +8,3 @@ edition = "2021"
 [dependencies]
 axum = "0.4.8" # Web framework that focuses on ergonomics and modularity.
 tokio = { version = "1.17.0", features = ["full"] } # Event-driven, non-blocking I/O platform.
-serde = { version = "1.0.136", features = ["derive"] } # A serialization/deserialization framework.
-serde_json = "1.0.79" # Serde serializion/deserialization of JSON data.
