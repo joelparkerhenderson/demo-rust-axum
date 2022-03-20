@@ -1,4 +1,4 @@
-## Respond with HTTP status code OK
+## Respond with HTTP status code
 
 Edit file `main.rs`.
 
