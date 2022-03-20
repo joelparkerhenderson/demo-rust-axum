@@ -6,7 +6,6 @@
 
 /// Use axum capabities.
 use axum::routing::get;
-use axum::handler::Handler;
 
 #[tokio::main]
 async fn main() {

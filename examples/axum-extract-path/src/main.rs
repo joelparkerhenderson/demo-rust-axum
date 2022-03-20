@@ -6,7 +6,6 @@
 
 /// Use axum capabities.
 use axum::routing::get;
-use axum::handler::Handler;
 
 #[tokio::main]
 async fn main() {
@@ -25,7 +24,7 @@ async fn main() {
 
 /// axum handler for "GET /demo-path/:id" which uses `axum::extract::Path`.
 /// This extracts a path parameter then deserializes it as needed.
-pub async fn get_items_id(
+pub async fn get_demo_path_id(
     axum::extract::Path(id):
         axum::extract::Path<String>
 ) -> String {

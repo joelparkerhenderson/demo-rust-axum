@@ -3,16 +3,23 @@
 //! <https://github.com/joelparkerhenderson/demo-rust-axum>
 //!
 //! For more see the file `README.md` in the project root.
+//!
+//!
+//! The axum route has functions for HTTP verbs:
+//! GET, PUT, PATCH, POST, DELETE.
+//!
+//! We use the naming convention of `get_foo`, `put_foo`, etc.
+//!
+//! These demo handlers in this section simply return a string.
 
 /// Use axum capabities.
 use axum::routing::get;
-use axum::handler::Handler;
 
 #[tokio::main]
 async fn main() {
     // Build our application by creating our router.
     let app = axum::Router::new()
-        route("/foo",
+        .route("/foo",
             get(get_foo)
             .put(put_foo)
             .patch(patch_foo)
@@ -26,18 +33,6 @@ async fn main() {
         .await
         .unwrap();
 }
-
-////
-// Demo axum handlers with HTTP verbs and handlers.
-//
-//
-// The axum route has functions for HTTP verbs:
-// GET, PUT, PATCH, POST, DELETE.
-//
-// We use the naming convention of `get_foo`, `put_foo`, etc.
-//
-// These demo handlers in this section simply return a string.
-////
 
 /// axum handler for "GET /foo" which returns a string message.
 /// This shows our naming convention for HTTP GET handlers.

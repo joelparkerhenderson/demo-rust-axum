@@ -97,18 +97,24 @@ pub async fn get_demo_form() ->  axum::response::Html<&'static str> {
         </head>
         <body>
             <h1>Book</h1>
-            <form method=\"post\" action="/form">
-                <label for="title">
-                    Title:
-                    <br>
-                    <input name="title">
-                </label>
-                <label for="author">
-                    Author:
-                    <br>
-                    <input name="author">
-                </label>
-                <input type="submit">
+            <form method="post" action="/demo-form">
+                <p>
+                    <label for="title">
+                        Title:
+                        <br>
+                        <input name="title">
+                    </label>
+                </p>
+                <p>
+                    <label for="author">
+                        Author:
+                        <br>
+                        <input name="author">
+                    </label>
+                </p>
+                <p>
+                    <input type="submit">
+                </p?
             </form>
         </body>
     </html>
@@ -150,7 +156,7 @@ Add handler:
 ```rust
 /// axum handler for "POST /demo-form" which submits an HTML form.
 /// This demo shows how extract a form submission to a struct.
-pub async fn post_book_form(
+pub async fn post_demo_form(
     form: axum::extract::Form<Book>
 ) -> axum::response::Html<String> {
     let book: Book = form.0;
@@ -187,6 +193,18 @@ You should see the book form.
 
 Fill in some information, such as a title and author. 
 
+Example:
+
+  * Title: Antigone
+
+  * Author: Sophocles
+
 Tap the button, or click the button, to submit the form via HTTP POST.
 
 You should see the HTML POST response, which shows the information you posted.
+
+Example response output:
+
+```txt
+Book { title: "Antigone", author: "Sophocles" } 
+```

@@ -6,7 +6,6 @@
 
 /// Use axum capabities.
 use axum::routing::get;
-use axum::handler::Handler;
 
 /// Use HashMap to deserialize a HTTP GET query into a key-value map.
 /// axum extracts query parameters by using `axum::extract::Query`.

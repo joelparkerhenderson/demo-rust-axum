@@ -3,24 +3,16 @@
 //! <https://github.com/joelparkerhenderson/demo-rust-axum>
 //!
 //! For more see the file `README.md` in the project root.
+//!
+//! This example uses a `Book` struct, a `DATA` variable
+//! that is a lazy mutex global variable, and handlers
+//! that process the routes for HTTP verbs GET, PUT, etc.
 
 /// Use axum capabities.
 use axum::routing::get;
-use axum::handler::Handler;
-
-/// Use HashMap to deserialize a HTTP GET query into a key-value map.
-/// axum extracts query parameters by using `axum::extract::Query`.
-/// For the implementation, see function `get_query`.
-use std::collections::HashMap;
-
-/// Use Serde JSON to serialize/deserialize JSON, such as in a request.
-/// axum creates JSON or extracts it by using `axum::extract::Json`.
-/// For this demo, see functions `get_demo_json` and `post_demo_json`.
-use serde_json::{json, Value};
 
 #[tokio::main]
 async fn main() {
-
     // Build our application by creating our router.
     let app = axum::Router::new()
         .route("/books",
@@ -39,27 +31,9 @@ async fn main() {
     // Run our application as a hyper server on http://localhost:3000.
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
         .serve(app.into_make_service())
-        .with_graceful_shutdown(shutdown_signal())
         .await
         .unwrap();
 }
-
-/// Tokio signal handler that will wait for a user to press CTRL+C.
-/// We use this in our hyper `Server` method `with_graceful_shutdown`.
-async fn shutdown_signal() {
-    tokio::signal::ctrl_c()
-        .await
-        .expect("Expect shutdown signal handler");
-    println!("signal shutdown");
-}
-
-/////
-/// Demo RESTful routes and resources.
-///
-/// This section uses a `Book` struct, a `DATA` variable
-/// that is a lazy mutex global variable, and handlers
-/// that process the routes for HTTP verbs GET, PUT, etc.
-/////
 
 /// See file book.rs, which defines the `Book` struct.
 mod book;

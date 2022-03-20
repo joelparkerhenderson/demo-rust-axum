@@ -17,7 +17,6 @@
 
 /// Use axum capabities.
 use axum::routing::get;
-use axum::handler::Handler;
 
 /// Use Serde JSON to serialize/deserialize JSON, such as in a request.
 /// axum creates JSON or extracts it by using `axum::extract::Json`.
