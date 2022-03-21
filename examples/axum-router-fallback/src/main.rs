@@ -1,0 +1,34 @@
+//! Demo of Rust and axum web framework.
+//!
+//! <https://github.com/joelparkerhenderson/demo-rust-axum>
+//!
+//! For more see the file `README.md` in the project root.
+
+// Provide the fallback handler trait `into_service`.
+use axum::handler::Handler;
+
+#[tokio::main]
+async fn main() {
+    // Build our application by creating our router.
+    let app = axum::Router::new()
+        .fallback(
+            fallback.into_service()
+        );
+
+    // Run our application as a hyper server on http://localhost:3000.
+    axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
+        .serve(app.into_make_service())
+        .await
+        .unwrap();
+}
+
+/// axum handler for any request that fails to match the router routes.
+/// This implementation responds with HTTP status code NOT FOUND (404).
+pub async fn fallback(
+    uri: axum::http::Uri
+) -> impl axum::response::IntoResponse {
+    (
+        axum::http::StatusCode::NOT_FOUND,
+        format!("No route {}", uri)
+    )
+}
