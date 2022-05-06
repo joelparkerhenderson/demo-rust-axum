@@ -27,7 +27,7 @@ use serde_json::{json, Value};
 async fn main() {
     // Build our application by creating our router.
     let app = axum::Router::new()
-        .route("/demo-json",
+        .route("/demo.json",
         get(get_demo_json)
             .put(put_demo_json)
         );
