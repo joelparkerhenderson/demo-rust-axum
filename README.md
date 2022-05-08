@@ -146,7 +146,7 @@ battle-tested libraries for middleware, asynchronous programming, and HTTP.
 * axum is primed to reach developers who are currently using
 other Rust web frameworks, such as Actix, Rocket, Warp, and others.
 
-* axum is likely to appeal to programmers are seeking afaster
+* axum is likely to appeal to programmers are seeking a faster
 web framework and who want closer-to-the-metal capabilties. 
 
 
@@ -1256,7 +1256,7 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-/// axum handler for "PUT /demo-json" which uses `aumx::extract::Json`.
+/// axum handler for "PUT /demo.json" which uses `aumx::extract::Json`.
 /// This buffers the request body then deserializes it using serde.
 /// The `Json` type supports types that implement `serde::Deserialize`.
 pub async fn put_demo_json(
@@ -1279,7 +1279,7 @@ Send the JSON:
 
 ```sh
 curl \
---request PUT 'http://localhost:3000/demo-json' \
+--request PUT 'http://localhost:3000/demo.json' \
 --header "Content-Type: application/json" \
 --data '{"a":"b"}'
 ```
@@ -1315,7 +1315,7 @@ Add a route:
 ```rust
 let app = Router::new()
     …
-    .route("/demo-json",
+    .route("/demo.json",
         get(get_demo_json)
     );
 ```
@@ -1323,7 +1323,7 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-/// axum handler for "PUT /demo-json" which uses `aumx::extract::Json`.
+/// axum handler for "PUT /demo.json" which uses `aumx::extract::Json`.
 /// This buffers the request body then deserializes it bu using serde.
 /// The `Json` type supports types that implement `serde::Deserialize`.
 pub async fn get_demo_json() -> axum::extract::Json<Value> {
@@ -1345,7 +1345,7 @@ To request JSON with curl, set a custom HTTP header like this:
 ```sh
 curl \
 --header "Accept: application/json" \
---request GET 'http://localhost:3000/demo-json'
+--request GET 'http://localhost:3000/demo.json'
 ```
 
 Output:
