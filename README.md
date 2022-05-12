@@ -47,7 +47,7 @@ Contact the maintainer at joel@joelparkerhenderson.com
 
 ## What is this?
 
-This demo is a tutorial that teaches how to build features from the groung up
+This demo is a tutorial that teaches how to build features from the ground up
 with axum and its ecosystem of tower middleware, hyper HTTP library, tokio
 asynchronous platform, and Serde data conversions.
 
@@ -534,7 +534,7 @@ Modify the `Router` to add the function `fallback` as the first choice:
 let app = Router::new()
     .fallback(
         fallback.into_service()
-    ),
+    )
     .route("/",
         get(hello)
     );
@@ -650,7 +650,7 @@ pub async fn main() {
     let app = axum::Router::new()
         .fallback(
             fallback.into_service()
-        ),
+        )
         .route("/",
             get(hello)
         );
@@ -941,7 +941,7 @@ async fn get_demo_png() -> impl axum::response::IntoResponse {
         "DwADvgGOSHzRgAAAAABJRU5ErkJggg=="
     );
     (
-        axum::response::Headers([
+        axum::response::AppendHeaders([
             (axum::http::header::CONTENT_TYPE, "image/png"),
         ]),
         base64::decode(png).unwrap(),
@@ -982,7 +982,7 @@ let app = Router::new()
         .put(put_foo)
         .patch(patch_foo)
         .post(post_foo)
-        .delete(delete_foo)
+        .delete(delete_foo),
     )
 ```
 
@@ -1233,67 +1233,6 @@ Get items with query params: {"a": "b"}
 <div style="page-break-before:always;"></div>
 
 
-## Extract a JSON payload
-
-The axum extractor for JSON deserializes a request body into any type that
-implements `serde::Deserialize`. If the extractor is unable to parse the request
-body, or if the request is missing the header `Content-Type: application/json`,
- then the extractor returns HTTP `BAD_REQUEST` (404).
-
-Edit file `main.rs`.
-
-Modify the route `/demo.json` to append the function `put`:
-
-```rust
-let app = Router::new()
-    …
-    .route("/demo.json",
-        get(get_demo_json)
-        .put(put_demo_json)
-    )
-```
-
-Add a handler:
-
-```rust
-/// axum handler for "PUT /demo.json" which uses `aumx::extract::Json`.
-/// This buffers the request body then deserializes it using serde.
-/// The `Json` type supports types that implement `serde::Deserialize`.
-pub async fn put_demo_json(
-    axum::extract::Json(data): axum::extract::Json<serde_json::Value>
-) -> String{
-    format!("Put demo JSON data: {:?}", data)
-}
-```
-
-
-### Try the demo…
-
-Shell:
-
-```sh
-cargo run
-```
-
-Send the JSON:
-
-```sh
-curl \
---request PUT 'http://localhost:3000/demo.json' \
---header "Content-Type: application/json" \
---data '{"a":"b"}'
-```
-
-Output:
-
-```sh
-Put demo JSON data: Object({"a": String("b")})
-```
-
-
-<div style="page-break-before:always;"></div>
-
-
 ## Respond with a JSON payload
 
 The axum extractor for JSON can help with a response, by formating JSON data
@@ -1358,6 +1297,67 @@ Output:
 <div style="page-break-before:always;"></div>
 
 
+## Extract a JSON payload
+
+The axum extractor for JSON deserializes a request body into any type that
+implements `serde::Deserialize`. If the extractor is unable to parse the request
+body, or if the request is missing the header `Content-Type: application/json`,
+ then the extractor returns HTTP `BAD_REQUEST` (404).
+
+Edit file `main.rs`.
+
+Modify the route `/demo.json` to append the function `put`:
+
+```rust
+let app = Router::new()
+    …
+    .route("/demo.json",
+        get(get_demo_json)
+        .put(put_demo_json)
+    )
+```
+
+Add a handler:
+
+```rust
+/// axum handler for "PUT /demo.json" which uses `aumx::extract::Json`.
+/// This buffers the request body then deserializes it using serde.
+/// The `Json` type supports types that implement `serde::Deserialize`.
+pub async fn put_demo_json(
+    axum::extract::Json(data): axum::extract::Json<serde_json::Value>
+) -> String{
+    format!("Put demo JSON data: {:?}", data)
+}
+```
+
+
+### Try the demo…
+
+Shell:
+
+```sh
+cargo run
+```
+
+Send the JSON:
+
+```sh
+curl \
+--request PUT 'http://localhost:3000/demo.json' \
+--header "Content-Type: application/json" \
+--data '{"a":"b"}'
+```
+
+Output:
+
+```sh
+Put demo JSON data: Object({"a": String("b")})
+```
+
+
+<div style="page-break-before:always;"></div>
+
+
 # RESTful routes and resources
 
 This section demonstrates how to:
@@ -1398,10 +1398,9 @@ Add code to create a book struct that derives the traits we want:
 
 ```rust
 /// Demo book structure with some example fields for id, title, author.
-// A production app could prefer an id to be type u32, UUID, etc.
 #[derive(Debug, Deserialize, Clone, Eq, Hash, PartialEq)]
 pub struct Book {
-    pub id: String,
+    pub id: u32,
     pub title: String,
     pub author: String,
 }
@@ -1426,7 +1425,6 @@ Add code to include the `book` module and use the `Book` struct:
 ```rust
 /// See file book.rs, which defines the `Book` struct.
 mod book;
-use crate::book::Book;
 ```
 
 
@@ -1453,6 +1451,9 @@ Create file `data.rs`.
 Add this code:
 
 ```rust
+use std::collections::HashMap;
+/// Bring Book struct into scope
+use crate::book::Book;
 /// Use once_cell for creating a global variable e.g. our DATA data.
 use once_cell::sync::Lazy;
 
@@ -1462,7 +1463,7 @@ use std::sync::Mutex;
 /// Create a data store as a global variable with `Lazy` and `Mutex`.
 /// This demo implementation uses a `HashMap` for ease and speed.
 /// The map key is a primary key for lookup; the map value is a Book.
-static DATA: Lazy<Mutex<HashMap<u32, Book>>> = Lazy::new(|| Mutex::new(
+pub static DATA: Lazy<Mutex<HashMap<u32, Book>>> = Lazy::new(|| Mutex::new(
     HashMap::from([
         (1, Book { 
             id: 1, 
@@ -1470,13 +1471,13 @@ static DATA: Lazy<Mutex<HashMap<u32, Book>>> = Lazy::new(|| Mutex::new(
             author: "Sophocles".into()
         }),
         (2, Book { 
-            id: 2, title: 
-            "Beloved".into(), 
+            id: 2, 
+            title: "Beloved".into(), 
             author: "Toni Morrison".into()
         }),
         (3, Book { 
-            id: 3, title: 
-            "Candide".into(), 
+            id: 3, 
+            title: "Candide".into(), 
             author: "Voltaire".into()
         }),
     ])
@@ -1541,6 +1542,12 @@ data: {
 ## Get all books
 
 Edit file `main.rs`.
+
+Bring `Books` into scope
+
+```rust
+use crate::book::Book;
+```
 
 Add a route:
 
