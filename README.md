@@ -600,7 +600,7 @@ Create a tokio signal handler that listens for a user pressing CTRL+C:
 ```rust
 /// Tokio signal handler that will wait for a user to press CTRL+C.
 /// We use this in our hyper `Server` method `with_graceful_shutdown`.
-async fn signal_shutdown() {
+async fn shutdown_signal() {
     tokio::signal::ctrl_c()
         .await
         .expect("expect tokio signal ctrl-c");
@@ -665,7 +665,7 @@ pub async fn main() {
 
 /// Tokio signal handler that will wait for a user to press CTRL+C.
 /// We use this in our hyper `Server` method `with_graceful_shutdown`.
-async fn signal_shutdown() {
+async fn shutdown_signal() {
     tokio::signal::ctrl_c()
         .await
         .expect("expect tokio signal ctrl-c");
