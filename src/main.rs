@@ -37,7 +37,7 @@ use std::collections::HashMap;
 
 /// Use Serde JSON to serialize/deserialize JSON, such as in a request.
 /// axum creates JSON or extracts it by using `axum::extract::Json`.
-/// For this demo, see functions `get_demo_json` and `post_demo_json`.
+/// For this demo, see functions `get_demo_json` and `put_demo_json`.
 use serde_json::{json, Value};
 
 #[tokio::main]
