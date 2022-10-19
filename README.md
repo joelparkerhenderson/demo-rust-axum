@@ -491,7 +491,7 @@ pub async fn hello() -> String {
 Modify the `Router` code like this:
 
 ```rust
-let app = Router::new()
+let app = axum::Router::new()
     .route("/",
         get(hello)
     );
@@ -531,7 +531,7 @@ use axum::handler::Handler;
 Modify the `Router` to add the function `fallback` as the first choice:
 
 ```rust
-let app = Router::new()
+let app = axum::Router::new()
     .fallback(
         fallback.into_service()
     )
@@ -727,7 +727,7 @@ use axum::{
 Add a route:
 
 ```rust
-let app = Router::new()
+let app = axum::Router::new()
     …
     .route("/demo.html",
         get(get_demo_html)
@@ -777,7 +777,7 @@ Edit file `main.rs`.
 Add route:
 
 ```rust
-let app = Router::new()
+let app = axum::Router::new()
     …
     .route("/hello.html",
         get(hello_html)
@@ -828,7 +828,7 @@ use axum::{
 Add a route:
 
 ```rust
-let app = Router::new()
+let app = axum::Router::new()
     …
     .route("/demo-status",
         get(demo_status)
@@ -869,7 +869,7 @@ Edit file `main.rs`.
 Add a route:
 
 ```rust
-let app = Router::new()
+let app = axum::Router::new()
     …
     .route("/demo-uri",
         get(demo_uri)
@@ -922,7 +922,7 @@ Edit file `main.rs`.
 Add a route:
 
 ```rust
-let app = Router::new()
+let app = axum::Router::new()
     …
     .route("/demo.png",
         get(get_demo_png)
@@ -975,7 +975,7 @@ Edit file `main.rs`.
 Add axum routes for each HTTP verb:
 
 ```rust
-let app = Router::new()
+let app = axum::Router::new()
     …
     .route("/foo",
         get(get_foo)
@@ -1130,7 +1130,7 @@ Edit file `main.rs`.
 Add a route:
 
 ```rust
-let app = Router::new()
+let app = axum::Router::new()
     …
     .route("/items/:id",
         get(get_items_id)
@@ -1188,7 +1188,7 @@ use std::collections::HashMap;
 Add a route:
 
 ```rust
-let app = Router::new()
+let app = axum::Router::new()
     …
     .route("/items",
         get(get_items)
@@ -1252,7 +1252,7 @@ use serde_json::{json, Value};
 Add a route:
 
 ```rust
-let app = Router::new()
+let app = axum::Router::new()
     …
     .route("/demo.json",
         get(get_demo_json)
@@ -1309,7 +1309,7 @@ Edit file `main.rs`.
 Modify the route `/demo.json` to append the function `put`:
 
 ```rust
-let app = Router::new()
+let app = axum::Router::new()
     …
     .route("/demo.json",
         get(get_demo_json)
@@ -1552,7 +1552,7 @@ use crate::book::Book;
 Add a route:
 
 ```rust
-let app = Router::new()
+let app = axum::Router::new()
     …
     .route("/books",
         get(get_books)
@@ -1611,7 +1611,7 @@ Edit file `main.rs`.
 Add a route:
 
 ```rust
-let app = Router::new()
+let app = axum::Router::new()
     …
     .route("/books/:id",
         get(get_books_id)
@@ -1680,7 +1680,7 @@ Edit file `main.rs`.
 Modify the route `/books` to append the function `put`:
 
 ```rust
-let app = Router::new()
+let app = axum::Router::new()
     …
     .route("/books",
         get(get_books)
@@ -1754,7 +1754,7 @@ Edit file `main.rs`.
 Add a route:
 
 ```rust
-let app = Router::new()
+let app = axum::Router::new()
     …
     .route("/books/:id/form",
         get(get_books_id_form)
@@ -1828,7 +1828,7 @@ Edit file `main.rs`.
 Modify the route `/books/:id/form` to append the function `post`:
 
 ```rust
-let app = Router::new()
+let app = axum::Router::new()
     …
     .route("/books/:id/form",
         get(get_books_id_form)
@@ -1906,7 +1906,7 @@ Edit file `main.rs`.
 Modify the route `/books/:id` to append the function `delete`:
 
 ```rust
-let app = Router::new()
+let app = axum::Router::new()
     …
     .route("/books/:id",
         get(get_books_id)
