@@ -92,7 +92,7 @@ Some knowledge about web frameworks is required, such as:
 
 ### What is helpful?
 
-Some knowledge of web frameworks is hepful, such as:
+Some knowledge of web frameworks is helpful, such as:
 
 * Rust web frameworks, such as Actix, Rocket, Warp, etc.
 
@@ -102,7 +102,7 @@ Some knowledge of web frameworks is hepful, such as:
 
 Some knowledge of this stack can be helpful, such as:
 
-* middleware programming e.g. withv tower
+* middleware programming e.g. with tower
 
 * asynchronous application programming e.g. with tokio
 
@@ -146,7 +146,7 @@ battle-tested libraries for middleware, asynchronous programming, and HTTP.
 * axum is primed to reach developers who are currently using
 other Rust web frameworks, such as Actix, Rocket, Warp, and others.
 
-* axum is likely to appeal to programmers are seeking a faster
+* axum is likely to appeal to programmers who are seeking a faster
 web framework and who want closer-to-the-metal capabilties. 
 
 
@@ -299,7 +299,7 @@ The tokio stack includes:
 
 * Mio: Minimal portable API on top of the operating-system's evented I/O API.
 
-* Tracing: Unified, structured, event-based, data collection and logging.
+* Tracing: Unified, structured, event-based data collection and logging.
 
 * Bytes: A rich set of utilities for manipulating byte arrays.
 
@@ -472,7 +472,7 @@ anything that axum can convert into a response.
 
 Edit file `main.rs`.
 
-Our demos will use the axum routing `get` function, very often, so add code to use it:
+Our demos will often use the axum routing `get` function, so add code to use it:
 
 ```rust
 use axum::routing::get;
@@ -697,7 +697,7 @@ This section shows how to:
 
 * Respond with HTML text
 
-* Respond with a HTML file
+* Respond with an HTML file
 
 * Respond with HTTP status code OK
 
@@ -761,7 +761,7 @@ You should see HTML with headline text "Hello".
 <div style="page-break-before:always;"></div>
 
 
-## Respond with a HTML file
+## Respond with an HTML file
 
 Create file `hello.html`.
 
@@ -960,7 +960,7 @@ cargo run
 
 Browse <http://localhost:3000/demo.png>
 
-You browser should download a a one-pixel transparent PNG image.
+You browser should download a one-pixel transparent PNG image.
 
 
 <div style="page-break-before:always;"></div>
@@ -1092,7 +1092,7 @@ Output:
 DELETE foo
 ```
 
-The command `curl` uses GET by default i.e. these are equivalent:
+The command `curl` uses GET by default, i.e. these are equivalent:
 
 ```sh
 curl 'http://localhost:3000/foo'
@@ -1262,7 +1262,7 @@ let app = axum::Router::new()
 Add a handler:
 
 ```rust
-/// axum handler for "PUT /demo.json" which uses `aumx::extract::Json`.
+/// axum handler for "PUT /demo.json" which uses `axum::extract::Json`.
 /// This buffers the request body then deserializes it bu using serde.
 /// The `Json` type supports types that implement `serde::Deserialize`.
 pub async fn get_demo_json() -> axum::extract::Json<Value> {
@@ -1320,7 +1320,7 @@ let app = axum::Router::new()
 Add a handler:
 
 ```rust
-/// axum handler for "PUT /demo.json" which uses `aumx::extract::Json`.
+/// axum handler for "PUT /demo.json" which uses `axum::extract::Json`.
 /// This buffers the request body then deserializes it using serde.
 /// The `Json` type supports types that implement `serde::Deserialize`.
 pub async fn put_demo_json(
@@ -2053,7 +2053,7 @@ The demo code is:
 axum::Server::bind(&"0.0.0.0:3000".parse().unwrap()) …
 ```
 
-If you prefer create a socket address step by step, then you can.
+You can create a socket address step by step, if you prefer.
 
 Modify the demo code to do:
 
