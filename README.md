@@ -1104,7 +1104,7 @@ curl --request GET 'http://localhost:3000/foo'
 <div style="page-break-before:always;"></div>
 
 
-# Extrators
+# Extractors
 
 An axum "extractor" is how you pick apart the incoming request in order to get
 any parts that your handler needs.
