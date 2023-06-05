@@ -20,9 +20,8 @@
 //!
 //! For more see the file `README.md` in the project root.
 
-/// Use axum capabities.
+/// Use axum capabilities.
 use axum::routing::get;
-use axum::handler::Handler;
 
 /// Use tracing crates for application-level tracing output.
 use tracing_subscriber::{
@@ -51,7 +50,7 @@ async fn main() {
     // Build our application by creating our router.
     let app = axum::Router::new()
         .fallback(
-            fallback.into_service()
+            fallback
         )
         .route("/",
             get(hello)
@@ -122,7 +121,7 @@ async fn shutdown_signal() {
 // Demo axum handlers
 //
 // These handlers are used to demonstrate axum capabilities.
-// Each hander is an async function that returns something that
+// Each handler is an async function that returns something that
 // axum can convert into a response.
 ////
 
@@ -173,7 +172,7 @@ pub async fn get_demo_html() -> axum::response::Html<&'static str> {
 async fn get_demo_png() -> impl axum::response::IntoResponse {
     let png = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPk+89QDwADvgGOSHzRgAAAAABJRU5ErkJggg==";
     (
-        axum::response::Headers([(axum::http::header::CONTENT_TYPE, "image/png")]),
+        axum::response::AppendHeaders([(axum::http::header::CONTENT_TYPE, "image/png")]),
         base64::decode(png).unwrap(),
     )
 }
@@ -181,7 +180,7 @@ async fn get_demo_png() -> impl axum::response::IntoResponse {
 ////
 // Demo axum JSON extractor
 //
-// axum has capabilties for working with JSON data.
+// axum has capabilities for working with JSON data.
 //
 // The axum extractor for JSON can also help with a request, by deserializing a
 // request body into some type that implements serde::Deserialize. If the axum
