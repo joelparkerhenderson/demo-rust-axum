@@ -5,23 +5,7 @@ you can use the function `fallback`.
 
 Edit file `main.rs`.
 
-Add code for the fallback handler trait:
-
-```rust
-// Provide the fallback handler trait `into_service`.
-use axum::handler::Handler;
-```
-
-Modify the `Router` to add the function `fallback` as the first choice:
-
-```rust
-let app = Router::new()
-    .fallback(
-        fallback.into_service()
-    );
-```
-
-Add the `fallback` handler:
+Add a `fallback` handler:
 
 ```rust
 /// axum handler for any request that fails to match the router routes.
@@ -34,6 +18,15 @@ pub async fn fallback(
         format!("No route {}", uri)
     )
 }
+```
+
+Modify the `Router` to add the function `fallback` as the first choice:
+
+```rust
+let app = Router::new()
+    .fallback(
+        fallback
+    );
 ```
 
 

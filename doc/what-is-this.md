@@ -9,7 +9,7 @@ asynchronous platform, and Serde data conversions.
 
 * Create a project using Rust and the axum web framework.
 
-* Leverage capabilties of a hyper server and tower middleware.
+* Leverage capabilities of a hyper server and tower middleware.
 
 * Create axum router routes and their handler functions.
 

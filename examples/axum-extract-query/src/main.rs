@@ -4,7 +4,7 @@
 //!
 //! For more see the file `README.md` in the project root.
 
-/// Use axum capabities.
+/// Use axum capabilities.
 use axum::routing::get;
 
 /// Use HashMap to deserialize a HTTP GET query into a key-value map.

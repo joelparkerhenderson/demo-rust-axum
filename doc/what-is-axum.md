@@ -33,7 +33,7 @@ battle-tested libraries for middleware, asynchronous programming, and HTTP.
 other Rust web frameworks, such as Actix, Rocket, Warp, and others.
 
 * axum is likely to appeal to programmers are seeking a faster
-web framework and who want closer-to-the-metal capabilties. 
+web framework and who want closer-to-the-metal capabilities. 
 
 
 ### Hello, World!

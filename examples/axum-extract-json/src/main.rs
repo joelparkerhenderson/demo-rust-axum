@@ -4,7 +4,7 @@
 //!
 //! For more see the file `README.md` in the project root.
 //!
-//! axum has capabilties for working with JSON data.
+//! axum has capabilities for working with JSON data.
 //!
 //! The axum extractor for JSON can also help with a request, by deserializing a
 //! request body into some type that implements serde::Deserialize. If the axum
@@ -15,7 +15,7 @@
 //! The axum extractor for JSON can help with a response, by formating JSON data
 //! then setting the response application content type.
 
-/// Use axum capabities.
+/// Use axum capabilities.
 use axum::routing::get;
 
 /// Use Serde JSON to serialize/deserialize JSON, such as in a request.

@@ -4,7 +4,7 @@
 //!
 //! For more see the file `README.md` in the project root.
 
-/// Use axum capabities.
+/// Use axum capabilities.
 use axum::routing::get;
 
 #[tokio::main]

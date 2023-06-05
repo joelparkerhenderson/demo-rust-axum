@@ -4,15 +4,12 @@
 //!
 //! For more see the file `README.md` in the project root.
 
-// Provide the fallback handler trait `into_service`.
-use axum::handler::Handler;
-
 #[tokio::main]
 async fn main() {
     // Build our application by creating our router.
     let app = axum::Router::new()
         .fallback(
-            fallback.into_service()
+            fallback
         );
 
     // Run our application as a hyper server on http://localhost:3000.

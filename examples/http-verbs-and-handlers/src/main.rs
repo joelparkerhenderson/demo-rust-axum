@@ -12,7 +12,7 @@
 //!
 //! These demo handlers in this section simply return a string.
 
-/// Use axum capabities.
+/// Use axum capabilities.
 use axum::routing::get;
 
 #[tokio::main]

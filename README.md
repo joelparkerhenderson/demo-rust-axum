@@ -56,7 +56,7 @@ asynchronous platform, and Serde data conversions.
 
 * Create a project using Rust and the axum web framework.
 
-* Leverage capabilties of a hyper server and tower middleware.
+* Leverage capabilities of a hyper server and tower middleware.
 
 * Create axum router routes and their handler functions.
 
@@ -157,7 +157,7 @@ web framework and who want closer-to-the-metal capabilties.
 async fn main() {
     // Build our application with a single route.
     let app = axum::Router::new().route("/",
-        axum::handler::get(|| async { "Hello, World!" }));
+        axum::routing::get(|| async { "Hello, World!" }));
 
     // Run our application as a hyper server on http://localhost:3000.
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
@@ -533,7 +533,7 @@ Modify the `Router` to add the function `fallback` as the first choice:
 ```rust
 let app = axum::Router::new()
     .fallback(
-        fallback.into_service()
+        fallback
     )
     .route("/",
         get(hello)
@@ -649,7 +649,7 @@ pub async fn main() {
      // Build our application by creating our router.
     let app = axum::Router::new()
         .fallback(
-            fallback.into_service()
+            fallback
         )
         .route("/",
             get(hello)
@@ -941,6 +941,7 @@ async fn get_demo_png() -> impl axum::response::IntoResponse {
         "DwADvgGOSHzRgAAAAABJRU5ErkJggg=="
     );
     (
+        ([(axum::http::header::CONTENT_TYPE, "image/png")]),
         axum::response::AppendHeaders([
             (axum::http::header::CONTENT_TYPE, "image/png"),
         ]),

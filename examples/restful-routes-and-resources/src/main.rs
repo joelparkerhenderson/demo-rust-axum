@@ -8,7 +8,7 @@
 //! that is a lazy mutex global variable, and handlers
 //! that process the routes for HTTP verbs GET, PUT, etc.
 
-/// Use axum capabities.
+/// Use axum capabilities.
 use axum::routing::get;
 
 #[tokio::main]
