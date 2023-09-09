@@ -309,7 +309,7 @@ The tokio stack includes:
 ```rust
 #[tokio::main]
 async fn main() {
-    let listener = tokio::net::TcpListener::bind("127.0.0.1:3000")
+    let listener = tokio::net::TcpListener::bind("localhost:3000")
         .await
         .unwrap();
     loop {
@@ -330,7 +330,7 @@ async fn process(socket: tokio::net::TcpStream) {
 ```rust
 #[tokio::main]
 async fn main() -> Result<()> {
-    let mut client = client::connect("127.0.0.1:3000").await?;
+    let mut client = client::connect("localhost:3000").await?;
     println!("connected);
     Ok(())
 }
@@ -1871,7 +1871,7 @@ Shell:
 
 ```sh
 curl \
---request POST '127.0.0.1:3000/books/1/form' \
+--request POST 'localhost:3000/books/1/form' \
 --header "Content-Type: application/x-www-form-urlencoded" \
 --data "id=1"  \
 --data "title=Another Title" \
