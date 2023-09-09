@@ -1871,15 +1871,17 @@ Shell:
 
 ```sh
 curl \
---request POST 'http://localhost:3000/books/1' \
---header "Content-Type: application/json" \
---data '{"id":"1","title":"Another Title","author":"Someone Else"}'
+--request POST '127.0.0.1:3000/books/1/form' \
+--header "Content-Type: application/x-www-form-urlencoded" \
+--data "id=1"  \
+--data "title=Another Title" \
+--data "author=Someone Else"
 ```
 
 Output:
 
 ```sh
-Post book: Antigone and Lysistra by Sophocles of Athens
+Post book: Another Title by Someone Else
 ```
 
 Shell:
