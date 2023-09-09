@@ -167,6 +167,7 @@ async fn main() {
 }
 ```
 
+[Link to examples/axum-hello-world](examples/axum-hello-world)
 
 <div style="page-break-before:always;"></div>
 

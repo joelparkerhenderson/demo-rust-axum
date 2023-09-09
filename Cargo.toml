@@ -9,7 +9,7 @@ edition = "2021"
 axum = { version = "0.6.0" } # Web framework that focuses on ergonomics and modularity.
 hyper = { version = "0.14.23", features = ["full"] } # A fast and correct HTTP library.
 tokio = { version = "1.22.0", features = ["full"] } # Event-driven, non-blocking I/O platform.
-tower = "0.4.13" # Modular reusable components for building robust clients and servers.
+tower = { version =  "0.4.13" } # Modular reusable components for building robust clients and servers.
 serde = { version = "1.0.147", features = ["derive"] } # A serialization/deserialization framework.
 serde_json = { version = "1.0.89" } # Serde serializion/deserialization of JSON data.
 once_cell = { version = "1.16.0" } # Single assignment cells and lazy values.
@@ -17,3 +17,7 @@ base64 = { version = "0.13" } # Encode and decode base64 as bytes or utf8.
 http = { version = "0.2.8" } # Types for HTTP requests and responses.
 tracing = { version = "0.1.37" } #  Application-level tracing for Rust.
 tracing-subscriber = { version = "0.3.16", features = ["env-filter"] } # Utilities for implementing and composing `tracing` subscribers. 
+
+[[example]]
+name = "axum-hello-world"
+path = "examples/axum-hello-world/src/main.rs"
