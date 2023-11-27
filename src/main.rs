@@ -103,18 +103,7 @@ async fn main() {
     // Run our application as a hyper server on http://localhost:3000.
     // Run our application as a hyper server on http://localhost:3000.
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
-    axum::serve(listener, app)
-    //.with_graceful_shutdown(shutdown_signal()) //TODO
-    .await.unwrap();
-}
-
-/// Tokio signal handler that will wait for a user to press CTRL+C.
-/// We use this in our hyper `Server` method `with_graceful_shutdown`.
-async fn shutdown_signal() {
-    tokio::signal::ctrl_c()
-        .await
-        .expect("Expect shutdown signal handler");
-    println!("signal shutdown");
+    axum::serve(listener, app).await.unwrap();
 }
 
 ////

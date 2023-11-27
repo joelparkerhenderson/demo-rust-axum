@@ -574,6 +574,8 @@ We want our demo server to be able to do graceful shutdown.
 
   * [Read hyper documentation about graceful shutdown](https://hyper.rs/guides/server/graceful-shutdown/)
 
+  * [Read axum example about graceful shutdown](https://github.com/tokio-rs/axum/tree/main/examples/graceful-shutdown)
+
 Tokio graceful shutdown generally does these steps:
 
   * Find out when to shut down.
@@ -590,48 +592,7 @@ Hyper graceful shutdown generally does these steps:
 
   * Then the server shuts down.
 
-Edit file `main.rs`.
-
-Create a tokio signal handler that listens for a user pressing CTRL+C:
-
-```rust
-/// Tokio signal handler that will wait for a user to press CTRL+C.
-/// We use this in our hyper `Server` method `with_graceful_shutdown`.
-async fn shutdown_signal() {
-    tokio::signal::ctrl_c()
-        .await
-        .expect("expect tokio signal ctrl-c");
-    println!("signal shutdown");
-}
-```
-
-Modify the `axum::serve` code to add the method `with_graceful_shutdown`:
-
-```rust
-axum::serve(listener, app)
-    .with_graceful_shutdown(shutdown_signal())
-    .await.unwrap();
-```
-
-
-### Try the demo…
-
-Shell:
-
-```sh
-cargo run
-```
-
-Browse <http://localhost:3000>
-
-You should see "Hello, World!".
-
-In your shell, press CTRL-C.
-
-Your shell should print "^Csignal shutdown" or possibly just "Csignal shutdown".
-
-
-<div style="page-break-before:always;"></div>
+axum used to have a graceful_shutdown function, but removed it.
 
 
 ## The whole code
@@ -652,18 +613,7 @@ pub async fn main() {
 
     // Run our application as a hyper server on http://localhost:3000.
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
-    axum::serve(listener, app)
-        .with_graceful_shutdown(shutdown_signal())
-        .await.unwrap();
-}
-
-/// Tokio signal handler that will wait for a user to press CTRL+C.
-/// We use this in our hyper `Server` method `with_graceful_shutdown`.
-async fn shutdown_signal() {
-    tokio::signal::ctrl_c()
-        .await
-        .expect("expect tokio signal ctrl-c");
-    println!("signal shutdown");
+    axum::serve(listener, app).await.unwrap();
 }
 
 /// axum handler for any request that fails to match the router routes.
