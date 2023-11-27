@@ -1,12 +1,25 @@
 [package]
 name = "demo-rust-axum-examples-axum-extract-json"
-version = "1.1.0"
+version = "1.3.0"
 edition = "2021"
+authors = ["Joel Parker Henderson <joel@joelparkerhenderson.com>"]
+license = "GPL-2.0 OR GPL-3.0"
+homepage = "https://github.com/joelparkerhenderson/demo-rust-axum"
+repository = "https://github.com/joelparkerhenderson/demo-rust-axum"
+documentation = "https://github.com/joelparkerhenderson/demo-rust-axum"
+
+description = """
+Demo of Rust and Axum + examples axum-extract-json
+"""
+
+readme = "README.md"
+keywords = ["demo", "rust", "axum", "web"]
+categories = ["web-programming"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-axum = "0.4.8" # Web framework that focuses on ergonomics and modularity.
-tokio = { version = "1.17.0", features = ["full"] } # Event-driven, non-blocking I/O platform.
-serde = { version = "1.0.136", features = ["derive"] } # A serialization/deserialization framework.
-serde_json = "1.0.79" # Serde serializion/deserialization of JSON data.
+axum = { version = "~0.7.1" } # Web framework that focuses on ergonomics and modularity.
+tokio = { version = "~1.34.0", features = ["full"] } # Event-driven, non-blocking I/O platform.
+serde = { version = "~1.0.193", features = ["derive"] } # A serialization/deserialization framework.
+serde_json = { version = "~1.0.108" } # Serde serializion/deserialization of JSON data.

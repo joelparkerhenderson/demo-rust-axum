@@ -30,22 +30,22 @@ Create a tokio signal handler that listens for a user pressing CTRL+C:
 ```rust
 /// Tokio signal handler that will wait for a user to press CTRL+C.
 /// We use this in our hyper `Server` method `with_graceful_shutdown`.
-async fn signal_shutdown() {
-    tokio::signal::ctrl_c()
-        .await
-        .expect("expect tokio signal ctrl-c");
-    println!("signal shutdown");
+async fn shutdown_signal() {
+   tokio::signal::ctrl_c().await {
+        Ok(()) => {},
+        Err(err) => {
+            eprintln!("Unable to listen for shutdown signal: {}", err);
+        },
+    }    
 }
 ```
 
-Modify the `axum::Server` code to add the method `with_graceful_shutdown`:
+Modify the `axum::serve` code to add the method `with_graceful_shutdown`:
 
 ```rust
-axum::Server::bind(&addr)
-    .serve(app.into_make_service())
-    .with_graceful_shutdown(shutdown_signal())
-    .await
-    .unwrap();
+    axum::serve(listener, app)
+        .with_graceful_shutdown(shutdown_signal())
+        .await.unwrap();
 ```
 
 

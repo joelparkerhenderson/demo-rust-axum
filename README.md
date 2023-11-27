@@ -34,7 +34,6 @@ Have a code improvement or bug fix? We welcome GitHub pull requests.
 This demo uses the license Creative Commons Share-and-Share-Alike.
 
 
-
 ### Contact
 
 Have feedback? Have thoughts about this? Want to contribute?
@@ -160,10 +159,8 @@ async fn main() {
         axum::routing::get(|| async { "Hello, World!" }));
 
     // Run our application as a hyper server on http://localhost:3000.
-    axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    axum::serve(listener, app).await.unwrap();
 }
 ```
 
@@ -408,27 +405,28 @@ Use this kind of package and these dependencies:
 ```toml
 [package]
 name = "demo-rust-axum"
-version = "0.1.0"
+version = "1.3.0"
 edition = "2021"
 
 [dependencies]
+
 # Web framework that focuses on ergonomics and modularity.
-axum = "0.4.8"
+axum = "~0.7.0"
 
 # Modular reusable components for building robust clients and servers.
-tower = "0.4.12"
+tower = "~0.4.13"
 
 # A fast and correct HTTP library.
-hyper = { version = "0.14.17", features = ["full"] }
+hyper = { version = "~1.0.1", features = ["full"] } 
 
 # Event-driven, non-blocking I/O platform.
-tokio = { version = "1.17.0", features = ["full"] }
+tokio = { version = "~1.34.0", features = ["full"] }
 
 # A serialization/deserialization framework.
-serde = { version = "1.0.136", features = ["derive"] }
+serde = { version = "~1.0.193", features = ["derive"] }
 
 # Serde serializion/deserialization of JSON data.
-serde_json = "1.0.79"
+serde_json = { version = "~1.0.108" }
 ```
 
 Edit file `src/main.rs`.
@@ -443,10 +441,8 @@ pub async fn main() {
         );
 
     // Run our application as a hyper server on http://localhost:3000.
-    axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    axum::serve(listener, app).await.unwrap();
 }
 ```
 
@@ -609,14 +605,12 @@ async fn shutdown_signal() {
 }
 ```
 
-Modify the `axum::Server` code to add the method `with_graceful_shutdown`:
+Modify the `axum::serve` code to add the method `with_graceful_shutdown`:
 
 ```rust
-axum::Server::bind(&addr)
-    .serve(app.into_make_service())
+axum::serve(listener, app)
     .with_graceful_shutdown(shutdown_signal())
-    .await
-    .unwrap();
+    .await.unwrap();
 ```
 
 
@@ -657,11 +651,10 @@ pub async fn main() {
         );
 
     // Run our application as a hyper server on http://localhost:3000.
-    axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
-        .serve(app.into_make_service())
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    axum::serve(listener, app)
         .with_graceful_shutdown(shutdown_signal())
-        .await
-        .unwrap();
+        .await.unwrap();
 }
 
 /// Tokio signal handler that will wait for a user to press CTRL+C.
@@ -706,7 +699,7 @@ This section shows how to:
 
 * Respond with a custom header and image
 
-* Respond to mutiple HTTP verbs
+* Respond to multiple HTTP verbs
 
 
 <div style="page-break-before:always;"></div>
@@ -912,10 +905,10 @@ Add dependencies:
 
 ```rust
 # Encode and decode base64 as bytes or utf8.
-base64 = "0.13"
+base64 = "~0.21.5"
 
 # Types for HTTP requests and responses.
-http = "0.2.6" 
+http = "~1.0.0" 
 ```
 
 Edit file `main.rs`.
@@ -936,17 +929,17 @@ Add a handler:
 /// axum handler for "GET /demo.png" which responds with an image PNG.
 /// This sets a header "image/png" then sends the decoded image data.
 async fn get_demo_png() -> impl axum::response::IntoResponse {
+    use base64::Engine;
     let png = concat!(
         "iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB",
         "CAYAAAAfFcSJAAAADUlEQVR42mPk+89Q",
         "DwADvgGOSHzRgAAAAABJRU5ErkJggg=="
     );
     (
-        ([(axum::http::header::CONTENT_TYPE, "image/png")]),
         axum::response::AppendHeaders([
             (axum::http::header::CONTENT_TYPE, "image/png"),
         ]),
-        base64::decode(png).unwrap(),
+        base64::engine::general_purpose::STANDARD::decode(png).unwrap(),
     )
 }
 ```
@@ -1237,7 +1230,7 @@ Get items with query params: {"a": "b"}
 
 ## Respond with a JSON payload
 
-The axum extractor for JSON can help with a response, by formating JSON data
+The axum extractor for JSON can help with a response, by formatting JSON data
 then setting the response application content type.
 
 Edit file `main.rs`.
@@ -2054,7 +2047,8 @@ Edit file `main.rs`.
 The demo code is:
 
 ```rust
-axum::Server::bind(&"0.0.0.0:3000".parse().unwrap()) …
+let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+axum::serve(listener, app).await.unwrap();
 ```
 
 You can create a socket address step by step, if you prefer.
@@ -2069,7 +2063,8 @@ pub async fn main() {
     let host = [127, 0, 0, 1];
     let port = 3000;
     let addr = SocketAddr::from((host, port));
-    axum::Server::bind(&addr) …
+    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
+    axum::serve(listener, app).await.unwrap();
 ```
 
 

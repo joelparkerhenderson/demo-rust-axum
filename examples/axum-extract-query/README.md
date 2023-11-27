@@ -1,5 +1,4 @@
-
-## Extract query parameters
+# Axum extract query parameters
 
 Edit file `main.rs`.
 

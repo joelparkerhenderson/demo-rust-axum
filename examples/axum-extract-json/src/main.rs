@@ -12,7 +12,7 @@
 //! contain the Content-Type: application/json header, then the axum extractor
 //! will reject the request and return a 400 Bad Request response.
 //!
-//! The axum extractor for JSON can help with a response, by formating JSON data
+//! The axum extractor for JSON can help with a response, by formatting JSON data
 //! then setting the response application content type.
 
 /// Use axum capabilities.
@@ -26,17 +26,15 @@ use serde_json::{json, Value};
 #[tokio::main]
 async fn main() {
     // Build our application by creating our router.
-    let app = axum::Router::new()
-        .route("/demo.json",
+    let app = axum::Router::new().route(
+        "/demo.json",
         get(get_demo_json)
             .put(put_demo_json)
-        );
+    );
 
     // Run our application as a hyper server on http://localhost:3000.
-    axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    axum::serve(listener, app).await.unwrap();
 }
 
 /// axum handler for "GET /demo.json" which returns JSON data.

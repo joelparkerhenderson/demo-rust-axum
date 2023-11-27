@@ -19,10 +19,8 @@ async fn main() {
         );
 
     // Run our application as a hyper server on http://localhost:3000.
-    axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    axum::serve(listener, app).await.unwrap();
 }
 
 /// axum handler for "GET /demo-css" to get cascading style sheet text.
@@ -30,13 +28,13 @@ async fn main() {
 /// Browsers many handle CSS text in different ways, such as displaying
 /// the text using colors, or downloading the CSS as a file, etc.
 async fn get_demo_css() -> impl axum::response::IntoResponse { 
+    let mut headers = axum::http::HeaderMap::new();
+    headers.insert(
+        axum::http::header::CONTENT_TYPE, 
+        axum::http::HeaderValue::from_static(&"text/css")
+    );
     (
-        axum::response::Headers([
-            (
-                axum::http::header::CONTENT_TYPE, 
-                "text/css"
-            ),
-        ]),
+        headers,
         concat!(
             "b: { font-color: red; }\n",
             "i: { font-color: blue; }\n",
@@ -49,13 +47,13 @@ async fn get_demo_css() -> impl axum::response::IntoResponse {
 /// Browsers many handle CSV text in different ways, such as displaying
 /// the text using a data table, or downloading the CSV as a file, etc.
 async fn get_demo_csv() -> impl axum::response::IntoResponse {
+    let mut headers = axum::http::HeaderMap::new();
+    headers.insert(
+        axum::http::header::CONTENT_TYPE, 
+        axum::http::HeaderValue::from_static(&"text/csv")
+    );
     (
-        axum::response::Headers([
-            (
-                axum::http::header::CONTENT_TYPE, 
-                "text/csv"
-            ),
-        ]),
+        headers,
         concat!(
             "alpha,bravo,charlie\n",
             "delta,echo,foxtrot\n",

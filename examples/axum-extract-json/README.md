@@ -1,4 +1,4 @@
-# Extract JSON payload
+# Axum extract JSON payload
 
 The axum extractor for JSON deserializes a request body into any type that
 implements `serde::Deserialize`. If the extractor is unable to parse the request
@@ -60,7 +60,7 @@ Put demo JSON data: Object({"a": String("b")})
 
 ## Respond with a JSON payload
 
-The axum extractor for JSON can help with a response, by formating JSON data
+The axum extractor for JSON can help with a response, by formatting JSON data
 then setting the response application content type.
 
 Edit file `main.rs`.

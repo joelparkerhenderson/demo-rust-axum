@@ -21,10 +21,8 @@ async fn main() {
         );
 
     // Run our application as a hyper server on http://localhost:3000.
-    axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    axum::serve(listener, app).await.unwrap();
 }
 
 /// axum handler for "GET /demo-query" which uses `axum::extract::Query`.

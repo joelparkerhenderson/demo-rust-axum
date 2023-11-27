@@ -43,8 +43,7 @@ async fn main() {
         Ok::<_, Infallible>(hyper::service::service_fn(handle))
     });
 
-    let server = hyper::Server::bind(&"0.0.0.0:3000".parse().unwrap())
-        .serve(make_svc);
+    let server = hyper::Server::bind(&addr).serve(make_svc);
 
     if let Err(e) = server.await {
         eprintln!("server error: {}", e);

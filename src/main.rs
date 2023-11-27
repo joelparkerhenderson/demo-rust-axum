@@ -101,11 +101,11 @@ async fn main() {
         );
 
     // Run our application as a hyper server on http://localhost:3000.
-    axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
-        .serve(app.into_make_service())
-        .with_graceful_shutdown(shutdown_signal())
-        .await
-        .unwrap();
+    // Run our application as a hyper server on http://localhost:3000.
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    axum::serve(listener, app)
+    //.with_graceful_shutdown(shutdown_signal()) //TODO
+    .await.unwrap();
 }
 
 /// Tokio signal handler that will wait for a user to press CTRL+C.
@@ -170,10 +170,11 @@ pub async fn get_demo_html() -> axum::response::Html<&'static str> {
 /// axum handler for "GET /demo.png" which responds with an image PNG.
 /// This sets a header "image/png" then sends the decoded image data.
 async fn get_demo_png() -> impl axum::response::IntoResponse {
+    use base64::Engine;
     let png = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPk+89QDwADvgGOSHzRgAAAAABJRU5ErkJggg==";
     (
         axum::response::AppendHeaders([(axum::http::header::CONTENT_TYPE, "image/png")]),
-        base64::decode(png).unwrap(),
+        base64::engine::general_purpose::STANDARD.decode(png).unwrap(),
     )
 }
 
@@ -188,7 +189,7 @@ async fn get_demo_png() -> impl axum::response::IntoResponse {
 // contain the Content-Type: application/json header, then the axum extractor
 // will reject the request and return a 400 Bad Request response.
 //
-// The axum extractor for JSON can help with a response, by formating JSON data
+// The axum extractor for JSON can help with a response, by formatting JSON data
 // then setting the response application content type.
 ////
 
