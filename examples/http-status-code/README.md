@@ -2,15 +2,6 @@
 
 Edit file `main.rs`.
 
-Add code to use `StatusCode`:
-
-```rust
-use axum::{
-    …
-    http::StatusCode,
-};
-```
-
 Add a route:
 
 ```rust

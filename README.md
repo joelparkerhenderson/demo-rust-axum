@@ -659,15 +659,6 @@ This section shows how to:
 
 Edit file `main.rs`.
 
-Add code to use `Html`:
-
-```rust
-use axum::{
-    …
-    response::Html,
-};
-```
-
 Add a route:
 
 ```rust
@@ -759,15 +750,6 @@ You should see the headline "Hello" and text "This is our demo.".
 ## Respond with HTTP status code OK
 
 Edit file `main.rs`.
-
-Add code to use `StatusCode`:
-
-```rust
-use axum::{
-    …
-    http::StatusCode,
-};
-```
 
 Add a route:
 
@@ -889,7 +871,7 @@ async fn get_demo_png() -> impl axum::response::IntoResponse {
         axum::response::AppendHeaders([
             (axum::http::header::CONTENT_TYPE, "image/png"),
         ]),
-        base64::engine::general_purpose::STANDARD::decode(png).unwrap(),
+        base64::engine::general_purpose::STANDARD.decode(png).unwrap(),
     )
 }
 ```
@@ -2086,7 +2068,7 @@ We welcome constructive feedback via GitHub issues:
 
 Joel Parker Henderson
 
-joel@joelparkerhenderson
+joel@joelparkerhenderson.com
 
 <https://linkedin.com/in/joelparkerhenderson>
 
