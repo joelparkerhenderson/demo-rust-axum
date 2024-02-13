@@ -1646,7 +1646,7 @@ Shell:
 curl \
 --request PUT 'http://localhost:3000/books' \
 --header "Content-Type: application/json" \
---data '{"id":"4","title":"Decameron","author":"Giovanni Boccaccio"}'
+--data '{"id":4,"title":"Decameron","author":"Giovanni Boccaccio"}'
 ```
 
 Output:

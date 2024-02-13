@@ -352,7 +352,7 @@ Shell:
 curl \
 --request PUT 'http://localhost:3000/books' \
 --header "Content-Type: application/json" \
---data '{"id":"4","title":"Decameron","author":"Giovanni Boccaccio"}'
+--data '{"id":4,"title":"Decameron","author":"Giovanni Boccaccio"}'
 ```
 
 Output:
@@ -505,7 +505,7 @@ Shell:
 curl \
 --request POST 'http://localhost:3000/books/1' \
 --header "Content-Type: application/json" \
---data '{"id":"1","title":"Another Title","author":"Someone Else"}'
+--data '{"id":1,"title":"Another Title","author":"Someone Else"}'
 ```
 
 Output:
