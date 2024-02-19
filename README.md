@@ -1776,7 +1776,7 @@ pub async fn post_books_id_form(
         let mut data = DATA.lock().unwrap();
         if data.contains_key(&new_book.id) {
             data.insert(new_book.id, new_book.clone());
-            format!("<p>{}</p>\n", &new_book)
+            format!("Post book: {}", &new_book)
         } else {
             format!("Book id not found: {}", &new_book.id)
         }
