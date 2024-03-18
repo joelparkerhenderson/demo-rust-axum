@@ -1189,7 +1189,7 @@ let app = axum::Router::new()
 Add a handler:
 
 ```rust
-/// axum handler for "PUT /demo.json" which uses `axum::extract::Json`.
+/// axum handler for "GET /demo.json" which uses `axum::extract::Json`.
 /// This buffers the request body then deserializes it bu using serde.
 /// The `Json` type supports types that implement `serde::Deserialize`.
 pub async fn get_demo_json() -> axum::extract::Json<Value> {
