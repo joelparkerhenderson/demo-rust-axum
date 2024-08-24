@@ -585,7 +585,7 @@ curl --request DELETE 'http://localhost:3000/books/1'
 Output:
 
 ```sh
-<p>Delete book id: 1</p>
+Delete book id: 1
 ```
 
 Shell:
