@@ -1905,12 +1905,12 @@ Output:
 
 This section shows how to:
 
-* Add a Tower tracing subscriber
+* Add a tracing subscriber
 
 * Use a host, port, and socket address
 
 
-## Add a Tower tracing subscriber
+## Add a tracing subscriber
 
 Edit file `Cargo.toml`.
 
@@ -1918,10 +1918,10 @@ Add dependencies:
 
 ```toml
 # Application-level tracing for Rust.
-tracing = "0.1.32" 
+tracing = "0.1.40" 
 
 # Utilities for implementing and composing `tracing` subscribers. 
-tracing-subscriber = { version = "0.3.9", features = ["env-filter"] } 
+tracing-subscriber = { version = "0.3.18", features = ["env-filter"] } 
 ```
 
 Edit file `main.rs`.
@@ -1936,15 +1936,17 @@ use tracing_subscriber::{
 };
 ```
 
-Add a tracing subscriber:
+Add a tracing subscriber to the start of the main function:
 
 ```rust
+#[tokio::main]
 pub async fn main() {
-    // Start tracing.
+
+    // Start tracing
     tracing_subscriber::registry()
         .with(tracing_subscriber::fmt::layer())
         .init();
-    …
+    tracing::event!(tracing::Level::INFO, "main");
 ```
 
 
@@ -1959,11 +1961,7 @@ cargo run
 You should see console output that shows tracing initialization such as:
 
 ```sh
-2022-03-08T00:13:54.483877Z
-    TRACE mio::poll:
-    registering event source with poller:
-    token=Token(1),
-    interests=READABLE | WRITABLE
+2024-08-31T20:06:34.894986Z  INFO demo_rust_axum: tracing
 ```
 
 

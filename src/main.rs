@@ -24,10 +24,7 @@
 use axum::routing::get;
 
 /// Use tracing crates for application-level tracing output.
-use tracing_subscriber::{
-    layer::SubscriberExt,
-    util::SubscriberInitExt,
-};
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 /// Use HashMap to deserialize a HTTP GET query into a key-value map.
 /// axum extracts query parameters by using `axum::extract::Query`.
@@ -44,60 +41,35 @@ async fn main() {
 
     // Start tracing.
     tracing_subscriber::registry()
-    .with(tracing_subscriber::fmt::layer())
-    .init();
+        .with(tracing_subscriber::fmt::layer())
+        .init();
+    tracing::event!(tracing::Level::INFO, "main");
 
     // Build our application by creating our router.
     let app = axum::Router::new()
-        .fallback(
-            fallback
-        )
-        .route("/",
-            get(hello)
-        )
-        .route("/hello.html",
-            get(hello_html)
-        )
-        .route("/demo-status",
-            get(demo_status)
-        )
-        .route("/demo-uri",
-            get(demo_uri)
-        )
-        .route("/demo.html",
-        get(get_demo_html)
-        )
-        .route("/demo.png",
-            get(get_demo_png)
-        )
-        .route("/demo.json",
-        get(get_demo_json)
-            .put(put_demo_json)
-        )
-        .route("/foo",
-        get(get_foo)
+        .fallback(fallback)
+        .route("/", get(hello))
+        .route("/hello.html", get(hello_html))
+        .route("/demo-status", get(demo_status))
+        .route("/demo-uri", get(demo_uri))
+        .route("/demo.html", get(get_demo_html))
+        .route("/demo.png", get(get_demo_png))
+        .route("/demo.json", get(get_demo_json).put(put_demo_json))
+        .route(
+            "/foo",
+            get(get_foo)
                 .put(put_foo)
                 .patch(patch_foo)
                 .post(post_foo)
-                .delete(delete_foo)
+                .delete(delete_foo),
         )
-        .route("/items",
-         get(get_items)
-        )
-        .route("/items/:id",
-         get(get_items_id)
-        )
-        .route("/books",
-        get(get_books)
-            .put(put_books)
-        )
-        .route("/books/:id",
-            get(get_books_id)
-            .delete(delete_books_id)
-        )
-        .route("/books/:id/form",
-            get(get_books_id_form)
-            .post(post_books_id_form)
+        .route("/items", get(get_items))
+        .route("/items/:id", get(get_items_id))
+        .route("/books", get(get_books).put(put_books))
+        .route("/books/:id", get(get_books_id).delete(delete_books_id))
+        .route(
+            "/books/:id/form",
+            get(get_books_id_form).post(post_books_id_form),
         );
 
     // Run our application as a hyper server on http://localhost:3000.
@@ -116,12 +88,10 @@ async fn main() {
 
 /// axum handler for any request that fails to match the router routes.
 /// This implementation returns HTTP status code Not Found (404).
-pub async fn fallback(
-    uri: axum::http::Uri
-) -> impl axum::response::IntoResponse {
+pub async fn fallback(uri: axum::http::Uri) -> impl axum::response::IntoResponse {
     (
         axum::http::StatusCode::NOT_FOUND,
-        format!("No route {}", uri)
+        format!("No route {}", uri),
     )
 }
 
@@ -163,7 +133,9 @@ async fn get_demo_png() -> impl axum::response::IntoResponse {
     let png = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPk+89QDwADvgGOSHzRgAAAAABJRU5ErkJggg==";
     (
         axum::response::AppendHeaders([(axum::http::header::CONTENT_TYPE, "image/png")]),
-        base64::engine::general_purpose::STANDARD.decode(png).unwrap(),
+        base64::engine::general_purpose::STANDARD
+            .decode(png)
+            .unwrap(),
     )
 }
 
@@ -193,7 +165,7 @@ pub async fn get_demo_json() -> axum::extract::Json<Value> {
 /// This buffers the request body then deserializes it using serde.
 /// The `Json` type supports types that implement `serde::Deserialize`.
 pub async fn put_demo_json(
-    axum::extract::Json(data): axum::extract::Json<serde_json::Value>
+    axum::extract::Json(data): axum::extract::Json<serde_json::Value>,
 ) -> String {
     format!("Put demo JSON data: {:?}", data)
 }
@@ -248,18 +220,14 @@ pub async fn delete_foo() -> String {
 /// axum handler for "GET /items" which uses `axum::extract::Query`.
 /// This extracts query parameters and creates a key-value pair map.
 pub async fn get_items(
-    axum::extract::Query(params):
-        axum::extract::Query<HashMap<String, String>>
+    axum::extract::Query(params): axum::extract::Query<HashMap<String, String>>,
 ) -> String {
     format!("Get items with query params: {:?}", params)
 }
 
 /// axum handler for "GET /items/:id" which uses `axum::extract::Path`.
 /// This extracts a path parameter then deserializes it as needed.
-pub async fn get_items_id(
-    axum::extract::Path(id):
-        axum::extract::Path<String>
-) -> String {
+pub async fn get_items_id(axum::extract::Path(id): axum::extract::Path<String>) -> String {
     format!("Get items with path id: {:?}", id)
 }
 
@@ -288,8 +256,10 @@ use std::thread;
 async fn print_data() {
     thread::spawn(move || {
         let data = DATA.lock().unwrap();
-        println!("data: {:?}" ,data);
-    }).join().unwrap()
+        println!("data: {:?}", data);
+    })
+    .join()
+    .unwrap()
 }
 
 /// axum handler for "GET /books" which responds with a resource page.
@@ -300,28 +270,35 @@ pub async fn get_books() -> axum::response::Html<String> {
         let data = DATA.lock().unwrap();
         let mut books = data.values().collect::<Vec<_>>().clone();
         books.sort_by(|a, b| a.title.cmp(&b.title));
-        books.iter().map(|&book|
-            format!("<p>{}</p>\n", &book)
-        ).collect::<String>()
-    }).join().unwrap().into()
+        books
+            .iter()
+            .map(|&book| format!("<p>{}</p>\n", &book))
+            .collect::<String>()
+    })
+    .join()
+    .unwrap()
+    .into()
 }
 
 /// axum handler for "PUT /books" which creates a new book resource.
 /// This demo shows how axum can extract JSON data into a Book struct.
 pub async fn put_books(
-    axum::extract::Json(book): axum::extract::Json<Book>
+    axum::extract::Json(book): axum::extract::Json<Book>,
 ) -> axum::response::Html<String> {
     thread::spawn(move || {
         let mut data = DATA.lock().unwrap();
         data.insert(book.id, book.clone());
         format!("Put book: {}", &book)
-    }).join().unwrap().into()
+    })
+    .join()
+    .unwrap()
+    .into()
 }
 
 /// axum handler for "GET /books/:id" which responds with one resource HTML page.
 /// This demo app uses our crate::DATA variable, and iterates on it to find the id.
 pub async fn get_books_id(
-    axum::extract::Path(id): axum::extract::Path<u32>
+    axum::extract::Path(id): axum::extract::Path<u32>,
 ) -> axum::response::Html<String> {
     thread::spawn(move || {
         let data = DATA.lock().unwrap();
@@ -329,13 +306,16 @@ pub async fn get_books_id(
             Some(book) => format!("<p>{}</p>\n", &book),
             None => format!("<p>Book id {} not found</p>", id),
         }
-    }).join().unwrap().into()
+    })
+    .join()
+    .unwrap()
+    .into()
 }
 
 /// axum handler for "DELETE /books/:id" which destroys a resource.
 /// This demo extracts an id, then mutates the book in the DATA store.
 pub async fn delete_books_id(
-    axum::extract::Path(id): axum::extract::Path<u32>
+    axum::extract::Path(id): axum::extract::Path<u32>,
 ) -> axum::response::Html<String> {
     thread::spawn(move || {
         let mut data = DATA.lock().unwrap();
@@ -345,13 +325,16 @@ pub async fn delete_books_id(
         } else {
             format!("Book id not found: {}", &id)
         }
-    }).join().unwrap().into()
+    })
+    .join()
+    .unwrap()
+    .into()
 }
 
 /// axum handler for "GET /books/:id/form" which responds with a form.
 /// This demo shows how to write a typical HTML form with input fields.
 pub async fn get_books_id_form(
-    axum::extract::Path(id): axum::extract::Path<u32>
+    axum::extract::Path(id): axum::extract::Path<u32>,
 ) -> axum::response::Html<String> {
     thread::spawn(move || {
         let data = DATA.lock().unwrap();
@@ -365,21 +348,19 @@ pub async fn get_books_id_form(
                     "<input type=\"submit\" value=\"Save\">\n",
                     "</form>\n"
                 ),
-                &book.id,
-                &book.id,
-                &book.title,
-                &book.author
+                &book.id, &book.id, &book.title, &book.author
             ),
             None => format!("<p>Book id {} not found</p>", id),
         }
-    }).join().unwrap().into()
+    })
+    .join()
+    .unwrap()
+    .into()
 }
 
 /// axum handler for "POST /books/:id/form" which submits an HTML form.
 /// This demo shows how to do a form submission then update a resource.
-pub async fn post_books_id_form(
-    form: axum::extract::Form<Book>
-) -> axum::response::Html<String> {
+pub async fn post_books_id_form(form: axum::extract::Form<Book>) -> axum::response::Html<String> {
     let new_book: Book = form.0;
     thread::spawn(move || {
         let mut data = DATA.lock().unwrap();
@@ -389,5 +370,8 @@ pub async fn post_books_id_form(
         } else {
             format!("Book id not found: {}", &new_book.id)
         }
-    }).join().unwrap().into()
+    })
+    .join()
+    .unwrap()
+    .into()
 }
