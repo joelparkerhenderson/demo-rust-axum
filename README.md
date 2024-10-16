@@ -84,7 +84,7 @@ Some knowledge about web frameworks is required, such as:
 
 * The general concepts of HTTP requests and responses.
 
-* The general concepts of of RESTful routes and resources.
+* The general concepts of RESTful routes and resources.
 
 * The general concepts of formats for HTML, JSON, and text.
 
