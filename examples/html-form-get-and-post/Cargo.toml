@@ -19,7 +19,7 @@ categories = ["web-programming"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-axum = { version = "~0.7.5" } # Web framework that focuses on ergonomics and modularity.
+axum = { version = "~0.7.9" } # Web framework that focuses on ergonomics and modularity.
 tokio = { version = "~1.34.0", features = ["full"] } # Event-driven, non-blocking I/O platform.
-serde = { version = "~1.0.209", features = ["derive"] } # A serialization/deserialization framework.
-serde_json = { version = "~1.0.127" } # Serde serializion/deserialization of JSON data.
+serde = { version = "~1.0.217", features = ["derive"] } # A serialization/deserialization framework.
+serde_json = { version = "~1.0.134" } # Serde serializion/deserialization of JSON data.

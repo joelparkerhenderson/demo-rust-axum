@@ -19,5 +19,5 @@ categories = ["web-programming"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-axum = { version = "~0.7.5" } # Web framework that focuses on ergonomics and modularity.
+axum = { version = "~0.7.9" } # Web framework that focuses on ergonomics and modularity.
 tokio = { version = "~1.34.0", features = ["full"] } # Event-driven, non-blocking I/O platform.
