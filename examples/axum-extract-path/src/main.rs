@@ -11,7 +11,7 @@ use axum::routing::get;
 async fn main() {
     // Build our application by creating our router.
     let app = axum::Router::new()
-        .route("/demo-path/:id",
+        .route("/demo-path/{id}",
             get(get_demo_path_id)
         );
 
@@ -20,7 +20,7 @@ async fn main() {
     axum::serve(listener, app).await.unwrap();
 }
 
-/// axum handler for "GET /demo-path/:id" which uses `axum::extract::Path`.
+/// axum handler for "GET /demo-path/{id}" which uses `axum::extract::Path`.
 /// This extracts a path parameter then deserializes it as needed.
 pub async fn get_demo_path_id(
     axum::extract::Path(id):

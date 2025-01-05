@@ -64,11 +64,11 @@ async fn main() {
                 .delete(delete_foo),
         )
         .route("/items", get(get_items))
-        .route("/items/:id", get(get_items_id))
+        .route("/items/{id}", get(get_items_id))
         .route("/books", get(get_books).put(put_books))
-        .route("/books/:id", get(get_books_id).delete(delete_books_id))
+        .route("/books/{id}", get(get_books_id).delete(delete_books_id))
         .route(
-            "/books/:id/form",
+            "/books/{id}/form",
             get(get_books_id_form).post(post_books_id_form),
         );
 
@@ -224,7 +224,7 @@ pub async fn get_items(
     format!("Get items with query params: {:?}", params)
 }
 
-/// axum handler for "GET /items/:id" which uses `axum::extract::Path`.
+/// axum handler for "GET /items/{id}" which uses `axum::extract::Path`.
 /// This extracts a path parameter then deserializes it as needed.
 pub async fn get_items_id(axum::extract::Path(id): axum::extract::Path<String>) -> String {
     format!("Get items with path id: {:?}", id)
@@ -294,7 +294,7 @@ pub async fn put_books(
     .into()
 }
 
-/// axum handler for "GET /books/:id" which responds with one resource HTML page.
+/// axum handler for "GET /books/{id}" which responds with one resource HTML page.
 /// This demo app uses our crate::DATA variable, and iterates on it to find the id.
 pub async fn get_books_id(
     axum::extract::Path(id): axum::extract::Path<u32>,
@@ -311,7 +311,7 @@ pub async fn get_books_id(
     .into()
 }
 
-/// axum handler for "DELETE /books/:id" which destroys a resource.
+/// axum handler for "DELETE /books/{id}" which destroys a resource.
 /// This demo extracts an id, then mutates the book in the DATA store.
 pub async fn delete_books_id(
     axum::extract::Path(id): axum::extract::Path<u32>,
@@ -330,7 +330,7 @@ pub async fn delete_books_id(
     .into()
 }
 
-/// axum handler for "GET /books/:id/form" which responds with a form.
+/// axum handler for "GET /books/{id}/form" which responds with a form.
 /// This demo shows how to write a typical HTML form with input fields.
 pub async fn get_books_id_form(
     axum::extract::Path(id): axum::extract::Path<u32>,
@@ -357,7 +357,7 @@ pub async fn get_books_id_form(
     .into()
 }
 
-/// axum handler for "POST /books/:id/form" which submits an HTML form.
+/// axum handler for "POST /books/{id}/form" which submits an HTML form.
 /// This demo shows how to do a form submission then update a resource.
 pub async fn post_books_id_form(form: axum::extract::Form<Book>) -> axum::response::Html<String> {
     let new_book: Book = form.0;

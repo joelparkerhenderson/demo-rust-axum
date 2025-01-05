@@ -410,23 +410,17 @@ edition = "2021"
 
 [dependencies]
 
-# Web framework that focuses on ergonomics and modularity.
-axum = "~0.7.0"
-
-# Modular reusable components for building robust clients and servers.
-tower = "~0.4.13"
-
-# A fast and correct HTTP library.
-hyper = { version = "~1.0.1", features = ["full"] } 
-
-# Event-driven, non-blocking I/O platform.
-tokio = { version = "~1.34.0", features = ["full"] }
-
-# A serialization/deserialization framework.
-serde = { version = "~1.0.193", features = ["derive"] }
-
-# Serde serializion/deserialization of JSON data.
-serde_json = { version = "~1.0.108" }
+axum = { version = "~0.8.0" } # Web framework that focuses on ergonomics and modularity.
+hyper = { version = "~1.4.1", features = ["full"] } # A fast and correct HTTP library.
+tokio = { version = "~1.39.3", features = ["full"] } # Event-driven, non-blocking I/O platform.
+tower = { version =  "~0.5.2" } # Modular reusable components for building robust clients and servers.
+serde = { version = "~1.0.217", features = ["derive"] } # A serialization/deserialization framework.
+serde_json = { version = "~1.0.134" } # Serde serialization/deserialization of JSON data.
+once_cell = { version = "~1.19.0" } # Single assignment cells and lazy values.
+base64 = { version = "~0.21.7" } # Encode and decode base64 as bytes or utf8.
+http = { version = "~1.1.0" } # Types for HTTP requests and responses.
+tracing = { version = "~0.1.41" } #  Application-level tracing for Rust.
+tracing-subscriber = { version = "~0.3.19", features = ["env-filter"] } # Utilities for `tracing` subscribers. 
 ```
 
 Edit file `src/main.rs`.
@@ -1046,10 +1040,19 @@ This section shows how to:
 
 * Respond with a JSON payload
 
+## Caution: extractors syntax change
 
-## Extract path parameters
+Before you read the next section, please be aware the extractor syntax has changed between axum 0.7 and 0.8, approximately as of 2025-01-01.
 
-Add a route using path parameter syntax, such as ":id", in order to tell axum to
+* Axum 0.7 extractor syntax uses a colon like this: `:foo`.
+
+* Axum 0.8 extractor syntax uses curly braces such as `{foo}`.
+
+If you try to use the older syntax, you will get an error message such as: "Path segments must not start with `:`. For capture groups, use `{capture}`. If you meant to literally match a segment starting with a colon, call `without_v07_checks` on the router."
+
+## Extractor path parameters
+
+Add a route using path parameter syntax, such as "{id}", in order to tell axum to
 extract a path parameter and deserialize it into a variable named `id`.
 
 Edit file `main.rs`.
@@ -1059,7 +1062,7 @@ Add a route:
 ```rust
 let app = axum::Router::new()
     …
-    .route("/items/:id",
+    .route("/items/{id}",
         get(get_items_id)
     );
 ```
@@ -1067,7 +1070,7 @@ let app = axum::Router::new()
 Add a handler:
 
 ```rust
-/// axum handler for "GET /items/:id" which uses `axum::extract::Path`.
+/// axum handler for "GET /items/{id}" which uses `axum::extract::Path`.
 /// This extracts a path parameter then deserializes it as needed.
 pub async fn get_items_id(
     axum::extract::Path(id):
@@ -1540,7 +1543,7 @@ Add a route:
 ```rust
 let app = axum::Router::new()
     …
-    .route("/books/:id",
+    .route("/books/{id}",
         get(get_books_id)
     );
 ```
@@ -1548,7 +1551,7 @@ let app = axum::Router::new()
 Add a handler:
 
 ```rust
-/// axum handler for "GET /books/:id" which responds with one resource HTML page.
+/// axum handler for "GET /books/{id}" which responds with one resource HTML page.
 /// This demo app uses our DATA variable, and iterates on it to find the id.
 pub async fn get_books_id(
     axum::extract::Path(id): axum::extract::Path<u32>
@@ -1683,7 +1686,7 @@ Add a route:
 ```rust
 let app = axum::Router::new()
     …
-    .route("/books/:id/form",
+    .route("/books/{id}/form",
         get(get_books_id_form)
     );
 ```
@@ -1691,7 +1694,7 @@ let app = axum::Router::new()
 Add a handler:
 
 ```rust
-/// axum handler for "GET /books/:id/form" which responds with a form.
+/// axum handler for "GET /books/{id}/form" which responds with a form.
 /// This demo shows how to write a typical HTML form with input fields.
 pub async fn get_books_id_form(
     axum::extract::Path(id): axum::extract::Path<u32>
@@ -1752,12 +1755,12 @@ Output:
 
 Edit file `main.rs`.
 
-Modify the route `/books/:id/form` to append the function `post`:
+Modify the route `/books/{id}/form` to append the function `post`:
 
 ```rust
 let app = axum::Router::new()
     …
-    .route("/books/:id/form",
+    .route("/books/{id}/form",
         get(get_books_id_form)
         .post(post_books_id_form)
     );
@@ -1766,7 +1769,7 @@ let app = axum::Router::new()
 Add a handler:
 
 ```rust
-/// axum handler for "POST /books/:id/form" which submits an HTML form.
+/// axum handler for "POST /books/{id}/form" which submits an HTML form.
 /// This demo shows how to do a form submission then update a resource.
 pub async fn post_books_id_form(
     form: axum::extract::Form<Book>
@@ -1832,12 +1835,12 @@ Output:
 
 Edit file `main.rs`.
 
-Modify the route `/books/:id` to append the function `delete`:
+Modify the route `/books/{id}` to append the function `delete`:
 
 ```rust
 let app = axum::Router::new()
     …
-    .route("/books/:id",
+    .route("/books/{id}",
         get(get_books_id)
         .delete(delete_books_id)
     );
@@ -1846,7 +1849,7 @@ let app = axum::Router::new()
 Add a handler:
 
 ```rust
-/// axum handler for "DELETE /books/:id" which destroys a resource.
+/// axum handler for "DELETE /books/{id}" which destroys a resource.
 /// This demo extracts an id, then mutates the book in the DATA store.
 pub async fn delete_books_id(
     axum::extract::Path(id): axum::extract::Path<u32>
@@ -2116,3 +2119,19 @@ The axum source code repository includes many project examples, and these exampl
 * [validator](https://github.com/tokio-rs/axum/tree/main/examples/validator)
 * [versioning](https://github.com/tokio-rs/axum/tree/main/examples/versioning)
 * [websockets](https://github.com/tokio-rs/axum/tree/main/examples/websockets)
+
+## Ideas for next steps
+
+* [axum_session_auth](https://docs.rs/axum_session_auth/latest/axum_session_auth/)
+
+* [loco.rs](https://github.com/loco-rs/loco)
+  
+* [axum-layout](https://gist.github.com/davidpdrsn/7033bade01498c68dff8dd506682bdf5)
+  
+* [aide](https://docs.rs/aide/latest/aide/index.html): Open API documentation generator library.
+
+* [schemars](https://docs.rs/schemars/): Generate JSON Schema documents from Rust code.
+
+* [plotars](https://docs.rs/plotlars/): Visualize data using Plotly and Polars.
+
+* [Utopia-axum](https://github.com/juhaku/utoipa/tree/master/utoipa-axum): Bindings for Axum and utoipa (Simple, Fast, Code first and Compile time generated OpenAPI documentation for Rust).
