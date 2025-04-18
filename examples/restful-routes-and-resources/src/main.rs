@@ -16,16 +16,17 @@ async fn main() {
     // Build our application by creating our router.
     let app = axum::Router::new()
         .route("/books",
-        get(get_books)
-            .put(put_books)
+            get(get_books)
         )
         .route("/books/{id}",
             get(get_books_id)
+            .put(put_books_id)
             .delete(delete_books_id)
+            .patch(patch_books_id)
         )
-        .route("/books/{id}/form",
-            get(get_books_id_form)
-            .post(post_books_id_form)
+        .route("/books/{id}/edit",
+            get(get_books_id_with_edit_form)
+            .patch(patch_books_id_with_edit_form)
         );
 
     // Run our application as a hyper server on http://localhost:3000.
@@ -36,6 +37,10 @@ async fn main() {
 /// See file book.rs, which defines the `Book` struct.
 mod book;
 use crate::book::Book;
+
+/// See file book_patch.rs, which defines the `BookPatch` struct.
+mod book_patch;
+use crate::book_patch::BookPatch;
 
 /// See file data.rs, which defines the DATA global variable.
 mod data;
@@ -68,18 +73,6 @@ pub async fn get_books() -> axum::response::Html<String> {
     }).join().unwrap().into()
 }
 
-/// axum handler for "PUT /books" which creates a new book resource.
-/// This demo shows how axum can extract JSON data into a Book struct.
-pub async fn put_books(
-    axum::extract::Json(book): axum::extract::Json<Book>
-) -> axum::response::Html<String> {
-    thread::spawn(move || {
-        let mut data = DATA.lock().unwrap();
-        data.insert(book.id, book.clone());
-        format!("Put book: {}", &book)
-    }).join().unwrap().into()
-}
-
 /// axum handler for "GET /books/{id}" which responds with one resource HTML page.
 /// This demo app uses our crate::DATA variable, and iterates on it to find the id.
 pub async fn get_books_id(
@@ -94,8 +87,20 @@ pub async fn get_books_id(
     }).join().unwrap().into()
 }
 
+/// axum handler for "PUT /books/{id}" which creates a new book resource.
+/// This demo shows how axum can extract JSON data into a Book struct.
+pub async fn put_books_id(
+    axum::extract::Json(book): axum::extract::Json<Book>
+) -> axum::response::Html<String> {
+    thread::spawn(move || {
+        let mut data = DATA.lock().unwrap();
+        data.insert(book.id, book.clone());
+        format!("Put book: {}", &book)
+    }).join().unwrap().into()
+}
+
 /// axum handler for "DELETE /books/{id}" which destroys a resource.
-/// This demo extracts an id, then mutates the book in the DATA store.
+/// This demo extracts an id, then deletes the book in the DATA store.
 pub async fn delete_books_id(
     axum::extract::Path(id): axum::extract::Path<u32>
 ) -> axum::response::Html<String> {
@@ -110,9 +115,31 @@ pub async fn delete_books_id(
     }).join().unwrap().into()
 }
 
-/// axum handler for "GET /books/{id}/form" which responds with a form.
+/// axum handler for "PATCH /books/{id}" which updates attributes.
+/// This demo shows how to mutate the book attributes in the DATA store.
+pub async fn patch_books_id(
+    axum::extract::Json(book_patch): axum::extract::Json<BookPatch>
+) -> axum::response::Html<String> {
+    thread::spawn(move || {
+        let id = book_patch.id;
+        let mut data = DATA.lock().unwrap();
+        if data.contains_key(&id) {
+            if let Some(title) = book_patch.title {
+                data.get_mut(&id).unwrap().title = title.clone();
+            }
+            if let Some(author) = book_patch.author {
+                data.get_mut(&id).unwrap().title = author.clone();
+            }
+            format!("Patch book id: {}", &id)
+        } else {
+            format!("Book id not found: {}", &id)
+        }
+    }).join().unwrap().into()
+}
+
+/// axum handler for "GET /books/{id}/edit" which responds with a form.
 /// This demo shows how to write a typical HTML form with input fields.
-pub async fn get_books_id_form(
+pub async fn get_books_id_with_edit_form(
     axum::extract::Path(id): axum::extract::Path<u32>
 ) -> axum::response::Html<String> {
     thread::spawn(move || {
@@ -120,7 +147,7 @@ pub async fn get_books_id_form(
         match data.get(&id) {
             Some(book) => format!(
                 concat!(
-                    "<form method=\"post\" action=\"/books/{}/form\">\n",
+                    "<form method=\"patch\" action=\"/books/{}/edit\">\n",
                     "<input type=\"hidden\" name=\"id\" value=\"{}\">\n",
                     "<p><input name=\"title\" value=\"{}\"></p>\n",
                     "<p><input name=\"author\" value=\"{}\"></p>\n",
@@ -137,19 +164,25 @@ pub async fn get_books_id_form(
     }).join().unwrap().into()
 }
 
-/// axum handler for "POST /books/{id}/form" which submits an HTML form.
-/// This demo shows how to do a form submission then update a resource.
-pub async fn post_books_id_form(
-    form: axum::extract::Form<Book>
+/// axum handler for "PATCH /books/{id}/edit" which updates attributes.
+/// This demo shows how to do HTML form submission then update attributes.
+pub async fn patch_books_id_with_edit_form(
+    form: axum::extract::Form<BookPatch>
 ) -> axum::response::Html<String> {
-    let new_book: Book = form.0;
+    let book_patch: BookPatch = form.0;
     thread::spawn(move || {
+        let id = book_patch.id;
         let mut data = DATA.lock().unwrap();
-        if data.contains_key(&new_book.id) {
-            data.insert(new_book.id, new_book.clone());
-            format!("Post book: {}", &new_book)
+        if data.contains_key(&id) {
+            if let Some(title) = book_patch.title {
+                data.get_mut(&id).unwrap().title = title.clone();
+            }
+            if let Some(author) = book_patch.author {
+                data.get_mut(&id).unwrap().title = author.clone();
+            }
+            format!("Patch book id: {}", &id)
         } else {
-            format!("Book id not found: {}", &new_book.id)
+            format!("Book id not found: {}", &book_patch.id)
         }
     }).join().unwrap().into()
 }
