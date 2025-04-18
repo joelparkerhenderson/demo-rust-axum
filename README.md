@@ -1300,13 +1300,15 @@ This section demonstrates how to:
 
 * Get all books
 
+* Post a new book
+
 * Get one book
 
 * Put one book
 
-* Delete one book
-
 * Patch one book
+
+* Delete one book
 
 * Get one book as a web form
 
@@ -1534,6 +1536,83 @@ Output:
 <div style="page-break-before:always;"></div>
 
 
+
+## Post a new book
+
+Edit file `main.rs`.
+
+Modify the route `/books` to append the function `post`:
+
+```rust
+let app = Router::new()
+    …
+    .route("/books",
+        get(get_books)
+        .post(post_books)
+    );
+```
+
+Add a handler:
+
+```rust
+/// axum handler for "POST /books" which creates a new book resource.
+/// This demo shows how axum can extract JSON data into a Book struct.
+pub async fn post_books(
+    axum::extract::Json(book): axum::extract::Json<Book>
+) -> axum::response::Html<String> {
+    thread::spawn(move || {
+        let mut data = DATA.lock().unwrap();
+        let id = data.keys().max().unwrap() + 1;
+        let book = Book { id, ..book };
+        data.insert(id, book.clone());
+        format!("Post a new book with new id {}: {}", &id, &book)
+    }).join().unwrap().into()
+}
+```
+
+
+### Try the demo…
+
+Shell:
+
+```sh
+cargo run
+```
+
+Shell:
+
+```sh
+curl \
+--request POST 'http://localhost:3000/books/0' \
+--header "Content-Type: application/json" \
+--data '{"id":0,"title":"Decameron","author":"Giovanni Boccaccio"}'
+```
+
+Output:
+
+```stdout
+Post a new book with new id 4: Decameron by Giovanni Boccaccio
+```
+
+Shell:
+
+```sh
+curl 'http://localhost:3000/books'
+```
+
+Output:
+
+```stdout
+<p>Antigone by Sophocles</p>
+<p>Beloved by Toni Morrison</p>
+<p>Candide by Voltaire</p>
+<p>Decameron by Giovanni Boccaccio</p>
+```
+
+
+<div style="page-break-before:always;"></div>
+
+
 ## Get one book
 
 Edit file `main.rs`.
@@ -1621,7 +1700,7 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-/// axum handler for "PUT /books/{id}" which creates a new book resource.
+/// axum handler for "PUT /books/{id}" which sets a specific book resource.
 /// This demo shows how axum can extract JSON data into a Book struct.
 pub async fn put_books_id(
     axum::extract::Json(book): axum::extract::Json<Book>
@@ -1646,13 +1725,13 @@ cargo run
 Shell:
 
 ```sh
-curl 'http://localhost:3000/books/4'
+curl 'http://localhost:3000/books/5'
 ```
 
 Output:
 
 ```stdout
-<p>Book id 4 not found</p>
+<p>Book id 5 not found</p>
 ```
 
 Shell:
@@ -1661,19 +1740,19 @@ Shell:
 curl \
 --request PUT 'http://localhost:3000/books/4' \
 --header "Content-Type: application/json" \
---data '{"id":4,"title":"Decameron","author":"Giovanni Boccaccio"}'
+--data '{"id":5,"title":"Emma","author":"Jane Austen"}'
 ```
 
 Output:
 
 ```stdout
-Put book: Decameron by Giovanni Boccaccio
+Put book: Emma by Jane Austen
 ```
 
 Shell:
 
 ```sh
-curl 'http://localhost:3000/books/4'
+curl 'http://localhost:3000/books/5'
 ```
 
 Output:
@@ -1683,6 +1762,7 @@ Output:
 <p>Beloved by Toni Morrison</p>
 <p>Candide by Voltaire</p>
 <p>Decameron by Giovanni Boccaccio</p>
+<p>Emma by Jane Austen</p>
 ```
 
 
