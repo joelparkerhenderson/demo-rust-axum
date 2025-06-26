@@ -19,17 +19,16 @@ categories = ["web-programming"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-axum = { version = "~0.8.3" } # Web framework that focuses on ergonomics and modularity.
-hyper = { version = "~1.4.1", features = ["full"] } # A fast and correct HTTP library.
-tokio = { version = "~1.39.3", features = ["full"] } # Event-driven, non-blocking I/O platform.
+axum = { version = "~0.8.4" } # Web framework that focuses on ergonomics and modularity.
+hyper = { version = "~1.6.0", features = ["full"] } # A fast and correct HTTP library.
+tokio = { version = "~1.45.1", features = ["full"] } # Event-driven, non-blocking I/O platform.
 tower = { version =  "~0.5.2" } # Modular reusable components for building robust clients and servers.
 serde = { version = "~1.0.219", features = ["derive"] } # A serialization/deserialization framework.
 serde_json = { version = "~1.0.140" } # Serde serialization/deserialization of JSON data.
-once_cell = { version = "~1.19.0" } # Single assignment cells and lazy values.
-base64 = { version = "~0.21.7" } # Encode and decode base64 as bytes or utf8.
-http = { version = "~1.1.0" } # Types for HTTP requests and responses.
+base64 = { version = "~0.22.1" } # Encode and decode base64 as bytes or utf8.
+http = { version = "~1.3.1" } # Types for HTTP requests and responses.
 tracing = { version = "~0.1.41" } #  Application-level tracing for Rust.
-tracing-subscriber = { version = "~0.3.19", features = ["env-filter"] } # Utilities for `tracing` subscribers. 
+tracing-subscriber = { version = "~0.3.19", features = ["env-filter"] } # Utilities for `tracing` subscribers.
 
 [[example]]
 name = "axum-hello-world"

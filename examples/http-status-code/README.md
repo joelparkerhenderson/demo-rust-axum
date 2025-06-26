@@ -15,15 +15,14 @@ let app = Router::new()
 Add a handler:
 
 ```rust
-/// axum handler for "GET /demo-http-status-code" which returns a 
+/// axum handler for "GET /demo-http-status-code" which returns a
 /// HTTP status code, such as OK (200), and a visible string message.
 pub async fn demo_http_status_code() -> (
     axum::http::StatusCode, String
 ) {
-    (axum::http::StatusCode::OK, "Everything is OK".to_string())
+    (axum::http::StatusCode::OK, "OK".to_string())
 }
 ```
-
 
 ### Try the demo…
 
@@ -35,4 +34,4 @@ cargo run
 
 Browse <http://localhost:3000/demo-http-status-code>
 
-You should see "Everything is OK".
+You should see "OK".

@@ -52,7 +52,6 @@ pub async fn delete_foo() -> String {
 }
 ```
 
-
 ### Try the demo…
 
 Shell:

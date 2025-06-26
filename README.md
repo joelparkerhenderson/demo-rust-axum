@@ -2,18 +2,17 @@
 
 Demonstration of:
 
-* [Rust](https://www.rust-lang.org): programming language that focuses on reliability and stability.
+- [Rust](https://www.rust-lang.org): programming language that focuses on reliability and stability.
 
-* [axum](https://crates.io/crates/axum): web framework that focuses on ergonomics and modularity.
+- [axum](https://crates.io/crates/axum): web framework that focuses on ergonomics and modularity.
 
-* [tower](https://crates.io/crates/tower): library for building robust clients and servers.
+- [tower](https://crates.io/crates/tower): library for building robust clients and servers.
 
-* [hyper](https://hyper.rs/): fast and safe HTTP library for the Rust language.
+- [hyper](https://hyper.rs/): fast and safe HTTP library for the Rust language.
 
-* [tokio](https://tokio.rs): platform for writing asynchronous I/O backed applications.
+- [tokio](https://tokio.rs): platform for writing asynchronous I/O backed applications.
 
-* [Serde](https://crates.io/crates/serde): serialization/deserialization framework.
-
+- [Serde](https://crates.io/crates/serde): serialization/deserialization framework.
 
 ### Thanks
 
@@ -21,18 +20,15 @@ Thanks to all the above projects and their authors. Donate to them if you can.
 
 Does this demo help your work? Donate here if you can via GitHub sponsors.
 
-
 ### Feedback
 
 Have an idea, suggestion, or feedback? Let us know via GitHub issues.
 
 Have a code improvement or bug fix? We welcome GitHub pull requests.
 
-
 ### License
 
 This demo uses the license Creative Commons Share-and-Share-Alike.
-
 
 ### Contact
 
@@ -40,9 +36,7 @@ Have feedback? Have thoughts about this? Want to contribute?
 
 Contact the maintainer at joel@joelparkerhenderson.com
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## What is this?
 
@@ -50,106 +44,98 @@ This demo is a tutorial that teaches how to build features from the ground up
 with axum and its ecosystem of tower middleware, hyper HTTP library, tokio
 asynchronous platform, and Serde data conversions.
 
-
 ### What will you learn?
 
-* Create a project using Rust and the axum web framework.
+- Create a project using Rust and the axum web framework.
 
-* Leverage capabilities of a hyper server and tower middleware.
+- Leverage capabilities of a hyper server and tower middleware.
 
-* Create axum router routes and their handler functions.
+- Create axum router routes and their handler functions.
 
-* Create responses with HTTP status code OK and HTML text.
+- Create responses with HTTP status code OK and HTML text.
 
-* Create a binary image and respond with a custom header.
+- Create a binary image and respond with a custom header.
 
-* Handle HTTP verbs including GET, PUT, PATCH, POST, DELETE.
+- Handle HTTP verbs including GET, PUT, PATCH, POST, DELETE.
 
-* Use axum extractors for query parameters and path parameters.
+- Use axum extractors for query parameters and path parameters.
 
-* Manage a data store and access it using RESTful routes.
-
+- Manage a data store and access it using RESTful routes.
 
 ### What is required?
 
 Some knowledge of Rust programming is required, such as:
 
-* How to create a Rust project, build it, and run it.
- 
-* How to write functions and their parameters
+- How to create a Rust project, build it, and run it.
 
-* How to use shell command line tools such as curl.
+- How to write functions and their parameters
+
+- How to use shell command line tools such as curl.
 
 Some knowledge about web frameworks is required, such as:
 
-* The general concepts of HTTP requests and responses.
+- The general concepts of HTTP requests and responses.
 
-* The general concepts of RESTful routes and resources.
+- The general concepts of RESTful routes and resources.
 
-* The general concepts of formats for HTML, JSON, and text.
-
+- The general concepts of formats for HTML, JSON, and text.
 
 ### What is helpful?
 
 Some knowledge of web frameworks is helpful, such as:
 
-* Rust web frameworks, such as Actix, Rocket, Warp, etc.
+- Rust web frameworks, such as Actix, Rocket, Warp, etc.
 
-* Other languages' web frameworks, such as Rails, Phoenix, Express, etc.
+- Other languages' web frameworks, such as Rails, Phoenix, Express, etc.
 
-* Other web-related frameworks, such as React, Vue, Svelte, etc.
+- Other web-related frameworks, such as React, Vue, Svelte, etc.
 
 Some knowledge of this stack can be helpful, such as:
 
-* middleware programming e.g. with tower
+- middleware programming e.g. with tower
 
-* asynchronous application programming e.g. with tokio
+- asynchronous application programming e.g. with tokio
 
-* HTTP services programming e.g. with hyper
-
+- HTTP services programming e.g. with hyper
 
 <div style="page-break-before:always;"></div>
-
 
 ## What is axum?
 
 High level features:
 
-* Route requests to handlers with a macro free API.
+- Route requests to handlers with a macro free API.
 
-* Declaratively parse requests using extractors.
+- Declaratively parse requests using extractors.
 
-* Simple and predictable error handling model.
+- Simple and predictable error handling model.
 
-* Generate responses with minimal boilerplate.
+- Generate responses with minimal boilerplate.
 
-* Take full advantage of the tower and its ecosystem.
-
+- Take full advantage of the tower and its ecosystem.
 
 ### How is axum special?
 
 The tower ecosystem is what sets axum apart from other frameworks:
 
-* axum doesn’t have its own middleware system but instead uses tower::Service.
+- axum doesn’t have its own middleware system but instead uses tower::Service.
 
-* axum gets timeouts, tracing, compression, authorization, and more, for free.
+- axum gets timeouts, tracing, compression, authorization, and more, for free.
 
-* axum can share middleware with applications written using hyper or tonic.
-
+- axum can share middleware with applications written using hyper or tonic.
 
 ### Why learn axum now?
 
-* axum combines the speed and security of Rust with the power of
+- axum combines the speed and security of Rust with the power of
 battle-tested libraries for middleware, asynchronous programming, and HTTP.
 
-* axum is primed to reach developers who are currently using
+- axum is primed to reach developers who are currently using
 other Rust web frameworks, such as Actix, Rocket, Warp, and others.
 
-* axum is likely to appeal to programmers who are seeking a faster
-web framework and who want closer-to-the-metal capabilties. 
+- axum is likely to appeal to programmers who are seeking a faster
+web framework and who want closer-to-the-metal capabilities.
 
-
-### Hello, World!
+### Hello, World
 
 ```rust
 #[tokio::main]
@@ -168,13 +154,11 @@ async fn main() {
 
 <div style="page-break-before:always;"></div>
 
-
 ## What is tower?
 
-Tower is a library of modular and reusable components for building robust networking clients and servers. 
+Tower is a library of modular and reusable components for building robust networking clients and servers.
 
 Tower aims to make it as easy as possible to build robust networking clients and servers. It is protocol agnostic, but is designed around a request / response pattern. If your protocol is entirely stream based, Tower may not be a good fit.
-
 
 ### Service
 
@@ -195,7 +179,6 @@ pub trait Service<Request> {
 }
 ```
 
-
 ### Call
 
 The most common way to call a service is:
@@ -213,24 +196,21 @@ let response = service
     .call(request).await?;
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## What is hyper?
 
 [hyper](https://hyper.rs/) is a fast HTTP implementation written in and for Rust.
 
-* A Client for talking to web services.
+- A Client for talking to web services.
 
-* A Server for building those web services.
+- A Server for building those web services.
 
-* Blazing fast* thanks to Rust.
+- Blazing fast* thanks to Rust.
 
-* High concurrency with non-blocking sockets.
+- High concurrency with non-blocking sockets.
 
-* HTTP/1 and HTTP/2 support.
-
+- HTTP/1 and HTTP/2 support.
 
 ### Hyper is low-level
 
@@ -241,7 +221,6 @@ If you are looking for a convenient HTTP client, then you may wish to consider [
 If you are looking for a convenient HTTP server, then you may wish to consider [warp](https://github.com/seanmonstar/warp).
 
 Both are built on top of hyper.
-
 
 ### Hello, World!
 
@@ -271,36 +250,33 @@ async fn main() {
 }
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## What is tokio?
 
 [tokio](https://tokio.rs/) is an asynchronous runtime for the Rust programming language.
 
-* Building blocks for writing network applications.
+- Building blocks for writing network applications.
 
-* Flexibility to target a wide range of systems.
+- Flexibility to target a wide range of systems.
 
-* Memory-safe, thread-safe, and misuse-resistant.
+- Memory-safe, thread-safe, and misuse-resistant.
 
 The tokio stack includes:
 
-* Runtime: Including I/O, timer, filesystem, synchronization, and scheduling.
+- Runtime: Including I/O, timer, filesystem, synchronization, and scheduling.
 
-* Hyper: An HTTP client and server library supporting HTTP protocols 1 and 2.
+- Hyper: An HTTP client and server library supporting HTTP protocols 1 and 2.
 
-* Tonic: A boilerplate-free gRPC client and server library for network APIS.
+- Tonic: A boilerplate-free gRPC client and server library for network APIS.
 
-* Tower: Modular components for building reliable clients and servers.
+- Tower: Modular components for building reliable clients and servers.
 
-* Mio: Minimal portable API on top of the operating-system's evented I/O API.
+- Mio: Minimal portable API on top of the operating-system's evented I/O API.
 
-* Tracing: Unified, structured, event-based data collection and logging.
+- Tracing: Unified, structured, event-based data collection and logging.
 
-* Bytes: A rich set of utilities for manipulating byte arrays.
-
+- Bytes: A rich set of utilities for manipulating byte arrays.
 
 ### Demo tokio server
 
@@ -334,9 +310,7 @@ async fn main() -> Result<()> {
 }
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## What is Serde?
 
@@ -346,19 +320,17 @@ The Serde ecosystem consists of data structures that know how to serialize and d
 
 Serde provides the layer by which these two groups interact with each other, allowing any supported data structure to be serialized and deserialized using any supported data format.
 
-
 ### Design
 
 Serde is built on Rust's powerful trait system.
 
-* Serde provides the `Serialize` trait and `Deserialize` trait for data structures.
+- Serde provides the `Serialize` trait and `Deserialize` trait for data structures.
 
-* Serde provides `derive` attributes, to generate implementations at compile time.
+- Serde provides `derive` attributes, to generate implementations at compile time.
 
-* Serde has no runtime overhead such as reflection or runtime type information.
+- Serde has no runtime overhead such as reflection or runtime type information.
 
-* In many situations the interaction between data structure and data format can be completely optimized away by the Rust compiler.
-
+- In many situations the interaction between data structure and data format can be completely optimized away by the Rust compiler.
 
 ### Demo of Serde
 
@@ -388,8 +360,9 @@ fn main() {
 }
 ```
 
+<div style="page-break-before:always;"></div>
 
-# Hello, World!
+# Hello, World
 
 Create a typical new Rust project:
 
@@ -409,18 +382,16 @@ version = "1.3.0"
 edition = "2021"
 
 [dependencies]
-
-axum = { version = "~0.8.0" } # Web framework that focuses on ergonomics and modularity.
-hyper = { version = "~1.4.1", features = ["full"] } # A fast and correct HTTP library.
-tokio = { version = "~1.39.3", features = ["full"] } # Event-driven, non-blocking I/O platform.
+axum = { version = "~0.8.4" } # Web framework that focuses on ergonomics and modularity.
+hyper = { version = "~1.6.0", features = ["full"] } # A fast and correct HTTP library.
+tokio = { version = "~1.45.1", features = ["full"] } # Event-driven, non-blocking I/O platform.
 tower = { version =  "~0.5.2" } # Modular reusable components for building robust clients and servers.
-serde = { version = "~1.0.217", features = ["derive"] } # A serialization/deserialization framework.
-serde_json = { version = "~1.0.134" } # Serde serialization/deserialization of JSON data.
-once_cell = { version = "~1.19.0" } # Single assignment cells and lazy values.
-base64 = { version = "~0.21.7" } # Encode and decode base64 as bytes or utf8.
-http = { version = "~1.1.0" } # Types for HTTP requests and responses.
+serde = { version = "~1.0.219", features = ["derive"] } # A serialization/deserialization framework.
+serde_json = { version = "~1.0.140" } # Serde serialization/deserialization of JSON data.
+base64 = { version = "~0.22.1" } # Encode and decode base64 as bytes or utf8.
+http = { version = "~1.3.1" } # Types for HTTP requests and responses.
 tracing = { version = "~0.1.41" } #  Application-level tracing for Rust.
-tracing-subscriber = { version = "~0.3.19", features = ["env-filter"] } # Utilities for `tracing` subscribers. 
+tracing-subscriber = { version = "~0.3.19", features = ["env-filter"] } # Utilities for `tracing` subscribers.
 ```
 
 Edit file `src/main.rs`.
@@ -436,10 +407,11 @@ pub async fn main() {
 
     // Run our application as a hyper server on http://localhost:3000.
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
-    axum::serve(listener, app).await.unwrap();
+    axum::serve(listener, app)
+        .await
+        .unwrap();
 }
 ```
-
 
 ### Try the demo…
 
@@ -454,7 +426,6 @@ Browse <http://localhost:3000>
 You should see "Hello, World!".
 
 In your shell, press CTRL-C to shut down.
-
 
 ## Create a handler function
 
@@ -488,7 +459,6 @@ let app = axum::Router::new()
     );
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -503,9 +473,7 @@ You should see "Hello, World!".
 
 In your shell, press CTRL-C to shut down.
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## Create a router fallback
 
@@ -543,7 +511,6 @@ pub async fn fallback(
 }
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -556,38 +523,78 @@ Browse <http://localhost:3000/whatever>
 
 You should see "No route for /whatever".
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## Graceful shutdown
 
 We want our demo server to be able to do graceful shutdown.
 
-  * [Read tokio documentation about graceful shutdown](https://tokio.rs/tokio/topics/shutdown)
+- [Read tokio documentation about graceful shutdown](https://tokio.rs/tokio/topics/shutdown)
 
-  * [Read hyper documentation about graceful shutdown](https://hyper.rs/guides/server/graceful-shutdown/)
+- [Read hyper documentation about graceful shutdown](https://hyper.rs/guides/server/graceful-shutdown/)
 
-  * [Read axum example about graceful shutdown](https://github.com/tokio-rs/axum/tree/main/examples/graceful-shutdown)
+- [Read axum example about graceful shutdown](https://github.com/tokio-rs/axum/tree/main/examples/graceful-shutdown)
 
 Tokio graceful shutdown generally does these steps:
 
-  * Find out when to shut down.
+- Find out when to shut down.
 
-  * Tell each part of the program to shut down.
+- Tell each part of the program to shut down.
 
-  * Wait for each part of the program to shut down.
+- Wait for each part of the program to shut down.
 
 Hyper graceful shutdown generally does these steps:
 
-  * The server stops accepting new requests.
+- The server stops accepting new requests.
 
-  * The server waits for all in-progress requests to complete.
+- The server waits for all in-progress requests to complete.
 
-  * Then the server shuts down.
+- Then the server shuts down.
 
-axum used to have a graceful_shutdown function, but removed it.
+### Add a shutdown signal
 
+Add:
+
+```rust
+use tokio::signal;
+```
+
+Add a shutdown signal that handles a user pressing Ctrl+C and/or a Unix terminate signal.
+
+```rust
+pub async fn shutdown_signal() {
+    let ctrl_c = async {
+        signal::ctrl_c()
+            .await
+            .expect("failed to install Ctrl+C handler");
+    };
+
+    #[cfg(unix)]
+    let terminate = async {
+        signal::unix::signal(signal::unix::SignalKind::terminate())
+            .expect("failed to install signal handler")
+            .recv()
+            .await;
+    };
+
+    #[cfg(not(unix))]
+    let terminate = std::future::pending::<()>();
+
+    tokio::select! {
+        _ = ctrl_c => {},
+        _ = terminate => {},
+    }
+}
+```
+
+Edit the `axum::serve` to add the method `with_graceful_shutdown`:
+
+```rust
+axum::serve(listener, app)
+    .with_graceful_shutdown(shutdown_signal())
+    .await
+    .unwrap();
+```
 
 ## The whole code
 
@@ -607,7 +614,10 @@ pub async fn main() {
 
     // Run our application as a hyper server on http://localhost:3000.
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
-    axum::serve(listener, app).await.unwrap();
+    axum::serve(listener, app)
+        .with_graceful_shutdown(shutdown_signal())
+        .await
+        .unwrap();
 }
 
 /// axum handler for any request that fails to match the router routes.
@@ -625,29 +635,25 @@ pub async fn hello() -> String {
 }
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 # Create axum routes and axum handlers
 
 This section shows how to:
 
-* Respond with HTML text
+- Respond with HTML text
 
-* Respond with an HTML file
+- Respond with an HTML file
 
-* Respond with HTTP status code OK
+- Respond with HTTP status code OK
 
-* Respond with the request URI
+- Respond with the request URI
 
-* Respond with a custom header and image
+- Respond with a custom header and image
 
-* Respond to multiple HTTP verbs
-
+- Respond to multiple HTTP verbs
 
 <div style="page-break-before:always;"></div>
-
 
 ##  Respond with HTML text
 
@@ -673,7 +679,6 @@ pub async fn get_demo_html() -> axum::response::Html<&'static str> {
 }
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -686,9 +691,7 @@ Browse <http://localhost:3000/demo.html>
 
 You should see HTML with headline text "Hello".
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## Respond with an HTML file
 
@@ -724,7 +727,6 @@ async fn hello_html() -> axum::response::Html<&'static str> {
 }
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -737,9 +739,7 @@ Browse <http://localhost:3000/hello.html>
 
 You should see the headline "Hello" and text "This is our demo.".
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## Respond with HTTP status code OK
 
@@ -750,21 +750,20 @@ Add a route:
 ```rust
 let app = axum::Router::new()
     …
-    .route("/demo-status",
-        get(demo_status)
+    .route("/status",
+        get(status)
     );
 ```
 
 Add a handler:
 
 ```rust
-/// axum handler for "GET /demo-status" which returns a HTTP status
-/// code, such as OK (200), and a custom user-visible string message.
-pub async fn demo_status() -> (axum::http::StatusCode, String) {
-    (axum::http::StatusCode::OK, "Everything is OK".to_string())
+/// axum handler for "GET /status" which returns the HTTP status
+/// code OK (200) along with a user-visible string message.
+pub async fn status() -> (axum::http::StatusCode, String) {
+    (axum::http::StatusCode::OK, "OK".to_string())
 }
 ```
-
 
 ### Try the demo…
 
@@ -774,13 +773,110 @@ Shell:
 cargo run
 ```
 
-Browse <http://localhost:3000/demo-status>
+Browse <http://localhost:3000/status>
 
-You should see "Everything is OK".
-
+You should see "OK".
 
 <div style="page-break-before:always;"></div>
 
+## Respond with epoch
+
+This section shows how to access the system time and also how to return an error status code.
+
+The constant `UNIX_EPOCH` is defined to be “1970-01-01 00:00:00 UTC” on all
+systems with respect to the system clock.
+
+Edit file `main.rs`.
+
+Add a route:
+
+```rust
+let app = axum::Router::new()
+    …
+    .route("/epoch",
+        get(epoch)
+    );
+```
+
+Add a handler:
+
+```rust
+/// axum handler for "GET /epoch" which shows the current epoch time.
+/// This shows how to write a handler that uses time and can error.
+pub async fn epoch() -> Result<String, axum::http::StatusCode> {
+    match std::time::SystemTime::now().duration_since(std::time::SystemTime::UNIX_EPOCH) {
+        Ok(duration) => Ok(format!("{}", duration.as_secs())),
+        Err(_) => Err(axum::http::StatusCode::INTERNAL_SERVER_ERROR)
+    }
+}
+```
+
+### Try the demo…
+
+Shell:
+
+```sh
+cargo run
+```
+
+Browse <http://localhost:3000/epoch>
+
+You should see the epoch represented as seconds since January 1 1970 such as "1750938523".
+
+<div style="page-break-before:always;"></div>
+
+## Respond with uptime
+
+This section shows how to print the program's uptime duration.
+
+Edit file `main.rs`.
+
+Add this before the main function:
+
+```rust
+/// Create the constant INSTANT so the program can track its own uptime.
+pub static INSTANT: std::sync::LazyLock<std::time::Instant> = std::sync::LazyLock::new(|| std::time::Instant::now());
+```
+
+Add this line at the start of the main function:
+
+```rust
+UPTIME.get_or_init(|| Instant::now());
+```
+
+Add a route:
+
+```rust
+let app = axum::Router::new()
+    …
+    .route("/uptime",
+        get(uptime)
+    );
+```
+
+Add a handler:
+
+```rust
+/// axum handler for "GET /uptime" which shows the program's uptime duration.
+/// This shows how to write a handler that uses a global static lazy value.
+pub async fn uptime() -> String {
+    format!("{}", INSTANT.elapsed().as_secs())
+}
+```
+
+### Try the demo…
+
+Shell:
+
+```sh
+cargo run
+```
+
+Browse <http://localhost:3000/uptime>
+
+You should see the uptime represented as seconds since the program launched, such as "10" meaning ten seconds.
+
+<div style="page-break-before:always;"></div>
 
 ## Respond with the request URI
 
@@ -806,7 +902,6 @@ pub async fn demo_uri(uri: axum::http::Uri) -> String {
 }
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -819,9 +914,7 @@ Browse <http://localhost:3000/demo-uri>
 
 You should see "The URI is: /demo-uri!".
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## Respond with a custom header and image
 
@@ -834,7 +927,7 @@ Add dependencies:
 base64 = "~0.21.5"
 
 # Types for HTTP requests and responses.
-http = "~1.0.0" 
+http = "~1.0.0"
 ```
 
 Edit file `main.rs`.
@@ -870,7 +963,6 @@ async fn get_demo_png() -> impl axum::response::IntoResponse {
 }
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -883,9 +975,7 @@ Browse <http://localhost:3000/demo.png>
 
 You browser should download a one-pixel transparent PNG image.
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## Respond to multiple HTTP verbs
 
@@ -940,7 +1030,6 @@ pub async fn delete_foo() -> String {
    "DELETE foo".to_string()
 }
 ```
-
 
 ### Try the demo…
 
@@ -1021,9 +1110,7 @@ curl 'http://localhost:3000/foo'
 curl --request GET 'http://localhost:3000/foo'
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 # Extractors
 
@@ -1032,21 +1119,21 @@ any parts that your handler needs.
 
 This section shows how to:
 
-* Extract path parameters
+- Extract path parameters
 
-* Extract query parameters
+- Extract query parameters
 
-* Extract a JSON payload
+- Extract a JSON payload
 
-* Respond with a JSON payload
+- Respond with a JSON payload
 
 ## Caution: extractors syntax change
 
 Before you read the next section, please be aware the extractor syntax has changed between axum 0.7 and 0.8, approximately as of 2025-01-01.
 
-* Axum 0.7 extractor syntax uses a colon like this: `:foo`.
+- Axum 0.7 extractor syntax uses a colon like this: `:foo`.
 
-* Axum 0.8 extractor syntax uses curly braces such as `{foo}`.
+- Axum 0.8 extractor syntax uses curly braces such as `{foo}`.
 
 If you try to use the older syntax, you will get an error message such as: "Path segments must not start with `:`. For capture groups, use `{capture}`. If you meant to literally match a segment starting with a colon, call `without_v07_checks` on the router."
 
@@ -1080,7 +1167,6 @@ pub async fn get_items_id(
 }
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -1101,9 +1187,7 @@ Ouput:
 Get items with id: 1
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## Extract query parameters
 
@@ -1138,7 +1222,6 @@ pub async fn get_items(
 }
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -1159,9 +1242,7 @@ Output:
 Get items with query params: {"a": "b"}
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## Respond with a JSON payload
 
@@ -1200,7 +1281,6 @@ pub async fn get_demo_json() -> axum::extract::Json<Value> {
 }
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -1223,9 +1303,7 @@ Output:
 {"a":"b"}
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## Extract a JSON payload
 
@@ -1260,7 +1338,6 @@ pub async fn put_demo_json(
 }
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -1284,36 +1361,33 @@ Output:
 Put demo JSON data: Object({"a": String("b")})
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 # RESTful routes and resources
 
 This section demonstrates how to:
 
-* Create a book struct
+- Create a book struct
 
-* Create the data store
+- Create the data store
 
-* Use the data store
+- Use the data store
 
-* Get all books
+- Get all books
 
-* Post a new book
+- Post a new book
 
-* Get one book
+- Get one book
 
-* Put one book
+- Put one book
 
-* Patch one book
+- Patch one book
 
-* Delete one book
+- Delete one book
 
-* Get one book as a web form
+- Get one book as a web form
 
-* Patch one book as a web form
-
+- Patch one book as a web form
 
 ## Create a book struct
 
@@ -1349,9 +1423,9 @@ Add code to implement `Display`:
 impl std::fmt::Display for Book {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
-            f, 
-            "{} by {}", 
-            &self.title, 
+            f,
+            "{} by {}",
+            &self.title,
             &self.author,
         )
     }
@@ -1368,9 +1442,7 @@ mod book;
 use crate::book::Book;
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## Create the data store
 
@@ -1403,19 +1475,19 @@ use std::sync::Mutex;
 /// The map key is a primary key for lookup; the map value is a Book.
 static DATA: Lazy<Mutex<HashMap<u32, Book>>> = Lazy::new(|| Mutex::new(
     HashMap::from([
-        (1, Book { 
-            id: 1, 
-            title: "Antigone".into(), 
+        (1, Book {
+            id: 1,
+            title: "Antigone".into(),
             author: "Sophocles".into()
         }),
-        (2, Book { 
-            id: 2, title: 
-            "Beloved".into(), 
+        (2, Book {
+            id: 2, title:
+            "Beloved".into(),
             author: "Toni Morrison".into()
         }),
-        (3, Book { 
-            id: 3, title: 
-            "Candide".into(), 
+        (3, Book {
+            id: 3, title:
+            "Candide".into(),
             author: "Voltaire".into()
         }),
     ])
@@ -1454,7 +1526,6 @@ async fn main() {
     …
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -1467,15 +1538,13 @@ Output:
 
 ```stdout
 data: {
-    1: Book { id: 1, title: "Antigone", author: "Sophocles" }, 
-    2: Book { id: 2, title: "Beloved", author: "Toni Morrison" }, 
+    1: Book { id: 1, title: "Antigone", author: "Sophocles" },
+    2: Book { id: 2, title: "Beloved", author: "Toni Morrison" },
     3: Book { id: 3, title: "Candide", author: "Voltaire" }
 }
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## Get all books
 
@@ -1509,7 +1578,6 @@ pub async fn get_books() -> axum::response::Html<String> {
 }
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -1532,9 +1600,7 @@ Output:
 <p>Candide by Voltaire</p>
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 
 ## Post a new book
@@ -1569,7 +1635,6 @@ pub async fn post_books(
     }).join().unwrap().into()
 }
 ```
-
 
 ### Try the demo…
 
@@ -1609,9 +1674,7 @@ Output:
 <p>Decameron by Giovanni Boccaccio</p>
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## Get one book
 
@@ -1645,7 +1708,6 @@ pub async fn get_books_id(
 }
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -1678,9 +1740,7 @@ Output:
 <p>Book id 0 not found</p>
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## Put one book
 
@@ -1712,7 +1772,6 @@ pub async fn put_books_id(
     }).join().unwrap().into()
 }
 ```
-
 
 ### Try the demo…
 
@@ -1765,9 +1824,7 @@ Output:
 <p>Emma by Jane Austen</p>
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## Delete one book
 
@@ -1804,7 +1861,6 @@ pub async fn delete_books_id(
 }
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -1838,9 +1894,7 @@ Output:
 <p>Candide by Voltaire</p>
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## Patch one book
 
@@ -1870,9 +1924,9 @@ Add code to implement `Display`:
 impl std::fmt::Display for BookPatch {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
-            f, 
-            "{:?} by {:?}", 
-            self.title, 
+            f,
+            "{:?} by {:?}",
+            self.title,
             self.author,
         )
     }
@@ -1927,7 +1981,6 @@ pub async fn patch_books_id(
 }
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -1969,9 +2022,7 @@ Output:
 <p>Elektra by Sophocles</p>
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 
 ## Get one book as a web form
@@ -2019,7 +2070,6 @@ pub async fn get_books_id_form(
 }
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -2044,9 +2094,7 @@ Output:
 </form>
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## Patch one book as a web form
 
@@ -2089,7 +2137,6 @@ pub async fn patch_books_id_form(
 }
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -2131,18 +2178,15 @@ Output:
 <p>Elektra by Sophocles</p>
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 # Extras
 
 This section shows how to:
 
-* Add a tracing subscriber
+- Add a tracing subscriber
 
-* Use a host, port, and socket address
-
+- Use a host, port, and socket address
 
 ## Add a tracing subscriber
 
@@ -2152,10 +2196,10 @@ Add dependencies:
 
 ```toml
 # Application-level tracing for Rust.
-tracing = "0.1.40" 
+tracing = "0.1.40"
 
-# Utilities for implementing and composing `tracing` subscribers. 
-tracing-subscriber = { version = "0.3.18", features = ["env-filter"] } 
+# Utilities for implementing and composing `tracing` subscribers.
+tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
 ```
 
 Edit file `main.rs`.
@@ -2183,7 +2227,6 @@ pub async fn main() {
     tracing::event!(tracing::Level::INFO, "main");
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -2198,9 +2241,7 @@ You should see console output that shows tracing initialization such as:
 2024-08-31T20:06:34.894986Z  INFO demo_rust_axum: tracing
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## Use a host, port, and socket address
 
@@ -2231,70 +2272,63 @@ pub async fn main() {
     axum::serve(listener, app).await.unwrap();
 ```
 
-
 <div style="page-break-before:always;"></div>
 
-
 # Conclusion
-
 
 ## What you learned
 
 You learned how to:
 
-* Create a project using Rust and the axum web framework.
+- Create a project using Rust and the axum web framework.
 
-* Create axum router routes and their handler functions.
+- Create axum router routes and their handler functions.
 
-* Create responses with HTTP status code OK and HTML text.
+- Create responses with HTTP status code OK and HTML text.
 
-* Create a binary image and respond with a custom header.
+- Create a binary image and respond with a custom header.
 
-* Create functionality for HTTP GET, PUT, POST, DELETE.
+- Create functionality for HTTP GET, PUT, POST, DELETE.
 
-* Use axum extractors for query parameters and path parameters.
+- Use axum extractors for query parameters and path parameters.
 
-* Create a data store and access it using RESTful routes.
-
+- Create a data store and access it using RESTful routes.
 
 <div style="page-break-before:always;"></div>
-
 
 ## What's next
 
 To learn more about Rust, axum, tower, hyper, tokio, and Serde:
 
-* [The Rust website](https://www.rust-lang.org)
+- [The Rust website](https://www.rust-lang.org)
 
-* [The Rust book](https://doc.rust-lang.org/stable/book/) are excellent and thorough.
+- [The Rust book](https://doc.rust-lang.org/stable/book/) are excellent and thorough.
 
-* [The book Asynchronous Programming in Rust](https://rust-lang.github.io/async-book/)
+- [The book Asynchronous Programming in Rust](https://rust-lang.github.io/async-book/)
 
-* [The axum repo](https://github.com/tokio-rs/axum)
+- [The axum repo](https://github.com/tokio-rs/axum)
   and [axux crate](https://crates.io/crates/axum) provide dozens of runnable examples.
 
-* [The tower website](https://tower.rs)
+- [The tower website](https://tower.rs)
   and [tower crate](https://crates.io/crates/tower)
 
-* [The hyper website](https://hyper.rs/)
+- [The hyper website](https://hyper.rs/)
   and [hyper crate](https://crates.io/crates/hyper).
 
-* [The tokio website](https://tokio.rs/)
+- [The tokio website](https://tokio.rs/)
   and [tokio crate](https://crates.io/crates/tokio).
 
-* [The Serde crate](https://crates.io/crates/serde)
-
+- [The Serde crate](https://crates.io/crates/serde)
 
 ### Feedback
 
 We welcome constructive feedback via GitHub issues:
 
-* Any ideas for making this demo better?
+- Any ideas for making this demo better?
 
-* Any requests for new demo sections or example topics?
+- Any requests for new demo sections or example topics?
 
-* Any bugs or issues in the demo code or documentation?
-
+- Any bugs or issues in the demo code or documentation?
 
 ### Contact
 
@@ -2306,63 +2340,61 @@ joel@joelparkerhenderson.com
 
 <https://github.com/joelparkerhenderson>
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## axum examples
 
 The axum source code repository includes many project examples, and these examples are fully runnable.
 
-* [async-graphql](https://github.com/tokio-rs/axum/tree/main/examples/async-graphql)
-* [chat](https://github.com/tokio-rs/axum/tree/main/examples/chat)
-* [cors](https://github.com/tokio-rs/axum/tree/main/examples/cors)
-* [customize-extractor-error](https://github.com/tokio-rs/axum/tree/main/examples/customize-extractor-error)
-* [customize-path-rejection](https://github.com/tokio-rs/axum/tree/main/examples/customize-path-rejection)
-* [error-handling-and-dependency-injection](https://github.com/tokio-rs/axum/tree/main/examples/error-handling-and-dependency-injection)
-* [form](https://github.com/tokio-rs/axum/tree/main/examples/form)
-* [global-404-handler](https://github.com/tokio-rs/axum/tree/main/examples/global-404-handler)
-* [graceful-shutdown](https://github.com/tokio-rs/axum/tree/main/examples/graceful-shutdown)
-* [hello-world](https://github.com/tokio-rs/axum/tree/main/examples/hello-world)
-* [http-proxy](https://github.com/tokio-rs/axum/tree/main/examples/http-proxy)
-* [jwt](https://github.com/tokio-rs/axum/tree/main/examples/jwt)
-* [key-value-store](https://github.com/tokio-rs/axum/tree/main/examples/key-value-store)
-* [low-level-rustls](https://github.com/tokio-rs/axum/tree/main/examples/low-level-rustls)
-* [multipart-form](https://github.com/tokio-rs/axum/tree/main/examples/multipart-form)
-* [oauth](https://github.com/tokio-rs/axum/tree/main/examples/oauth)
-* [print-request-response](https://github.com/tokio-rs/axum/tree/main/examples/print-request-response)
-* [prometheus-metrics](https://github.com/tokio-rs/axum/tree/main/examples/prometheus-metrics)
-* [query-params-with-empty-strings](https://github.com/tokio-rs/axum/tree/main/examples/query-params-with-empty-strings)
-* [readme](https://github.com/tokio-rs/axum/tree/main/examples/readme)
-* [reverse-proxy](https://github.com/tokio-rs/axum/tree/main/examples/reverse-proxy)
-* [routes-and-handlers-close-together](https://github.com/tokio-rs/axum/tree/main/examples/routes-and-handlers-close-together)
-* [sessions](https://github.com/tokio-rs/axum/tree/main/examples/sessions)
-* [sqlx-postgres](https://github.com/tokio-rs/axum/tree/main/examples/sqlx-postgres)
-* [sse](https://github.com/tokio-rs/axum/tree/main/examples/sse)
-* [static-file-server](https://github.com/tokio-rs/axum/tree/main/examples/static-file-server)
-* [templates](https://github.com/tokio-rs/axum/tree/main/examples/templates)
-* [testing](https://github.com/tokio-rs/axum/tree/main/examples/testing)
-* [tls-rustls](https://github.com/tokio-rs/axum/tree/main/examples/tls-rustls)
-* [todos](https://github.com/tokio-rs/axum/tree/main/examples/todos)
-* [tokio-postgres](https://github.com/tokio-rs/axum/tree/main/examples/tokio-postgres)
-* [tracing-aka-logging](https://github.com/tokio-rs/axum/tree/main/examples/tracing-aka-logging)
-* [unix-domain-socket](https://github.com/tokio-rs/axum/tree/main/examples/unix-domain-socket)
-* [validator](https://github.com/tokio-rs/axum/tree/main/examples/validator)
-* [versioning](https://github.com/tokio-rs/axum/tree/main/examples/versioning)
-* [websockets](https://github.com/tokio-rs/axum/tree/main/examples/websockets)
+- [async-graphql](https://github.com/tokio-rs/axum/tree/main/examples/async-graphql)
+- [chat](https://github.com/tokio-rs/axum/tree/main/examples/chat)
+- [cors](https://github.com/tokio-rs/axum/tree/main/examples/cors)
+- [customize-extractor-error](https://github.com/tokio-rs/axum/tree/main/examples/customize-extractor-error)
+- [customize-path-rejection](https://github.com/tokio-rs/axum/tree/main/examples/customize-path-rejection)
+- [error-handling-and-dependency-injection](https://github.com/tokio-rs/axum/tree/main/examples/error-handling-and-dependency-injection)
+- [form](https://github.com/tokio-rs/axum/tree/main/examples/form)
+- [global-404-handler](https://github.com/tokio-rs/axum/tree/main/examples/global-404-handler)
+- [graceful-shutdown](https://github.com/tokio-rs/axum/tree/main/examples/graceful-shutdown)
+- [hello-world](https://github.com/tokio-rs/axum/tree/main/examples/hello-world)
+- [http-proxy](https://github.com/tokio-rs/axum/tree/main/examples/http-proxy)
+- [jwt](https://github.com/tokio-rs/axum/tree/main/examples/jwt)
+- [key-value-store](https://github.com/tokio-rs/axum/tree/main/examples/key-value-store)
+- [low-level-rustls](https://github.com/tokio-rs/axum/tree/main/examples/low-level-rustls)
+- [multipart-form](https://github.com/tokio-rs/axum/tree/main/examples/multipart-form)
+- [oauth](https://github.com/tokio-rs/axum/tree/main/examples/oauth)
+- [print-request-response](https://github.com/tokio-rs/axum/tree/main/examples/print-request-response)
+- [prometheus-metrics](https://github.com/tokio-rs/axum/tree/main/examples/prometheus-metrics)
+- [query-params-with-empty-strings](https://github.com/tokio-rs/axum/tree/main/examples/query-params-with-empty-strings)
+- [readme](https://github.com/tokio-rs/axum/tree/main/examples/readme)
+- [reverse-proxy](https://github.com/tokio-rs/axum/tree/main/examples/reverse-proxy)
+- [routes-and-handlers-close-together](https://github.com/tokio-rs/axum/tree/main/examples/routes-and-handlers-close-together)
+- [sessions](https://github.com/tokio-rs/axum/tree/main/examples/sessions)
+- [sqlx-postgres](https://github.com/tokio-rs/axum/tree/main/examples/sqlx-postgres)
+- [sse](https://github.com/tokio-rs/axum/tree/main/examples/sse)
+- [static-file-server](https://github.com/tokio-rs/axum/tree/main/examples/static-file-server)
+- [templates](https://github.com/tokio-rs/axum/tree/main/examples/templates)
+- [testing](https://github.com/tokio-rs/axum/tree/main/examples/testing)
+- [tls-rustls](https://github.com/tokio-rs/axum/tree/main/examples/tls-rustls)
+- [todos](https://github.com/tokio-rs/axum/tree/main/examples/todos)
+- [tokio-postgres](https://github.com/tokio-rs/axum/tree/main/examples/tokio-postgres)
+- [tracing-aka-logging](https://github.com/tokio-rs/axum/tree/main/examples/tracing-aka-logging)
+- [unix-domain-socket](https://github.com/tokio-rs/axum/tree/main/examples/unix-domain-socket)
+- [validator](https://github.com/tokio-rs/axum/tree/main/examples/validator)
+- [versioning](https://github.com/tokio-rs/axum/tree/main/examples/versioning)
+- [websockets](https://github.com/tokio-rs/axum/tree/main/examples/websockets)
 
 ## Ideas for next steps
 
-* [axum_session_auth](https://docs.rs/axum_session_auth/latest/axum_session_auth/)
+- [axum_session_auth](https://docs.rs/axum_session_auth/latest/axum_session_auth/)
 
-* [loco.rs](https://github.com/loco-rs/loco)
-  
-* [axum-layout](https://gist.github.com/davidpdrsn/7033bade01498c68dff8dd506682bdf5)
-  
-* [aide](https://docs.rs/aide/latest/aide/index.html): Open API documentation generator library.
+- [loco.rs](https://github.com/loco-rs/loco)
 
-* [schemars](https://docs.rs/schemars/): Generate JSON Schema documents from Rust code.
+- [axum-layout](https://gist.github.com/davidpdrsn/7033bade01498c68dff8dd506682bdf5)
 
-* [plotars](https://docs.rs/plotlars/): Visualize data using Plotly and Polars.
+- [aide](https://docs.rs/aide/latest/aide/index.html): Open API documentation generator library.
 
-* [Utopia-axum](https://github.com/juhaku/utoipa/tree/master/utoipa-axum): Bindings for Axum and utoipa (Simple, Fast, Code first and Compile time generated OpenAPI documentation for Rust).
+- [schemars](https://docs.rs/schemars/): Generate JSON Schema documents from Rust code.
+
+- [plotars](https://docs.rs/plotlars/): Visualize data using Plotly and Polars.
+
+- [Utopia-axum](https://github.com/juhaku/utoipa/tree/master/utoipa-axum): Bindings for Axum and utoipa (Simple, Fast, Code first and Compile time generated OpenAPI documentation for Rust).

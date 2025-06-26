@@ -4,7 +4,6 @@ This demo is a tutorial that teaches how to build features from the groung up
 with axum and its ecosystem of tower middleware, hyper HTTP library, tokio
 asynchronous platform, and Serde data conversions.
 
-
 ### What will you learn?
 
 * Create a project using Rust and the axum web framework.
@@ -23,13 +22,12 @@ asynchronous platform, and Serde data conversions.
 
 * Manage a data store and access it using RESTful routes.
 
-
 ### What is required?
 
 Some knowledge of Rust programming is required, such as:
 
 * How to create a Rust project, build it, and run it.
- 
+
 * How to write functions and their parameters
 
 * How to use shell command line tools such as curl.
@@ -41,7 +39,6 @@ Some knowledge about web frameworks is required, such as:
 * The general concepts of of RESTful routes and resources.
 
 * The general concepts of formats for HTML, JSON, and text.
-
 
 ### What is helpful?
 

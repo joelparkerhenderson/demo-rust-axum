@@ -24,7 +24,6 @@ This section demonstrates how to:
 
 * Patch one book as a web form
 
-
 ## Create a book struct
 
 Suppose we want our app to have features related to books.
@@ -59,9 +58,9 @@ Add code to implement `Display`:
 impl std::fmt::Display for Book {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
-            f, 
-            "{} by {}", 
-            &self.title, 
+            f,
+            "{} by {}",
+            &self.title,
             &self.author,
         )
     }
@@ -78,9 +77,7 @@ mod book;
 use crate::book::Book;
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## Create the data store
 
@@ -113,19 +110,19 @@ use std::sync::Mutex;
 /// The map key is a primary key for lookup; the map value is a Book.
 static DATA: Lazy<Mutex<HashMap<u32, Book>>> = Lazy::new(|| Mutex::new(
     HashMap::from([
-        (1, Book { 
-            id: 1, 
-            title: "Antigone".into(), 
+        (1, Book {
+            id: 1,
+            title: "Antigone".into(),
             author: "Sophocles".into()
         }),
-        (2, Book { 
-            id: 2, title: 
-            "Beloved".into(), 
+        (2, Book {
+            id: 2, title:
+            "Beloved".into(),
             author: "Toni Morrison".into()
         }),
-        (3, Book { 
-            id: 3, title: 
-            "Candide".into(), 
+        (3, Book {
+            id: 3, title:
+            "Candide".into(),
             author: "Voltaire".into()
         }),
     ])
@@ -164,7 +161,6 @@ async fn main() {
     …
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -177,15 +173,13 @@ Output:
 
 ```stdout
 data: {
-    1: Book { id: 1, title: "Antigone", author: "Sophocles" }, 
-    2: Book { id: 2, title: "Beloved", author: "Toni Morrison" }, 
+    1: Book { id: 1, title: "Antigone", author: "Sophocles" },
+    2: Book { id: 2, title: "Beloved", author: "Toni Morrison" },
     3: Book { id: 3, title: "Candide", author: "Voltaire" }
 }
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## Get all books
 
@@ -219,7 +213,6 @@ pub async fn get_books() -> axum::response::Html<String> {
 }
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -242,9 +235,7 @@ Output:
 <p>Candide by Voltaire</p>
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 
 ## Post a new book
@@ -279,7 +270,6 @@ pub async fn post_books(
     }).join().unwrap().into()
 }
 ```
-
 
 ### Try the demo…
 
@@ -319,9 +309,7 @@ Output:
 <p>Decameron by Giovanni Boccaccio</p>
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## Get one book
 
@@ -355,7 +343,6 @@ pub async fn get_books_id(
 }
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -388,9 +375,7 @@ Output:
 <p>Book id 0 not found</p>
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## Put one book
 
@@ -422,7 +407,6 @@ pub async fn put_books_id(
     }).join().unwrap().into()
 }
 ```
-
 
 ### Try the demo…
 
@@ -475,9 +459,7 @@ Output:
 <p>Emma by Jane Austen</p>
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## Delete one book
 
@@ -514,7 +496,6 @@ pub async fn delete_books_id(
 }
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -548,9 +529,7 @@ Output:
 <p>Candide by Voltaire</p>
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## Patch one book
 
@@ -580,9 +559,9 @@ Add code to implement `Display`:
 impl std::fmt::Display for BookPatch {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
-            f, 
-            "{:?} by {:?}", 
-            self.title, 
+            f,
+            "{:?} by {:?}",
+            self.title,
             self.author,
         )
     }
@@ -637,7 +616,6 @@ pub async fn patch_books_id(
 }
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -679,9 +657,7 @@ Output:
 <p>Elektra by Sophocles</p>
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 
 ## Get one book as a web form
@@ -729,7 +705,6 @@ pub async fn get_books_id_form(
 }
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -754,9 +729,7 @@ Output:
 </form>
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## Patch one book as a web form
 
@@ -799,7 +772,6 @@ pub async fn patch_books_id_form(
 }
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -841,7 +813,5 @@ Output:
 <p>Elektra by Sophocles</p>
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 

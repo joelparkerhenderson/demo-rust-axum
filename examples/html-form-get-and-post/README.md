@@ -8,7 +8,6 @@ This section demonstrates how to:
 
 * Handle HTML POST to extract a book struct
 
-
 ## Create a book struct
 
 Suppose we want our app to have features related to books.
@@ -33,9 +32,7 @@ pub struct Book {
 }
 ```
 
-
 ## Create the server
-
 
 Edit file `main.rs`.
 
@@ -65,7 +62,6 @@ Add code to include the Book struct:
 mod book;
 use crate::book::Book;
 ```
-
 
 ## Create HTML form GET
 
@@ -120,7 +116,6 @@ pub async fn get_demo_form() ->  axum::response::Html<&'static str> {
 }
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -132,7 +127,6 @@ cargo run
 Browse <http://localhost:3000/demo-form>
 
 You should see a HTML form with fields for title and author, and a button to submit the form.
-
 
 ## Create HTML form POST
 
@@ -176,7 +170,6 @@ pub async fn post_demo_form(
 }
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -187,9 +180,9 @@ cargo run
 
 Browse <http://localhost:3000/demo-form>
 
-You should see the book form. 
+You should see the book form.
 
-Fill in some information, such as a title and author. 
+Fill in some information, such as a title and author.
 
 Example:
 
@@ -204,5 +197,5 @@ You should see the HTML POST response, which shows the information you posted.
 Example response output:
 
 ```txt
-Book { title: "Antigone", author: "Sophocles" } 
+Book { title: "Antigone", author: "Sophocles" }
 ```

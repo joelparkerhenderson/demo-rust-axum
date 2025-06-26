@@ -20,8 +20,8 @@ async fn main() {
     axum::serve(listener, app).await.unwrap();
 }
 
-/// axum handler for "GET /demo-http-status-code" which returns a 
+/// axum handler for "GET /demo-http-status-code" which returns a
 /// HTTP status code, such as OK (200), and a visible string message.
 pub async fn demo_http_status_code() -> (axum::http::StatusCode, String) {
-    (axum::http::StatusCode::OK, "Everything is OK".to_string())
+    (axum::http::StatusCode::OK, "OK".to_string())
 }

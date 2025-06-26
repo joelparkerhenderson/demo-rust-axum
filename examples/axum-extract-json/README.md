@@ -30,7 +30,6 @@ pub async fn put_demo_json(
 }
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -54,9 +53,7 @@ Output:
 Put demo JSON data: Object({"a": String("b")})
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## Respond with a JSON payload
 
@@ -96,7 +93,6 @@ pub async fn get_demo_json() -> axum::extract::Json<Value> {
 }
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -119,7 +115,5 @@ Output:
 {"a":"b"}
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 

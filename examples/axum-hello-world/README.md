@@ -15,7 +15,6 @@ async fn main() {
 }
 ```
 
-
 ### Try the demo…
 
 Shell:

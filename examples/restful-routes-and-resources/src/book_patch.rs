@@ -15,9 +15,9 @@ pub struct BookPatch {
 impl std::fmt::Display for BookPatch {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
-            f, 
-            "{:?} by {:?}", 
-            self.title, 
+            f,
+            "{:?} by {:?}",
+            self.title,
             self.author,
         )
     }

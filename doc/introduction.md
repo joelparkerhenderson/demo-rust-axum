@@ -14,13 +14,11 @@ Demonstration of:
 
 * [Serde](https://crates.io/crates/serde): serialization/deserialization framework.
 
-
 ### Thanks
 
 Thanks to all the above projects and their authors. Donate to them if you can.
 
 Does this demo help your work? Donate here if you can via GitHub sponsors.
-
 
 ### Feedback
 
@@ -28,11 +26,9 @@ Have an idea, suggestion, or feedback? Let us know via GitHub issues.
 
 Have a code improvement or bug fix? We welcome GitHub pull requests.
 
-
 ### License
 
 This demo uses the license Creative Commons Share-and-Share-Alike.
-
 
 
 ### Contact
@@ -40,5 +36,4 @@ This demo uses the license Creative Commons Share-and-Share-Alike.
 Have feedback? Have thoughts about this? Want to contribute?
 
 Contact the maintainer at joel@joelparkerhenderson.com
-
 

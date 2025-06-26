@@ -27,10 +27,10 @@ async fn main() {
 /// This sets a custom header "text/css" then sends the CSS text.
 /// Browsers many handle CSS text in different ways, such as displaying
 /// the text using colors, or downloading the CSS as a file, etc.
-async fn get_demo_css() -> impl axum::response::IntoResponse { 
+async fn get_demo_css() -> impl axum::response::IntoResponse {
     let mut headers = axum::http::HeaderMap::new();
     headers.insert(
-        axum::http::header::CONTENT_TYPE, 
+        axum::http::header::CONTENT_TYPE,
         axum::http::HeaderValue::from_static(&"text/css")
     );
     (
@@ -49,7 +49,7 @@ async fn get_demo_css() -> impl axum::response::IntoResponse {
 async fn get_demo_csv() -> impl axum::response::IntoResponse {
     let mut headers = axum::http::HeaderMap::new();
     headers.insert(
-        axum::http::header::CONTENT_TYPE, 
+        axum::http::header::CONTENT_TYPE,
         axum::http::HeaderValue::from_static(&"text/csv")
     );
     (

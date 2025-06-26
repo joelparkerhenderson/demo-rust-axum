@@ -24,7 +24,6 @@ The tokio stack includes:
 
 * Bytes: A rich set of utilities for manipulating byte arrays.
 
-
 ### Demo tokio server
 
 ```rust

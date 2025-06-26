@@ -36,9 +36,11 @@ use std::collections::HashMap;
 /// For this demo, see functions `get_demo_json` and `put_demo_json`.
 use serde_json::{json, Value};
 
-#[tokio::main]
-async fn main() {
+/// Create the constant INSTANT so the program can track its own uptime.
+pub static INSTANT: std::sync::LazyLock<std::time::Instant> = std::sync::LazyLock::new(|| std::time::Instant::now());
 
+#[tokio::main]  
+async fn main() {
     // Start tracing.
     tracing_subscriber::registry()
         .with(tracing_subscriber::fmt::layer())
@@ -50,7 +52,9 @@ async fn main() {
         .fallback(fallback)
         .route("/", get(hello))
         .route("/hello.html", get(hello_html))
-        .route("/demo-status", get(demo_status))
+        .route("/status", get(status))
+        .route("/epoch", get(epoch))
+        .route("/uptime", get(uptime))
         .route("/demo-uri", get(demo_uri))
         .route("/demo.html", get(get_demo_html))
         .route("/demo.png", get(get_demo_png))
@@ -107,10 +111,25 @@ async fn hello_html() -> axum::response::Html<&'static str> {
     include_str!("hello.html").into()
 }
 
-/// axum handler for "GET /demo-status" which returns a HTTP status
-/// code, such as OK (200), and a custom user-visible string message.
-pub async fn demo_status() -> (axum::http::StatusCode, String) {
-    (axum::http::StatusCode::OK, "Everything is OK".to_string())
+/// axum handler for "GET /status" which returns the HTTP status
+/// code OK (200) along with a user-visible string message.
+pub async fn status() -> (axum::http::StatusCode, String) {
+    (axum::http::StatusCode::OK, "OK".to_string())
+}
+
+/// axum handler for "GET /epoch" which shows the current epoch time.
+/// This shows how to write a handler that uses time and can error.
+pub async fn epoch() -> Result<String, axum::http::StatusCode> {
+    match std::time::SystemTime::now().duration_since(std::time::SystemTime::UNIX_EPOCH) {
+        Ok(duration) => Ok(format!("{}", duration.as_secs())),
+        Err(_) => Err(axum::http::StatusCode::INTERNAL_SERVER_ERROR)
+    }
+}
+
+/// axum handler for "GET /uptime" which shows the program's uptime duration.
+/// This shows how to write a handler that uses a global static lazy value.
+pub async fn uptime() -> String {
+    format!("{}", INSTANT.elapsed().as_secs())
 }
 
 /// axum handler for "GET /demo-uri" which shows the request's own URI.

@@ -12,7 +12,6 @@
 
 * HTTP/1 and HTTP/2 support.
 
-
 ### Hyper is low-level
 
 hyper is a relatively low-level library, meant to be a building block for libraries and applications.
@@ -22,7 +21,6 @@ If you are looking for a convenient HTTP client, then you may wish to consider [
 If you are looking for a convenient HTTP server, then you may wish to consider [warp](https://github.com/seanmonstar/warp).
 
 Both are built on top of hyper.
-
 
 ### Hello, World!
 
@@ -51,7 +49,5 @@ async fn main() {
 }
 ```
 
-
 <div style="page-break-before:always;"></div>
-
 

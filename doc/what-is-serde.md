@@ -6,7 +6,6 @@ The Serde ecosystem consists of data structures that know how to serialize and d
 
 Serde provides the layer by which these two groups interact with each other, allowing any supported data structure to be serialized and deserialized using any supported data format.
 
-
 ### Design
 
 Serde is built on Rust's powerful trait system.
@@ -18,7 +17,6 @@ Serde is built on Rust's powerful trait system.
 * Serde has no runtime overhead such as reflection or runtime type information.
 
 * In many situations the interaction between data structure and data format can be completely optimized away by the Rust compiler.
-
 
 ### Demo of Serde
 

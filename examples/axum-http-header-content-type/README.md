@@ -2,7 +2,6 @@
 
 To return a custom content type, you can set an axum HTTP header.
 
-
 ## Start
 
 Start with the typical file `main.rs`.
@@ -12,13 +11,12 @@ Start with the typical file `main.rs`.
 async fn main() {
     // Build our application by creating our router.
     let app = axum::Router::new();
-    
+
     // Run our application as a hyper server on http://localhost:3000.
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
 ```
-
 
 ## Content type is cascading style sheet (CSS)
 
@@ -38,10 +36,10 @@ Add handler:
 /// This sets a custom HTTP header "text/css" then sends the CSS text.
 /// Browsers many handle CSS text in different ways, such as displaying
 /// the text using colors, or downloading the CSS as a file, etc.
-async fn get_demo_css() -> impl axum::response::IntoResponse { 
+async fn get_demo_css() -> impl axum::response::IntoResponse {
     let mut headers = axum::http::HeaderMap::new();
     headers.insert(
-        axum::http::header::CONTENT_TYPE, 
+        axum::http::header::CONTENT_TYPE,
         axum::http::HeaderValue::from_static(&"text/css")
     );
     (
@@ -53,7 +51,6 @@ async fn get_demo_css() -> impl axum::response::IntoResponse {
     )
 }
 ```
-
 
 ### Try the demo…
 
@@ -72,7 +69,6 @@ and either display the text or prompt you to download a CSS file.
 b: { font-color: red; }
 i: { font-color: blue; }
 ```
-
 
 ## Content type is comma separated values (CSV)
 
@@ -99,7 +95,7 @@ Add handler:
 async fn get_demo_csv() -> impl axum::response::IntoResponse {
     let mut headers = axum::http::HeaderMap::new();
     headers.insert(
-        axum::http::header::CONTENT_TYPE, 
+        axum::http::header::CONTENT_TYPE,
         axum::http::HeaderValue::from_static(&"text/csv")
     );
     (
@@ -111,7 +107,6 @@ async fn get_demo_csv() -> impl axum::response::IntoResponse {
     )
 }
 ```
-
 
 ### Try the demo…
 

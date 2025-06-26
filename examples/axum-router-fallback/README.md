@@ -1,6 +1,6 @@
 ## Create an axum router fallback
 
-To handle a request that fails to match anything in the axum router, 
+To handle a request that fails to match anything in the axum router,
 you can use the function `fallback`.
 
 Edit file `main.rs`.
@@ -14,7 +14,7 @@ pub async fn fallback(
     uri: axum::http::Uri
 ) -> impl axum::response::IntoResponse {
     (
-        axum::http::StatusCode::NOT_FOUND, 
+        axum::http::StatusCode::NOT_FOUND,
         format!("No route {}", uri)
     )
 }
@@ -28,7 +28,6 @@ let app = Router::new()
         fallback
     );
 ```
-
 
 ### Try the demo…
 

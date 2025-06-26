@@ -1,6 +1,5 @@
 # Conclusion
 
-
 ## What you learned
 
 You learned how to:
@@ -19,9 +18,7 @@ You learned how to:
 
 * Create a data store and access it using RESTful routes.
 
-
 <div style="page-break-before:always;"></div>
-
 
 ## What's next
 
@@ -47,7 +44,6 @@ To learn more about Rust, axum, tower, hyper, tokio, and Serde:
 
 * [The Serde crate](https://crates.io/crates/serde)
 
-
 ### Feedback
 
 We welcome constructive feedback via GitHub issues:
@@ -57,7 +53,6 @@ We welcome constructive feedback via GitHub issues:
 * Any requests for new demo sections or example topics?
 
 * Any bugs or issues in the demo code or documentation?
-
 
 ### Contact
 

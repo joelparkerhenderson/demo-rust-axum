@@ -31,7 +31,6 @@ pub async fn get_items(
 }
 ```
 
-
 ### Try the demo…
 
 Shell:
@@ -51,6 +50,5 @@ Output:
 ```sh
 Get items with query params: {"a": "b"}
 ```
-
 
 <div style="page-break-before:always;"></div>
