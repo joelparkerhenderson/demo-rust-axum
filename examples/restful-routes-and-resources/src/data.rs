@@ -1,5 +1,5 @@
-// Use once_cell for creating a global variable e.g. our DATA.
-use once_cell::sync::Lazy;
+// Use Lazy for creating a global variable e.g. our DATA.
+use std::sync::LazyLock;
 
 // Use Mutex for thread-safe access to a variable e.g. our DATA.
 use std::sync::Mutex;
@@ -24,7 +24,7 @@ use crate::book::Book;
 //         …
 // }).join().unwrap()
 // ```
-pub static DATA: Lazy<Mutex<HashMap<u32, Book>>> = Lazy::new(|| Mutex::new(
+pub static DATA: LazyLock<Mutex<HashMap<u32, Book>>> = LazyLock::new(|| Mutex::new(
     HashMap::from([
         (1, Book { id: 1, title: "Antigone".into(), author: "Sophocles".into()}),
         (2, Book { id: 2, title: "Beloved".into(), author: "Toni Morrison".into()}),

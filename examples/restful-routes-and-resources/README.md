@@ -2,27 +2,27 @@
 
 This section demonstrates how to:
 
-* Create a book struct
+- Create a book struct
 
-* Create the data store
+- Create the data store
 
-* Use the data store
+- Use the data store
 
-* Get all books
+- Get all books
 
-* Post a new book
+- Post a new book
 
-* Get one book
+- Get one book
 
-* Put one book
+- Put one book
 
-* Patch one book
+- Patch one book
 
-* Delete one book
+- Delete one book
 
-* Get one book as a web form
+- Get one book as a web form
 
-* Patch one book as a web form
+- Patch one book as a web form
 
 ## Create a book struct
 
@@ -77,7 +77,7 @@ mod book;
 use crate::book::Book;
 ```
 
-<div style="page-break-before:always;"></div>
+---
 
 ## Create the data store
 
@@ -99,8 +99,8 @@ Create file `data.rs`.
 Add this code:
 
 ```rust
-/// Use once_cell for creating a global variable e.g. our DATA data.
-use once_cell::sync::Lazy;
+// Use Lazy for creating a global variable e.g. our DATA.
+use std::sync::LazyLock;
 
 /// Use Mutex for thread-safe access to a variable e.g. our DATA data.
 use std::sync::Mutex;
@@ -108,25 +108,27 @@ use std::sync::Mutex;
 /// Create a data store as a global variable with `Lazy` and `Mutex`.
 /// This demo implementation uses a `HashMap` for ease and speed.
 /// The map key is a primary key for lookup; the map value is a Book.
-static DATA: Lazy<Mutex<HashMap<u32, Book>>> = Lazy::new(|| Mutex::new(
-    HashMap::from([
-        (1, Book {
-            id: 1,
-            title: "Antigone".into(),
-            author: "Sophocles".into()
-        }),
-        (2, Book {
-            id: 2, title:
-            "Beloved".into(),
-            author: "Toni Morrison".into()
-        }),
-        (3, Book {
-            id: 3, title:
-            "Candide".into(),
-            author: "Voltaire".into()
-        }),
-    ])
-));
+static DATA: LazyLock<Mutex<HashMap<u32, Book>>> = LazyLock::new(|| 
+    Mutex::new(
+        HashMap::from([
+            (1, Book {
+                id: 1,
+                title: "Antigone".into(),
+                author: "Sophocles".into()
+            }),
+            (2, Book {
+                id: 2, title:
+                "Beloved".into(),
+                author: "Toni Morrison".into()
+            }),
+            (3, Book {
+                id: 3, title:
+                "Candide".into(),
+                author: "Voltaire".into()
+            }),
+        ])
+    )
+);
 ```
 
 ## Use the data store
@@ -161,7 +163,7 @@ async fn main() {
     …
 ```
 
-### Try the demo…
+## Try the demo
 
 Shell:
 
@@ -179,7 +181,7 @@ data: {
 }
 ```
 
-<div style="page-break-before:always;"></div>
+---
 
 ## Get all books
 
@@ -213,7 +215,7 @@ pub async fn get_books() -> axum::response::Html<String> {
 }
 ```
 
-### Try the demo…
+## Try the demo
 
 Shell:
 
@@ -235,8 +237,7 @@ Output:
 <p>Candide by Voltaire</p>
 ```
 
-<div style="page-break-before:always;"></div>
-
+---
 
 ## Post a new book
 
@@ -271,7 +272,7 @@ pub async fn post_books(
 }
 ```
 
-### Try the demo…
+## Try the demo
 
 Shell:
 
@@ -309,7 +310,7 @@ Output:
 <p>Decameron by Giovanni Boccaccio</p>
 ```
 
-<div style="page-break-before:always;"></div>
+---
 
 ## Get one book
 
@@ -343,7 +344,7 @@ pub async fn get_books_id(
 }
 ```
 
-### Try the demo…
+## Try the demo
 
 Shell:
 
@@ -375,7 +376,7 @@ Output:
 <p>Book id 0 not found</p>
 ```
 
-<div style="page-break-before:always;"></div>
+---
 
 ## Put one book
 
@@ -408,7 +409,7 @@ pub async fn put_books_id(
 }
 ```
 
-### Try the demo…
+## Try the demo
 
 Shell:
 
@@ -459,7 +460,7 @@ Output:
 <p>Emma by Jane Austen</p>
 ```
 
-<div style="page-break-before:always;"></div>
+---
 
 ## Delete one book
 
@@ -496,7 +497,7 @@ pub async fn delete_books_id(
 }
 ```
 
-### Try the demo…
+## Try the demo
 
 Shell:
 
@@ -529,7 +530,7 @@ Output:
 <p>Candide by Voltaire</p>
 ```
 
-<div style="page-break-before:always;"></div>
+---
 
 ## Patch one book
 
@@ -616,7 +617,7 @@ pub async fn patch_books_id(
 }
 ```
 
-### Try the demo…
+## Try the demo
 
 Shell:
 
@@ -657,8 +658,7 @@ Output:
 <p>Elektra by Sophocles</p>
 ```
 
-<div style="page-break-before:always;"></div>
-
+---
 
 ## Get one book as a web form
 
@@ -705,7 +705,7 @@ pub async fn get_books_id_form(
 }
 ```
 
-### Try the demo…
+## Try the demo
 
 Shell:
 
@@ -729,7 +729,7 @@ Output:
 </form>
 ```
 
-<div style="page-break-before:always;"></div>
+---
 
 ## Patch one book as a web form
 
@@ -772,7 +772,7 @@ pub async fn patch_books_id_form(
 }
 ```
 
-### Try the demo…
+## Try the demo
 
 Shell:
 
@@ -812,6 +812,3 @@ Output:
 ```stdout
 <p>Elektra by Sophocles</p>
 ```
-
-<div style="page-break-before:always;"></div>
-
