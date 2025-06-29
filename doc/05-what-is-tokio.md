@@ -1,4 +1,4 @@
-## What is tokio?
+# What is tokio?
 
 [tokio](https://tokio.rs/) is an asynchronous runtime for the Rust programming language.
 
@@ -24,7 +24,7 @@ The tokio stack includes:
 
 * Bytes: A rich set of utilities for manipulating byte arrays.
 
-### Demo tokio server
+## Demo tokio server
 
 ```rust
 #[tokio::main]
@@ -45,7 +45,7 @@ async fn process(socket: tokio::net::TcpStream) {
 }
 ```
 
-### Demo tokio client
+## Demo tokio client
 
 ```rust
 #[tokio::main]

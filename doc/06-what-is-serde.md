@@ -1,4 +1,4 @@
-## What is Serde?
+# What is Serde?
 
 [Serde](https://crates.io/crates/serde) is a framework for serializing and deserializing Rust data structures efficiently and generically.
 
@@ -6,7 +6,7 @@ The Serde ecosystem consists of data structures that know how to serialize and d
 
 Serde provides the layer by which these two groups interact with each other, allowing any supported data structure to be serialized and deserialized using any supported data format.
 
-### Design
+## Design
 
 Serde is built on Rust's powerful trait system.
 
@@ -18,7 +18,7 @@ Serde is built on Rust's powerful trait system.
 
 * In many situations the interaction between data structure and data format can be completely optimized away by the Rust compiler.
 
-### Demo of Serde
+## Demo of Serde
 
 ```rust
 use serde::{Serialize, Deserialize};

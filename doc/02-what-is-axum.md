@@ -1,4 +1,4 @@
-## What is axum?
+# What is axum?
 
 [axum](https://crates.io/crates/axum) is a web framework with high level features:
 
@@ -12,7 +12,7 @@
 
 * Take full advantage of the tower and its ecosystem.
 
-### How is axum special?
+## How is axum special?
 
 The tower ecosystem is what sets axum apart from other frameworks:
 
@@ -22,7 +22,7 @@ The tower ecosystem is what sets axum apart from other frameworks:
 
 * axum can share middleware with applications written using hyper or tonic.
 
-### Why learn axum now?
+## Why learn axum now?
 
 * axum combines the speed and security of Rust with the power of
 battle-tested libraries for middleware, asynchronous programming, and HTTP.
@@ -33,7 +33,7 @@ other Rust web frameworks, such as Actix, Rocket, Warp, and others.
 * axum is likely to appeal to programmers are seeking a faster
 web framework and who want closer-to-the-metal capabilities.
 
-### Hello, World!
+## Hello, World
 
 ```rust
 #[tokio::main]
@@ -47,3 +47,5 @@ async fn main() {
     axum::serve(listener, app).await.unwrap();
 }
 ```
+
+[Link to examples/axum-hello-world](examples/axum-hello-world)

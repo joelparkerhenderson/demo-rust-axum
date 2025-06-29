@@ -1,4 +1,4 @@
-## What is hyper?
+# What is hyper?
 
 [hyper](https://hyper.rs/) is a fast HTTP implementation written in and for Rust.
 
@@ -12,7 +12,7 @@
 
 * HTTP/1 and HTTP/2 support.
 
-### Hyper is low-level
+## Hyper is low-level
 
 hyper is a relatively low-level library, meant to be a building block for libraries and applications.
 
@@ -22,7 +22,7 @@ If you are looking for a convenient HTTP server, then you may wish to consider [
 
 Both are built on top of hyper.
 
-### Hello, World!
+## Hello, World
 
 ```rust
 use std::convert::Infallible;
@@ -48,6 +48,3 @@ async fn main() {
     }
 }
 ```
-
-<div style="page-break-before:always;"></div>
-
