@@ -50,6 +50,10 @@ Shell:
 cargo run
 ```
 
-Browse <http://localhost:3000/demo.png>
+Browse <http://localhost:3000/demo.png> or run:
 
-You browser should download a one-pixel transparent PNG image.
+```sh
+curl "http://localhost:3000/demo.png"
+```
+
+You should download a one-pixel transparent PNG image.

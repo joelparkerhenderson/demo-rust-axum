@@ -52,7 +52,7 @@ async fn get_demo_css() -> impl axum::response::IntoResponse {
 }
 ```
 
-### Try the demo…
+## Try the demo
 
 Shell:
 
@@ -108,7 +108,7 @@ async fn get_demo_csv() -> impl axum::response::IntoResponse {
 }
 ```
 
-### Try the demo…
+## Try the demo
 
 Shell:
 

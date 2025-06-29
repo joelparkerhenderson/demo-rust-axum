@@ -13,7 +13,7 @@ Use this kind of package and these dependencies:
 
 ```toml
 [package]
-name = "demo-rust-axum"
+name = "demo-rust-axum-examples-hello-world"
 version = "1.0.0"
 edition = "2024"
 
@@ -41,7 +41,7 @@ pub async fn main() {
 }
 ```
 
-## Try the demo…
+## Try the demo
 
 Shell:
 
@@ -49,7 +49,7 @@ Shell:
 cargo run
 ```
 
-Browse <http://localhost:3000> or run curl:
+Browse <http://localhost:3000> or run:
 
 ```sh
 curl 'http://localhost:3000'

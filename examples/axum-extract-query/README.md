@@ -31,7 +31,7 @@ pub async fn get_items(
 }
 ```
 
-### Try the demo…
+## Try the demo
 
 Shell:
 

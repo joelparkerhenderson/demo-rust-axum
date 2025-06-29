@@ -27,7 +27,7 @@ let app = Router::new()
     …
 ```
 
-## Try the demo…
+## Try the demo
 
 Shell:
 

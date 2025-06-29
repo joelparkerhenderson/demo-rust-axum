@@ -3,7 +3,9 @@
 An axum route can call an axum handler, which is an async function that returns
 anything that axum can convert into a response.
 
-Edit file `main.txt` and anywhere before the function `main` add this:
+Edit file `main.rs`.
+
+Add this anywhere before the function `main`:
 
 ```rust
 /// Create the atomic variable COUNT so the program can track its own count.

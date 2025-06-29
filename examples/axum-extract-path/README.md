@@ -28,7 +28,7 @@ pub async fn get_demo_path_id(
 }
 ```
 
-### Try the demo…
+## Try the demo
 
 Shell:
 

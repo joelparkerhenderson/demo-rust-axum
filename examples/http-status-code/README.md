@@ -24,7 +24,7 @@ pub async fn demo_http_status_code() -> (
 }
 ```
 
-### Try the demo…
+## Try the demo
 
 Shell:
 

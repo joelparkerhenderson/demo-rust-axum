@@ -39,9 +39,17 @@ use serde_json::{json, Value};
 /// Create the constant INSTANT so the program can track its own uptime.
 pub static INSTANT: std::sync::LazyLock<std::time::Instant> = std::sync::LazyLock::new(|| std::time::Instant::now());
 
+/// Create the atomic variable COUNT so the program can track its own count.
+pub static COUNT: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
+
+/// The main function does these steps: 
+/// - Start tracing and emit a tracing event.
+/// - Get a command line argument as our bind address.
+/// - Build our application by creating our router.
+/// - Run our application as a hyper server.
 #[tokio::main]  
 async fn main() {
-    // Start tracing.
+    // Start tracing and emit a tracing event.
     tracing_subscriber::registry()
         .with(tracing_subscriber::fmt::layer())
         .init();
@@ -51,10 +59,12 @@ async fn main() {
     let app = axum::Router::new()
         .fallback(fallback)
         .route("/", get(hello))
-        .route("/hello.html", get(hello_html))
+        .route("/string.html", get(get_string_html))
+        .route("/file.html", get(get_file_html))
         .route("/status", get(status))
         .route("/epoch", get(epoch))
         .route("/uptime", get(uptime))
+        .route("/count", get(epoch))
         .route("/demo-uri", get(demo_uri))
         .route("/demo.html", get(get_demo_html))
         .route("/demo.png", get(get_demo_png))
@@ -76,9 +86,38 @@ async fn main() {
             get(get_books_id_form).post(post_books_id_form),
         );
 
-    // Run our application as a hyper server on http://localhost:3000.
+    // Run our application as a hyper server.
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
-    axum::serve(listener, app).await.unwrap();
+    axum::serve(listener, app)
+        .with_graceful_shutdown(shutdown_signal())
+        .await
+        .unwrap();
+}
+
+/// Shutdown signal to run axum with graceful shutdown when
+/// a user presses Ctrl+C or Unix sends a terminate signal.
+pub async fn shutdown_signal() {
+    let ctrl_c = async {
+        tokio::signal::ctrl_c()
+            .await
+            .expect("failed to install Ctrl+C handler");
+    };
+
+    #[cfg(unix)]
+    let terminate = async {
+        tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate())
+            .expect("failed to install signal handler")
+            .recv()
+            .await;
+    };
+
+    #[cfg(not(unix))]
+    let terminate = std::future::pending::<()>();
+
+    tokio::select! {
+        _ = ctrl_c => {},
+        _ = terminate => {},
+    }
 }
 
 ////
@@ -92,9 +131,7 @@ async fn main() {
 /// axum handler for any request that fails to match the router routes.
 /// This implementation returns HTTP status code Not Found (404).
 pub async fn fallback(uri: axum::http::Uri) -> impl axum::response::IntoResponse {
-    (
-        axum::http::StatusCode::NOT_FOUND,
-        format!("No route {}", uri),
+    (axum::http::StatusCode::NOT_FOUND, uri.to_string()),
     )
 }
 
@@ -104,11 +141,17 @@ pub async fn hello() -> String {
     "Hello, World!".to_string()
 }
 
+/// axum handler for "GET /string.html" which responds with a string.
+/// The `Html` type sets an HTTP header content-type of `text/html`.
+pub async fn get_string_html() -> axum::response::Html<&'static str> {
+    "<html><body><h1>Headline</h1><p>Paragraph</b></body></html>".into()
+}
+
 /// axum handler that responds with typical HTML coming from a file.
 /// This uses the Rust macro `std::include_str` to include a UTF-8 file
 /// path, relative to `main.rs`, as a `&'static str` at compile time.
-async fn hello_html() -> axum::response::Html<&'static str> {
-    include_str!("hello.html").into()
+async fn get_file_html() -> axum::response::Html<&'static str> {
+    include_str!("file.html").into()
 }
 
 /// axum handler for "GET /status" which returns the HTTP status
@@ -130,6 +173,13 @@ pub async fn epoch() -> Result<String, axum::http::StatusCode> {
 /// This shows how to write a handler that uses a global static lazy value.
 pub async fn uptime() -> String {
     format!("{}", INSTANT.elapsed().as_secs())
+}
+
+/// axum handler for "GET /count" which shows the program's count duration.
+/// This shows how to write a handler that uses a global static lazy value.
+pub async fn count() -> String {
+    COUNT.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+    format!("{}", COUNT.load(std::sync::atomic::Ordering::SeqCst))
 }
 
 /// axum handler for "GET /demo-uri" which shows the request's own URI.
@@ -392,4 +442,29 @@ pub async fn post_books_id_form(form: axum::extract::Form<Book>) -> axum::respon
     .join()
     .unwrap()
     .into()
+}
+
+////
+/// HTML rendering helpers.
+////
+
+/// Render strings into an HTML table tag.
+pub fn html_table_tag(table: Vec<Vec<String>>) -> String {
+    format!("<table>\n{}</table>\n", html_table_tr_tags(table))
+}
+
+/// Render strings into HTML table tr tags.
+pub fn html_table_tr_tags(rows: Vec<Vec<String>>) -> String {
+    rows.iter()
+        .map(|row| 
+            format!("<tr>{}</tr>\n", html_table_td_tags(row))
+        )
+        .collect::<String>()
+}
+
+/// Render strings into HTML table td tags.
+pub fn html_table_td_tags(cells: &Vec<String>) -> String {
+    cells.iter().map(|cell| 
+        format!("<td>{}</td>", cell)
+    ).collect::<String>()
 }

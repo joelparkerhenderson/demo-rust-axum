@@ -30,7 +30,7 @@ pub async fn put_demo_json(
 }
 ```
 
-### Try the demo…
+## Try the demo
 
 Shell:
 
@@ -93,7 +93,7 @@ pub async fn get_demo_json() -> axum::extract::Json<Value> {
 }
 ```
 
-### Try the demo…
+## Try the demo
 
 Shell:
 

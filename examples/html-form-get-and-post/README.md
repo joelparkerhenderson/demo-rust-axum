@@ -116,7 +116,7 @@ pub async fn get_demo_form() ->  axum::response::Html<&'static str> {
 }
 ```
 
-### Try the demo…
+## Try the demo
 
 Shell:
 
@@ -170,7 +170,7 @@ pub async fn post_demo_form(
 }
 ```
 
-### Try the demo…
+## Try the demo
 
 Shell:
 

@@ -9,7 +9,7 @@ repository = "https://github.com/joelparkerhenderson/demo-rust-axum"
 documentation = "https://github.com/joelparkerhenderson/demo-rust-axum"
 
 description = """
-Demo of Rust and Axum + examples axum-hello-world
+Demo of Rust and Axum + examples hello-world
 """
 
 readme = "README.md"

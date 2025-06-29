@@ -1,17 +1,20 @@
 top = $(shell git rev-parse --show-toplevel)
 projects = $(sort $(dir $(shell find "${top}" -name "Cargo.toml")))
 
-all: demo-rust-axum-by-joelparkerhenderson.epub demo-rust-axum-by-joelparkerhenderson.pdf
+all: demo-rust-axum-by-joel-parker-henderson.epub demo-rust-axum-by-joel-parker-henderson.pdf
 
 .PHONY: clean
 clean:
-	rm -f demo-rust-axum-by-joelparkerhenderson.*
+	rm -f demo-rust-axum-by-joel-parker-henderson.*
 
-demo-rust-axum-by-joelparkerhenderson.epub:
-	pandoc-from-markdown-to-epub README.md --metadata title="Demo Rust Axum" -o demo-rust-axum-by-joelparkerhenderson.epub
+demo-rust-axum-by-joel-parker-henderson.tmp:
+	sed 'sed 's~^## ~<div style="page-break-before:always;"></div>\n\n# ~' "$top/README.md" > "$top/demo-rust-axum-by-joel-parker-henderson.tmp"
 
-demo-rust-axum-by-joelparkerhenderson.pdf:
-	pandoc-from-markdown-to-pdf README.md --metadata title="Demo Rust Axum" -o demo-rust-axum-by-joelparkerhenderson.pdf
+demo-rust-axum-by-joel-parker-henderson.epub: demo-rust-axum-by-joel-parker-henderson.tmp
+	pandoc-from-markdown-to-epub README.md --metadata title="Demo Rust Axum" -o demo-rust-axum-by-joel-parker-henderson.epub
+
+demo-rust-axum-by-joel-parker-henderson.pdf: demo-rust-axum-by-joel-parker-henderson.tmp:
+	pandoc-from-markdown-to-pdf README.md --metadata title="Demo Rust Axum" -o demo-rust-axum-by-joel-parker-henderson.pdf
 
 .PHONY: cargo-update
 cargo-update:
