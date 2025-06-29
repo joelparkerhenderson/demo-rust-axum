@@ -1,5 +1,5 @@
 [package]
-name = "demo-rust-axum-examples-status-handler-function"
+name = "demo-rust-axum-examples-respond-with-http-status-code"
 version = "2.0.0"
 edition = "2024"
 authors = ["Joel Parker Henderson <joel@joelparkerhenderson.com>"]
@@ -9,7 +9,7 @@ repository = "https://github.com/joelparkerhenderson/demo-rust-axum"
 documentation = "https://github.com/joelparkerhenderson/demo-rust-axum"
 
 description = """
-Demo of Rust and Axum + examples status-handler-function
+Demo of Rust and Axum + examples http-status-code
 """
 
 readme = "README.md"

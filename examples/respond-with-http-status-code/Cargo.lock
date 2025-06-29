@@ -111,7 +111,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
-name = "demo-rust-axum-examples-status-handler-function"
+name = "demo-rust-axum-examples-respond-with-http-status-code"
 version = "2.0.0"
 dependencies = [
  "axum",

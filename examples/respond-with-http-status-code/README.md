@@ -1,4 +1,4 @@
-## Respond with HTTP status code
+# Respond with HTTP status code
 
 Edit file `main.rs`.
 
@@ -32,6 +32,10 @@ Shell:
 cargo run
 ```
 
-Browse <http://localhost:3000/demo-http-status-code>
+Browse <http://localhost:3000/demo-http-status-code> or run:
+
+```sh
+curl "http://localhost:3000/demo-http-status-code"
+```
 
 You should see "OK".

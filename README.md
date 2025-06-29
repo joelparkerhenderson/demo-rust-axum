@@ -59,10 +59,10 @@ Contact the maintainer at <joel@joelparkerhenderson.com>.
 - [Epoch handler function](examples/epoch-handler-function/README.md)
 - [Uptime handler function](examples/uptime-handler-function/README.md)
 - [Count handler function](examples/count-handler-function/README.md)
-- [Status handler function](examples/status-handler-function/README.md)
 
-**Responders:**
+**Respond:**
 
+- [Respond with HTTP status code](examples/respond-with-http-status-code/README.md)
 - [Respond with string of HTML](examples/respond-with-string-of-html/README.md)
 - [Respond with file of HTML](examples/respond-with-file-of-html/README.md)
 - [Respond with custom header and custom image](examples/respond-with-custom-header-and-custom-image/README.md)
