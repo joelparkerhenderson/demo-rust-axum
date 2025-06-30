@@ -1,6 +1,6 @@
 [package]
-name = "demo-rust-axum-examples-axum--http-header-content-type"
-version = "1.1.0"
+name = "demo-rust-axum-examples-axum-respond-with-a-string-of-html"
+version = "2.0.0"
 edition = "2024"
 authors = ["Joel Parker Henderson <joel@joelparkerhenderson.com>"]
 license = "GPL-2.0 OR GPL-3.0"
@@ -9,7 +9,7 @@ repository = "https://github.com/joelparkerhenderson/demo-rust-axum"
 documentation = "https://github.com/joelparkerhenderson/demo-rust-axum"
 
 description = """
-Demo of Rust and Axum / examples / axum-http-header-content-type
+Demo of Rust and Axum / examples / axum-respond-with-a-string-of-html
 """
 
 readme = "README.md"
@@ -20,4 +20,4 @@ categories = ["web-programming"]
 
 [dependencies]
 axum = { version = "~0.8.4" } # Web framework that focuses on ergonomics and modularity.
-tokio = { version = "~1.42.1", features = ["full"] } # Event-driven, non-blocking I/O platform.
+tokio = { version = "~1.45.1", features = ["full"] } # Event-driven, non-blocking I/O platform.

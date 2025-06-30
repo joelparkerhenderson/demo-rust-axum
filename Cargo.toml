@@ -31,5 +31,89 @@ tracing = { version = "~0.1.41" } #  Application-level tracing for Rust.
 tracing-subscriber = { version = "~0.3.19", features = ["env-filter"] } # Utilities for `tracing` subscribers.
 
 [[example]]
+name = "axum-bind-host-port-socket-address"
+path = "examples/axum-bind-host-port-socket-address/src/main.rs"
+
+[[example]]
+name = "axum-count-handler-function"
+path = "examples/axum-count-handler-function/src/main.rs"
+
+[[example]]
+name = "axum-epoch-handler-function"
+path = "examples/axum-epoch-handler-function/src/main.rs"
+
+[[example]]
+name = "axum-extract-json-parameters"
+path = "examples/axum-extract-json-parameters/src/main.rs"
+
+[[example]]
+name = "axum-extract-path-parameters"
+path = "examples/axum-extract-path-parameters/src/main.rs"
+
+[[example]]
+name = "axum-extract-query-parameters"
+path = "examples/axum-extract-query-parameters/src/main.rs"
+
+[[example]]
+name = "axum-graceful-shutdown"
+path = "examples/axum-graceful-shutdown/src/main.rs"
+
+[[example]]
+name = "axum-hello-handler-function"
+path = "examples/axum-hello-handler-function/src/main.rs"
+
+[[example]]
 name = "axum-hello-world"
 path = "examples/axum-hello-world/src/main.rs"
+
+[[example]]
+name = "axum-html-form-get-and-post"
+path = "examples/axum-html-form-get-and-post/src/main.rs"
+
+[[example]]
+name = "axum-http-header-content-type"
+path = "examples/axum-http-header-content-type/src/main.rs"
+
+[[example]]
+name = "axum-respond-to-multiple-http-verbs"
+path = "examples/axum-respond-to-multiple-http-verbs/src/main.rs"
+
+[[example]]
+name = "axum-respond-with-custom-header-and-custom-image"
+path = "examples/axum-respond-with-a-custom-header-and-a-custom-image/src/main.rs"
+
+[[example]]
+name = "axum-respond-with-a-file-of-html"
+path = "examples/axum-respond-with-a-file-of-html/src/main.rs"
+
+[[example]]
+name = "axum-respond-with-http-status-code-ok"
+path = "examples/axum-respond-with-http-status-code-ok/src/main.rs"
+
+[[example]]
+name = "axum-respond-with-a-json-payload"
+path = "examples/axum-respond-with-a-json-payload/src/main.rs"
+
+[[example]]
+name = "axum-respond-with-the-request-uri"
+path = "examples/axum-respond-with-the-request-uri/src/main.rs"
+
+[[example]]
+name = "axum-respond-with-a-string-of-html"
+path = "examples/axum-respond-with-a-string-of-html/src/main.rs"
+
+[[example]]
+name = "axum-restful-routes-and-resources"
+path = "examples/axum-restful-routes-and-resources/src/main.rs"
+
+[[example]]
+name = "axum-router-fallback"
+path = "examples/axum-router-fallback/src/main.rs"
+
+[[example]]
+name = "axum-tracing-subscriber"
+path = "examples/axum-tracing-subscriber/src/main.rs"
+
+[[example]]
+name = "axum-uptime-handler-function"
+path = "examples/axum-uptime-handler-function/src/main.rs"

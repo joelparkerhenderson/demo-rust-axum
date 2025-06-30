@@ -59,15 +59,15 @@ async fn main() {
     let app = axum::Router::new()
         .fallback(fallback)
         .route("/", get(hello))
-        .route("/string.html", get(get_string_html))
-        .route("/file.html", get(get_file_html))
+        .route("/string.html", get(string_html))
+        .route("/file.html", get(file_html))
         .route("/status", get(status))
         .route("/epoch", get(epoch))
         .route("/uptime", get(uptime))
-        .route("/count", get(epoch))
-        .route("/demo-uri", get(demo_uri))
-        .route("/demo.html", get(get_demo_html))
-        .route("/demo.png", get(get_demo_png))
+        .route("/count", get(count))
+        .route("/request-uri", get(request_uri))
+        .route("/demo.html", get(demo_html))
+        .route("/demo.png", get(demo_png))
         .route("/demo.json", get(get_demo_json).put(put_demo_json))
         .route(
             "/foo",
@@ -131,8 +131,7 @@ pub async fn shutdown_signal() {
 /// axum handler for any request that fails to match the router routes.
 /// This implementation returns HTTP status code Not Found (404).
 pub async fn fallback(uri: axum::http::Uri) -> impl axum::response::IntoResponse {
-    (axum::http::StatusCode::NOT_FOUND, uri.to_string()),
-    )
+    (axum::http::StatusCode::NOT_FOUND, uri.to_string())
 }
 
 /// axum handler for "GET /" which returns a string and causes axum to
@@ -143,14 +142,14 @@ pub async fn hello() -> String {
 
 /// axum handler for "GET /string.html" which responds with a string.
 /// The `Html` type sets an HTTP header content-type of `text/html`.
-pub async fn get_string_html() -> axum::response::Html<&'static str> {
+pub async fn string_html() -> axum::response::Html<&'static str> {
     "<html><body><h1>Headline</h1><p>Paragraph</b></body></html>".into()
 }
 
 /// axum handler that responds with typical HTML coming from a file.
 /// This uses the Rust macro `std::include_str` to include a UTF-8 file
 /// path, relative to `main.rs`, as a `&'static str` at compile time.
-async fn get_file_html() -> axum::response::Html<&'static str> {
+async fn file_html() -> axum::response::Html<&'static str> {
     include_str!("file.html").into()
 }
 
@@ -182,21 +181,21 @@ pub async fn count() -> String {
     format!("{}", COUNT.load(std::sync::atomic::Ordering::SeqCst))
 }
 
-/// axum handler for "GET /demo-uri" which shows the request's own URI.
+/// axum handler for "GET /request-uri" which shows the request's own URI.
 /// This shows how to write a handler that receives the URI.
-pub async fn demo_uri(uri: axum::http::Uri) -> String {
+pub async fn request_uri(uri: axum::http::Uri) -> String {
     format!("The URI is: {:?}", uri)
 }
 
 /// axum handler for "GET /demo.html" which responds with HTML text.
 /// The `Html` type sets an HTTP header content-type of `text/html`.
-pub async fn get_demo_html() -> axum::response::Html<&'static str> {
+pub async fn demo_html() -> axum::response::Html<&'static str> {
     "<h1>Hello</h1>".into()
 }
 
 /// axum handler for "GET /demo.png" which responds with an image PNG.
 /// This sets a header "image/png" then sends the decoded image data.
-async fn get_demo_png() -> impl axum::response::IntoResponse {
+async fn demo_png() -> impl axum::response::IntoResponse {
     use base64::Engine;
     let png = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPk+89QDwADvgGOSHzRgAAAAABJRU5ErkJggg==";
     (

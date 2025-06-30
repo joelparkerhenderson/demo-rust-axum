@@ -48,4 +48,4 @@ async fn main() {
 }
 ```
 
-[Link to examples/axum-hello-world](examples/axum-hello-world)
+[Link to examples/axum-hello-world](examples/axum-axum-hello-world)
