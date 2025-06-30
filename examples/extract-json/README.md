@@ -1,13 +1,20 @@
-# Extract JSON payload
+# Extract JSON
 
 The axum extractor for JSON deserializes a request body into any type that
 implements `serde::Deserialize`. If the extractor is unable to parse the request
 body, or if the request is missing the header `Content-Type: application/json`,
- then the extractor returns HTTP `BAD_REQUEST` (404).
+then the extractor returns HTTP `BAD_REQUEST` (404).
+
+Edit file `Cargo.toml` to add dependencies:
+
+```toml
+serde = { version = "~1.0.219", features = ["derive"] } # A serialization/deserialization framework.
+serde_json = { version = "~1.0.140" } # Serde serialization/deserialization of JSON data.
+```
 
 Edit file `main.rs`.
 
-Add the route `/demo.json` to ad the function `put`:
+Add a route to put the demo JSON:
 
 ```rust
 let app = Router::new()
