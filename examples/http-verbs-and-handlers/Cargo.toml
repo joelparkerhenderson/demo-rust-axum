@@ -20,4 +20,4 @@ categories = ["web-programming"]
 
 [dependencies]
 axum = { version = "~0.8.4" } # Web framework that focuses on ergonomics and modularity.
-tokio = { version = "~1.42.1", features = ["full"] } # Event-driven, non-blocking I/O platform.
+tokio = { version = "~1.45.1", features = ["full"] } # Event-driven, non-blocking I/O platform.
