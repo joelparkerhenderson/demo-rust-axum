@@ -1,4 +1,4 @@
-# Axum extract query parameters
+# Extract query parameters
 
 Edit file `main.rs`.
 
@@ -50,5 +50,3 @@ Output:
 ```sh
 Get items with query params: {"a": "b"}
 ```
-
-<div style="page-break-before:always;"></div>
