@@ -1,4 +1,4 @@
-# Axum extract path parameters
+# Extract path parameters
 
 Add a route using path parameter syntax, such as "{id}", in order to tell axum to
 extract a path parameter and deserialize it into a variable named `id`.
