@@ -14,6 +14,8 @@ Demonstration of:
 
 - [Serde](https://crates.io/crates/serde): serialization/deserialization framework.
 
+[You can download this page as a free ebook epub file](demo-rust-axum-by-joel-parker-henderson.epub).
+
 ## Feedback
 
 Have an idea, suggestion, or feedback? Let us know via GitHub issues.
