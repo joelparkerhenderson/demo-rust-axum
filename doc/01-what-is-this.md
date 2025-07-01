@@ -1,6 +1,6 @@
 # What is this?
 
-This demo is a tutorial that teaches how to build features from the groung up
+This demo is a tutorial that teaches how to build features from the ground up
 with axum and its ecosystem of tower middleware, hyper HTTP library, tokio
 asynchronous platform, and Serde data conversions.
 
@@ -21,6 +21,8 @@ asynchronous platform, and Serde data conversions.
 - Use axum extractors for query parameters and path parameters.
 
 - Manage a data store and access it using RESTful routes.
+
+- Create a tracing subscriber and emit tracing events.
 
 ## What is required?
 

@@ -42,7 +42,7 @@ Shell:
 curl 'http://localhost:3000/demo-path/1'
 ```
 
-Ouput:
+Output:
 
 ```sh
 Get demo path id: 1

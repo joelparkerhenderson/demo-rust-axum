@@ -1,4 +1,4 @@
-# Handler function
+# Hello handler function
 
 An axum route can call an axum handler, which is an async function that returns
 anything that axum can convert into a response.

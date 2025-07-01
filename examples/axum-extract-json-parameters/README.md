@@ -1,4 +1,4 @@
-# Extract JSON
+# Extract JSON parameters
 
 The axum extractor for JSON deserializes a request body into any type that
 implements `serde::Deserialize`. If the extractor is unable to parse the request
