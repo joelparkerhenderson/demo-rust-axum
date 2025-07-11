@@ -28,13 +28,14 @@ axum-test = { version = "17.3.0" } # Library for writing tests for web servers w
 Edit file `src/main.rs`.
 
 ```rust
+/// Run our main function.
 #[tokio::main]
 pub async fn main() {
     // Run our application as a hyper server on http://localhost:3000.
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     axum::serve(listener, app()).await.unwrap();
 }
-
+/// Create our application.
 pub fn app() -> axum::Router {
     axum::Router::new()
     .route("/",
@@ -48,7 +49,7 @@ mod tests {
     use axum_test::TestServer;
 
     #[tokio::test]
-    async fn response_text() {
+    async fn response() {
         let app: axum::Router = app();
         let server = TestServer::new(app).unwrap();
         let response_text = server.get("/").await.text();

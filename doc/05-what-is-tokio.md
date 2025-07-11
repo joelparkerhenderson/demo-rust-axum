@@ -27,6 +27,7 @@ The tokio stack includes:
 ## Demo tokio server
 
 ```rust
+/// Run our main function.
 #[tokio::main]
 async fn main() {
     let listener = tokio::net::TcpListener::bind("localhost:3000")
@@ -48,6 +49,7 @@ async fn process(socket: tokio::net::TcpStream) {
 ## Demo tokio client
 
 ```rust
+/// Run our main function.
 #[tokio::main]
 async fn main() -> Result<()> {
     let mut client = client::connect("localhost:3000").await?;

@@ -142,6 +142,7 @@ web framework and who want closer-to-the-metal capabilities.
 ## Hello, World
 
 ```rust
+/// Run our main function.
 #[tokio::main]
 async fn main() {
     // Build our application with a single route.
@@ -241,6 +242,7 @@ async fn handle(
     Ok(hyper::Response::new("Hello, World!".into()))
 }
 
+/// Run our main function.
 #[tokio::main]
 async fn main() {
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
@@ -288,6 +290,7 @@ The tokio stack includes:
 ## Demo tokio server
 
 ```rust
+/// Run our main function.
 #[tokio::main]
 async fn main() {
     let listener = tokio::net::TcpListener::bind("localhost:3000")
@@ -309,6 +312,7 @@ async fn process(socket: tokio::net::TcpStream) {
 ## Demo tokio client
 
 ```rust
+/// Run our main function.
 #[tokio::main]
 async fn main() -> Result<()> {
     let mut client = client::connect("localhost:3000").await?;
@@ -398,6 +402,7 @@ tokio = { version = "~1.45.1", features = ["full"] } # Event-driven, non-blockin
 Edit file `src/main.rs`.
 
 ```rust
+/// Run our main function.
 #[tokio::main]
 pub async fn main() {
      // Build our application by creating our router.
@@ -1119,7 +1124,7 @@ Add code to use deserialization:
 
 ```rust
 /// Use Deserialize to convert e.g. from request JSON into Book struct.
-use serde::Deserialize;
+use serde::{Serialize, Deserialize};
 ```
 
 Add code to create a book struct that derives the traits we want:
@@ -1127,7 +1132,7 @@ Add code to create a book struct that derives the traits we want:
 ```rust
 /// Demo book structure with some example fields for id, title, author.
 // A production app could prefer an id to be type u32, UUID, etc.
-#[derive(Debug, Deserialize, Clone, Eq, Hash, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, Clone, Eq, Hash, PartialEq)]
 pub struct Book {
     pub id: String,
     pub title: String,
@@ -1234,7 +1239,8 @@ use std::thread;
 /// When you're done, then join the thread with its parent thread.
 async fn print_data() {
     thread::spawn(move || {
-        let data = DATA.lock().unwrap();
+        match DATA.lock() {
+            Ok(data) => {
         println!("data: {:?}" ,data);
     }).join().unwrap()
 }
@@ -1290,7 +1296,8 @@ Add a handler:
 /// This demo must clone the DATA in order to sort items by title.
 pub async fn get_books() -> axum::response::Html<String> {
     thread::spawn(move || {
-        let data = DATA.lock().unwrap();
+        match DATA.lock() {
+            Ok(data) => {
         let mut books = data.values().collect::<Vec<_>>().clone();
         books.sort_by(|a, b| a.title.cmp(&b.title));
         books.iter().map(|&book|
@@ -1348,7 +1355,8 @@ pub async fn post_books(
     axum::extract::Json(book): axum::extract::Json<Book>
 ) -> axum::response::Html<String> {
     thread::spawn(move || {
-        let mut data = DATA.lock().unwrap();
+        match DATA.lock() {
+            Ok(mut data) => {
         let id = data.keys().max().unwrap() + 1;
         let book = Book { id, ..book };
         data.insert(id, book.clone());
@@ -1420,7 +1428,8 @@ pub async fn get_books_id(
     axum::extract::Path(id): axum::extract::Path<u32>
 ) -> axum::response::Html<String> {
     thread::spawn(move || {
-        let data = DATA.lock().unwrap();
+        match DATA.lock() {
+            Ok(data) => {
         match data.get(&id) {
             Some(book) => format!("<p>{}</p>\n", &book),
             None => format!("<p>Book id {} not found</p>", id),
@@ -1487,7 +1496,8 @@ pub async fn put_books_id(
     axum::extract::Json(book): axum::extract::Json<Book>
 ) -> axum::response::Html<String> {
     thread::spawn(move || {
-        let mut data = DATA.lock().unwrap();
+        match DATA.lock() {
+            Ok(mut data) => {
         data.insert(book.id, book.clone());
         format!("Put book: {}", &book)
     }).join().unwrap().into()
@@ -1571,7 +1581,8 @@ pub async fn delete_books_id(
     axum::extract::Path(id): axum::extract::Path<u32>
 ) -> axum::response::Html<String> {
     thread::spawn(move || {
-        let mut data = DATA.lock().unwrap();
+        match DATA.lock() {
+            Ok(mut data) => {
         if data.contains_key(&id) {
             data.remove(&id);
             format!("Delete book id: {}", &id)
@@ -1619,18 +1630,18 @@ Output:
 
 ## Patch one book
 
-Create file `book_patch.rs`.
+Create file `book_change.rs`.
 
-Add code for a BookPatch struct that has optional attributes:
+Add code for a BookChange struct that has optional attributes:
 
 ```rust
 // Use Deserialize to convert e.g. from request JSON into Book struct.
-use serde::Deserialize;
+use serde::{Serialize, Deserialize};
 
 // Demo book patch structure with some example fields for id, title, author.
 // A production app could prefer an id to be type u32, UUID, etc.
-#[derive(Debug, Deserialize, Clone, Eq, Hash, PartialEq)]
-pub struct BookPatch {
+#[derive(Debug, Serialize, Deserialize, Clone, Eq, Hash, PartialEq)]
+pub struct BookChange {
     pub id: u32,
     pub title: Option<String>,
     pub author: Option<String>,
@@ -1642,7 +1653,7 @@ Add code to implement `Display`:
 ```rust
 // Display the book using the format "{title} by {author}".
 // This is a typical Rust trait and is not axum-specific.
-impl std::fmt::Display for BookPatch {
+impl std::fmt::Display for BookChange {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
             f,
@@ -1656,12 +1667,12 @@ impl std::fmt::Display for BookPatch {
 
 Edit file `main.rs`.
 
-Add code to use the new BookPatch:
+Add code to use the new BookChange:
 
 ```rust
-/// See file book_patch.rs, which defines the `BookPatch` struct.
-mod book_patch;
-use crate::book_patch::BookPatch;
+/// See file book_change.rs, which defines the `BookChange` struct.
+mod book_change;
+use crate::book_change::BookChange;
 ```
 
 Modify the route `/books/{id}` to append the function `patch`:
@@ -1682,16 +1693,17 @@ Add a handler:
 /// axum handler for "PATCH /books/{id}" which updates attributes.
 /// This demo shows how to mutate the book attributes in the DATA store.
 pub async fn patch_books_id(
-    axum::extract::Json(book_patch): axum::extract::Json<BookPatch>
+    axum::extract::Json(book_change): axum::extract::Json<BookChange>
 ) -> axum::response::Html<String> {
     thread::spawn(move || {
-        let id = book_patch.id;
-        let mut data = DATA.lock().unwrap();
+        let id = book_change.id;
+        match DATA.lock() {
+            Ok(mut data) => {
         if data.contains_key(&id) {
-            if let Some(title) = book_patch.title {
+            if let Some(title) = book_change.title {
                 data.get_mut(&id).unwrap().title = title.clone();
             }
-            if let Some(author) = book_patch.author {
+            if let Some(author) = book_change.author {
                 data.get_mut(&id).unwrap().title = author.clone();
             }
             format!("Patch book id: {}", &id)
@@ -1768,7 +1780,8 @@ pub async fn get_books_id_form(
     axum::extract::Path(id): axum::extract::Path<u32>
 ) -> axum::response::Html<String> {
     thread::spawn(move || {
-        let data = DATA.lock().unwrap();
+        match DATA.lock() {
+            Ok(data) => {
         match data.get(&id) {
             Some(book) => format!(
                 concat!(
@@ -1841,7 +1854,8 @@ pub async fn patch_books_id_form(
 ) -> axum::response::Html<String> {
     let new_book: Book = form.0;
     thread::spawn(move || {
-        let mut data = DATA.lock().unwrap();
+        match DATA.lock() {
+            Ok(mut data) => {
         if data.contains_key(&new_book.id) {
             if !new_book.title.is_empty() {
                 data.get_mut(&new_book.id).unwrap().title = new_book.title.clone();
@@ -1926,6 +1940,7 @@ use tracing_subscriber::{
 Add a tracing subscriber to the start of the main function:
 
 ```rust
+/// Run our main function.
 #[tokio::main]
 pub async fn main() {
     // Start tracing and emit a tracing event.

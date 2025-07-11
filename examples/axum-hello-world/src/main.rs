@@ -1,3 +1,4 @@
+/// Run our main function.
 #[tokio::main]
 async fn main() {
     // Build our application with a single route.

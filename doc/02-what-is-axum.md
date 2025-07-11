@@ -36,6 +36,7 @@ web framework and who want closer-to-the-metal capabilities.
 ## Hello, World
 
 ```rust
+/// Run our main function.
 #[tokio::main]
 async fn main() {
     // Build our application with a single route.

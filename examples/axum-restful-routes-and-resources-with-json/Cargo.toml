@@ -1,5 +1,5 @@
 [package]
-name = "demo-rust-axum-examples-axum-restful-routes-and-resources"
+name = "demo-rust-axum-examples-axum-restful-routes-and-resources-with-json"
 version = "2.0.0"
 edition = "2024"
 authors = ["Joel Parker Henderson <joel@joelparkerhenderson.com>"]
@@ -9,7 +9,7 @@ repository = "https://github.com/joelparkerhenderson/demo-rust-axum"
 documentation = "https://github.com/joelparkerhenderson/demo-rust-axum"
 
 description = """
-Demo of Rust and Axum / examples / axum-restful-routes-and-resources
+Demo of Rust and Axum / examples / axum-restful-routes-and-resources-with-json
 """
 
 readme = "README.md"
@@ -25,3 +25,6 @@ serde = { version = "~1.0.219", features = ["derive"] } # A serialization/deseri
 serde_json = { version = "~1.0.140" } # Serde serialization/deserialization of JSON data.
 base64 = { version = "~0.22.1" } # Encode and decode base64 as bytes or utf8.
 http = { version = "~1.3.1" } # Types for HTTP requests and responses.
+
+[dev-dependencies]
+axum-test = { version = "17.3.0" } # Library for writing tests for web servers written using Axum.

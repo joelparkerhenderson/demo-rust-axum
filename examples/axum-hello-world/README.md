@@ -25,6 +25,7 @@ tokio = { version = "~1.45.1", features = ["full"] } # Event-driven, non-blockin
 Edit file `src/main.rs`.
 
 ```rust
+/// Run our main function.
 #[tokio::main]
 pub async fn main() {
      // Build our application by creating our router.

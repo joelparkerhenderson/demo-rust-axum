@@ -33,6 +33,7 @@ async fn handle(
     Ok(hyper::Response::new("Hello, World!".into()))
 }
 
+/// Run our main function.
 #[tokio::main]
 async fn main() {
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));

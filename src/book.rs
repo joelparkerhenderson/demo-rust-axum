@@ -1,8 +1,8 @@
 // Use Deserialize to convert e.g. from request JSON into Book struct.
-use serde::Deserialize;
+use serde::{Serialize, Deserialize};
 
 // Demo book structure with some example fields for title and author.
-#[derive(Debug, Deserialize, Clone, Eq, Hash, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, Clone, Eq, Hash, PartialEq)]
 pub struct Book {
     pub id: u32,
     pub title: String,
