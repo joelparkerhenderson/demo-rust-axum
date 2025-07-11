@@ -1,5 +1,5 @@
 [package]
-name = "demo-rust-axum-examples-axum-hello-handler-function"
+name = "demo-rust-axum-examples-axum-hello-world-with-functions"
 version = "2.0.0"
 edition = "2024"
 authors = ["Joel Parker Henderson <joel@joelparkerhenderson.com>"]
@@ -21,3 +21,6 @@ categories = ["web-programming"]
 [dependencies]
 axum = { version = "~0.8.4" } # Web framework that focuses on ergonomics and modularity.
 tokio = { version = "~1.45.1", features = ["full"] } # Event-driven, non-blocking I/O platform.
+
+[dev-dependencies]
+axum-test = { version = "17.3.0" } # Library for writing tests for web servers written using Axum.

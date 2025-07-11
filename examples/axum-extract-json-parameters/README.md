@@ -12,16 +12,17 @@ serde = { version = "~1.0.219", features = ["derive"] } # A serialization/deseri
 serde_json = { version = "~1.0.140" } # Serde serialization/deserialization of JSON data.
 ```
 
-Edit file `main.rs`.
+Edit file `main.rs` function `app`.
 
 Add a route to put the demo JSON:
 
 ```rust
-let app = Router::new()
-    …
-    .route("/demo.json",
-        .put(put_demo_json)
-    )
+pub fn app() -> axum::Router {
+    axum::Router::new()
+        .route("/demo.json",
+            put(put_demo_json)
+        )
+}
 ```
 
 Add a handler:
@@ -34,6 +35,18 @@ pub async fn put_demo_json(
     axum::extract::Json(data): axum::extract::Json<serde_json::Value>
 ) -> String{
     format!("Put demo JSON data: {:?}", data)
+}
+```
+
+Add a test:
+
+```rust
+#[tokio::test]
+async fn test() {
+    let server = TestServer::new(app()).unwrap();
+    let j = serde_json::json!({"a":"b"});
+    let response_text = server.put("/demo.json").json(&j).await.text();
+    assert_eq!(response_text, "Put demo JSON data: Object {\"a\": String(\"b\")}");
 }
 ```
 

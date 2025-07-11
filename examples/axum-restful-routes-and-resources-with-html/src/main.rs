@@ -11,10 +11,16 @@
 /// Use axum capabilities.
 use axum::routing::get;
 
+/// Run our app using a hyper server on http://localhost:3000.
 #[tokio::main]
 async fn main() {
-    // Build our application by creating our router.
-    let app = axum::Router::new()
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    axum::serve(listener, app()).await.unwrap();
+}
+
+/// Create our application.
+pub fn app() -> axum::Router {
+    axum::Router::new()
         .route("/books",
             get(get_books)
             .post(post_books)
@@ -22,26 +28,22 @@ async fn main() {
         .route("/books/{id}",
             get(get_books_id)
             .put(put_books_id)
-            .delete(delete_books_id)
             .patch(patch_books_id)
+            .delete(delete_books_id)
         )
         .route("/books/{id}/edit",
             get(get_books_id_with_edit_form)
             .patch(patch_books_id_with_edit_form)
-        );
-
-    // Run our application as a hyper server on http://localhost:3000.
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
-    axum::serve(listener, app).await.unwrap();
+        )
 }
 
 /// See file book.rs, which defines the `Book` struct.
 mod book;
 use crate::book::Book;
 
-/// See file book_patch.rs, which defines the `BookPatch` struct.
-mod book_patch;
-use crate::book_patch::BookPatch;
+/// See file book_change.rs, which defines the `BookChange` struct.
+mod book_change;
+use crate::book_change::BookChange;
 
 /// See file data.rs, which defines the DATA global variable.
 mod data;
@@ -55,8 +57,7 @@ use std::thread;
 #[allow(dead_code)]
 async fn print_data() {
     thread::spawn(move || {
-        let data = DATA.lock().unwrap();
-        println!("data: {:?}" ,data);
+        println!("data: {:?}" , DATA.lock());
     }).join().unwrap()
 }
 
@@ -65,7 +66,8 @@ async fn print_data() {
 /// This demo must clone the DATA in order to sort items by title.
 pub async fn get_books() -> axum::response::Html<String> {
     thread::spawn(move || {
-        let data = DATA.lock().unwrap();
+        match DATA.lock() {
+            Ok(data) => {
         let mut books = data.values().collect::<Vec<_>>().clone();
         books.sort_by(|a, b| a.title.cmp(&b.title));
         books.iter().map(|&book|
@@ -75,14 +77,16 @@ pub async fn get_books() -> axum::response::Html<String> {
 }
 
 /// axum handler for "POST /books" which creates a new book resource.
-/// This demo shows how axum can extract JSON data into a Book struct.
+/// This demo shows how axum can extract HTML data into a Book struct.
+/// 
 pub async fn post_books(
-    axum::extract::Json(book): axum::extract::Json<Book>
+    axum::extract::Form(book_change): axum::extract::Form<Book>
 ) -> axum::response::Html<String> {
     thread::spawn(move || {
-        let mut data = DATA.lock().unwrap();
+        match DATA.lock() {
+            Ok(mut data) => {
         let id = data.keys().max().unwrap() + 1;
-        let book = Book { id, ..book };
+        let book = Book { id, ..book_change };
         data.insert(id, book.clone());
         format!("Post a new book with new id {}: {}", &id, &book)
     }).join().unwrap().into()
@@ -94,7 +98,8 @@ pub async fn get_books_id(
     axum::extract::Path(id): axum::extract::Path<u32>
 ) -> axum::response::Html<String> {
     thread::spawn(move || {
-        let data = DATA.lock().unwrap();
+        match DATA.lock() {
+            Ok(data) => {
         match data.get(&id) {
             Some(book) => format!("<p>{}</p>\n", &book),
             None => format!("<p>Book id {} not found</p>", id),
@@ -105,10 +110,11 @@ pub async fn get_books_id(
 /// axum handler for "PUT /books/{id}" which sets a specific book resource.
 /// This demo shows how axum can extract JSON data into a Book struct.
 pub async fn put_books_id(
-    axum::extract::Json(book): axum::extract::Json<Book>
+    axum::extract::Form(book): axum::extract::Form<Book>
 ) -> axum::response::Html<String> {
     thread::spawn(move || {
-        let mut data = DATA.lock().unwrap();
+        match DATA.lock() {
+            Ok(mut data) => {
         data.insert(book.id, book.clone());
         format!("Put book: {}", &book)
     }).join().unwrap().into()
@@ -120,7 +126,8 @@ pub async fn delete_books_id(
     axum::extract::Path(id): axum::extract::Path<u32>
 ) -> axum::response::Html<String> {
     thread::spawn(move || {
-        let mut data = DATA.lock().unwrap();
+        match DATA.lock() {
+            Ok(mut data) => {
         if data.contains_key(&id) {
             data.remove(&id);
             format!("Delete book id: {}", &id)
@@ -133,17 +140,18 @@ pub async fn delete_books_id(
 /// axum handler for "PATCH /books/{id}" which updates attributes.
 /// This demo shows how to mutate the book attributes in the DATA store.
 pub async fn patch_books_id(
-    axum::extract::Json(book_patch): axum::extract::Json<BookPatch>
+    axum::extract::Form(book_change): axum::extract::Form<BookChange>
 ) -> axum::response::Html<String> {
     thread::spawn(move || {
-        let id = book_patch.id;
-        let mut data = DATA.lock().unwrap();
-        if data.contains_key(&id) {
-            if let Some(title) = book_patch.title {
-                data.get_mut(&id).unwrap().title = title.clone();
+        let id = book_change.id;
+        match DATA.lock() {
+            Ok(mut data) => {
+        if let Some(resource) = data.get_mut(&id) {
+            if let Some(title) = book_change.title {
+                resource.title = title;
             }
-            if let Some(author) = book_patch.author {
-                data.get_mut(&id).unwrap().title = author.clone();
+            if let Some(author) = book_change.author {
+                resource.author = author;
             }
             format!("Patch book id: {}", &id)
         } else {
@@ -158,7 +166,8 @@ pub async fn get_books_id_with_edit_form(
     axum::extract::Path(id): axum::extract::Path<u32>
 ) -> axum::response::Html<String> {
     thread::spawn(move || {
-        let data = DATA.lock().unwrap();
+        match DATA.lock() {
+            Ok(data) => {
         match data.get(&id) {
             Some(book) => format!(
                 concat!(
@@ -182,22 +191,87 @@ pub async fn get_books_id_with_edit_form(
 /// axum handler for "PATCH /books/{id}/edit" which updates attributes.
 /// This demo shows how to do HTML form submission then update attributes.
 pub async fn patch_books_id_with_edit_form(
-    form: axum::extract::Form<BookPatch>
+    form: axum::extract::Form<BookChange>
 ) -> axum::response::Html<String> {
-    let book_patch: BookPatch = form.0;
+    let book_change: BookChange = form.0;
     thread::spawn(move || {
-        let id = book_patch.id;
-        let mut data = DATA.lock().unwrap();
+        let id = book_change.id;
+        match DATA.lock() {
+            Ok(mut data) => {
         if data.contains_key(&id) {
-            if let Some(title) = book_patch.title {
+            if let Some(title) = book_change.title {
                 data.get_mut(&id).unwrap().title = title.clone();
             }
-            if let Some(author) = book_patch.author {
+            if let Some(author) = book_change.author {
                 data.get_mut(&id).unwrap().title = author.clone();
             }
             format!("Patch book id: {}", &id)
         } else {
-            format!("Book id not found: {}", &book_patch.id)
+            format!("Book id not found: {}", &book_change.id)
         }
     }).join().unwrap().into()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use axum_test::TestServer;
+
+    #[tokio::test]
+    async fn get_books() {
+        let server = TestServer::new(app()).unwrap();
+        server.get("/books").await.assert_text("<p>Antigone by Sophocles</p>\n<p>Beloved by Toni Morrison</p>\n<p>Candide by Voltaire</p>\n");
+    }
+
+    // #[tokio::test]
+    // async fn post_books() {
+    //     let server = TestServer::new(app()).unwrap();
+    //     let data = [
+    //         ["title", "Decameron"],
+    //         ["author", "Giovanni Boccaccio"],
+    //     ];
+    //     server.post("/books").form(&data).await.assert_text("Post a new book with new id 4: title: Decameron, author: Giovanni Boccaccio")
+    // }
+
+    // #[tokio::test]
+    // async fn get_books_id() {
+    //     let server = TestServer::new(app()).unwrap();
+    //     //TODO
+    //     server.get("/books/1").await.assert_text("<p>Antigone by Sophocles</p>");
+    // }
+
+    // #[tokio::test]
+    // async fn put_books_id() {
+    //     let server = TestServer::new(app()).unwrap();
+    //     //TODO
+    //     //server.put("/books/1").await.assert_text("<p>Antigone by Sophocles</p>");
+    // }
+
+    // #[tokio::test]
+    // async fn patch_books_id() {
+    //     let server = TestServer::new(app()).unwrap();
+    //     //TODO
+    //     //server.patch("/books/1").await.assert_text("<p>Antigone by Sophocles</p><p>Beloved by Toni Morrison</p><p>Candide by Voltaire</p>");
+    // }
+
+    // #[tokio::test]
+    // async fn delete_books_id() {
+    //     let server = TestServer::new(app()).unwrap();
+    //     server.delete("/books/1").await.assert_text("Delete book id: \"1\"");
+    // }
+
+    // #[tokio::test]
+    // async fn get_books_id_with_edit_form() {
+    //     let server = TestServer::new(app()).unwrap();
+    //     //TODO
+    //     //server.get("/books/1/edit").await.assert_text("<p>Antigone by Sophocles</p><p>Beloved by Toni Morrison</p><p>Candide by Voltaire</p>");
+    // }
+
+    // #[tokio::test]
+    // async fn patch_books_id_with_edit_form() {
+    //     let server = TestServer::new(app()).unwrap();
+    //     //TODO
+    //     //server.get("/books/1/edit").await.assert_text("<p>Antigone by Sophocles</p><p>Beloved by Toni Morrison</p><p>Candide by Voltaire</p>");
+    // }
+
 }

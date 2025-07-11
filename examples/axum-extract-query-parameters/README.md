@@ -8,14 +8,18 @@ Add code to use HashMap to deserialize query parameters into a key-value map:
 use std::collections::HashMap;
 ```
 
+Edit function `app`.
+
 Add a route:
 
 ```rust
-let app = Router::new()
-    …
-    .route("/items",
-        get(get_items)
-    );
+pub fn app() -> axum::Router {
+    axum::Router::new()
+        …
+        .route("/demo-query",
+            get(get_demo_query)
+        )
+}
 ```
 
 Add a handler:
@@ -28,6 +32,16 @@ pub async fn get_items(
         axum::extract::Query<HashMap<String, String>>
 ) -> String {
     format!("Get items with query params: {:?}", params)
+}
+```
+
+Add a test:
+
+```rust
+#[tokio::test]
+async fn test() {
+    let server = TestServer::new(app()).unwrap();
+    server.get("/demo-query?a=b").await.assert_text("Demo query params: {\"a\": \"b\"}");
 }
 ```
 

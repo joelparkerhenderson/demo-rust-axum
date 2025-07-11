@@ -20,11 +20,28 @@ pub async fn fallback(
 Modify the `Router` to add the function `fallback` as the first choice:
 
 ```rust
-let app = Router::new()
+/// Create our application.
+pub fn app() -> axum::Router {
+    axum::Router::new()
     .fallback(
         fallback
     )
-    …
+    .route("/",
+        axum::routing::get(|| async { "Hello, World!" })
+    )
+}
+```
+
+Add a test:
+
+```rust
+#[tokio::test]
+async fn test_fallback() {
+    let server = TestServer::new(app()).unwrap();
+    let response = server.get("/foo").await;
+    response.assert_status(axum::http::StatusCode::NOT_FOUND);
+    response.assert_text("http://localhost/foo");
+}
 ```
 
 ## Try the demo

@@ -108,47 +108,48 @@ Some knowledge of this stack can be helpful, such as:
 
 [axum](https://crates.io/crates/axum) is a web framework with high level features:
 
-* Route requests to handlers with a macro free API.
+- Route requests to handlers with a macro free API.
 
-* Declaratively parse requests using extractors.
+- Declaratively parse requests using extractors.
 
-* Simple and predictable error handling model.
+- Simple and predictable error handling model.
 
-* Generate responses with minimal boilerplate.
+- Generate responses with minimal boilerplate.
 
-* Take full advantage of the tower and its ecosystem.
+- Take full advantage of the tower and its ecosystem.
 
 ## How is axum special?
 
 The tower ecosystem is what sets axum apart from other frameworks:
 
-* axum doesn’t have its own middleware system but instead uses tower::Service.
+- axum doesn’t have its own middleware system but instead uses tower::Service.
 
-* axum gets timeouts, tracing, compression, authorization, and more, for free.
+- axum gets timeouts, tracing, compression, authorization, and more, for free.
 
-* axum can share middleware with applications written using hyper or tonic.
+- axum can share middleware with applications written using hyper or tonic.
 
 ## Why learn axum now?
 
-* axum combines the speed and security of Rust with the power of
+- axum combines the speed and security of Rust with the power of
 battle-tested libraries for middleware, asynchronous programming, and HTTP.
 
-* axum is primed to reach developers who are currently using
+- axum is primed to reach developers who are currently using
 other Rust web frameworks, such as Actix, Rocket, Warp, and others.
 
-* axum is likely to appeal to programmers are seeking a faster
+- axum is likely to appeal to programmers are seeking a faster
 web framework and who want closer-to-the-metal capabilities.
 
-## Hello, World
+## Hello, World!
 
 ```rust
+/// Run our main function.
 #[tokio::main]
 async fn main() {
     // Build our application with a single route.
     let app = axum::Router::new().route("/",
         axum::handler::get(|| async { "Hello, World!" }));
 
-    // Run our application as a hyper server on http://localhost:3000.
+    // Run our app using a hyper server on http://localhost:3000.
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
@@ -210,15 +211,15 @@ let response = service
 
 [hyper](https://hyper.rs/) is a fast HTTP implementation written in and for Rust.
 
-* A Client for talking to web services.
+- A Client for talking to web services.
 
-* A Server for building those web services.
+- A Server for building those web services.
 
-* Blazing fast* thanks to Rust.
+- Blazing fast* thanks to Rust.
 
-* High concurrency with non-blocking sockets.
+- High concurrency with non-blocking sockets.
 
-* HTTP/1 and HTTP/2 support.
+- HTTP/1 and HTTP/2 support.
 
 ## Hyper is low-level
 
@@ -230,7 +231,7 @@ If you are looking for a convenient HTTP server, then you may wish to consider [
 
 Both are built on top of hyper.
 
-## Hello, World
+## Hello, World!
 
 ```rust
 use std::convert::Infallible;
@@ -241,6 +242,7 @@ async fn handle(
     Ok(hyper::Response::new("Hello, World!".into()))
 }
 
+/// Run our main function.
 #[tokio::main]
 async fn main() {
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
@@ -263,31 +265,32 @@ async fn main() {
 
 [tokio](https://tokio.rs/) is an asynchronous runtime for the Rust programming language.
 
-* Building blocks for writing network applications.
+- Building blocks for writing network applications.
 
-* Flexibility to target a wide range of systems.
+- Flexibility to target a wide range of systems.
 
-* Memory-safe, thread-safe, and misuse-resistant.
+- Memory-safe, thread-safe, and misuse-resistant.
 
 The tokio stack includes:
 
-* Runtime: Including I/O, timer, filesystem, synchronization, and scheduling.
+- Runtime: Including I/O, timer, filesystem, synchronization, and scheduling.
 
-* Hyper: An HTTP client and server library supporting HTTP protocols 1 and 2.
+- Hyper: An HTTP client and server library supporting HTTP protocols 1 and 2.
 
-* Tonic: A boilerplate-free gRPC client and server library for network APIS.
+- Tonic: A boilerplate-free gRPC client and server library for network APIS.
 
-* Tower: Modular components for building reliable clients and servers.
+- Tower: Modular components for building reliable clients and servers.
 
-* Mio: Minimal portable API on top of the operating-system's evented I/O API.
+- Mio: Minimal portable API on top of the operating-system's evented I/O API.
 
-* Tracing: Unified, structured, event-based, data collection and logging.
+- Tracing: Unified, structured, event-based, data collection and logging.
 
-* Bytes: A rich set of utilities for manipulating byte arrays.
+- Bytes: A rich set of utilities for manipulating byte arrays.
 
 ## Demo tokio server
 
 ```rust
+/// Run our main function.
 #[tokio::main]
 async fn main() {
     let listener = tokio::net::TcpListener::bind("localhost:3000")
@@ -309,6 +312,7 @@ async fn process(socket: tokio::net::TcpStream) {
 ## Demo tokio client
 
 ```rust
+/// Run our main function.
 #[tokio::main]
 async fn main() -> Result<()> {
     let mut client = client::connect("localhost:3000").await?;
@@ -331,13 +335,13 @@ Serde provides the layer by which these two groups interact with each other, all
 
 Serde is built on Rust's powerful trait system.
 
-* Serde provides the `Serialize` trait and `Deserialize` trait for data structures.
+- Serde provides the `Serialize` trait and `Deserialize` trait for data structures.
 
-* Serde provides `derive` attributes, to generate implementations at compile time.
+- Serde provides `derive` attributes, to generate implementations at compile time.
 
-* Serde has no runtime overhead such as reflection or runtime type information.
+- Serde has no runtime overhead such as reflection or runtime type information.
 
-* In many situations the interaction between data structure and data format can be completely optimized away by the Rust compiler.
+- In many situations the interaction between data structure and data format can be completely optimized away by the Rust compiler.
 
 ## Demo of Serde
 
@@ -369,7 +373,7 @@ fn main() {
 
 ---
 
-# Hello, World
+# Hello, World!
 
 [examples/axum-hello-world](examples/axum-hello-world/)
  
@@ -398,6 +402,7 @@ tokio = { version = "~1.45.1", features = ["full"] } # Event-driven, non-blockin
 Edit file `src/main.rs`.
 
 ```rust
+/// Run our main function.
 #[tokio::main]
 pub async fn main() {
      // Build our application by creating our router.
@@ -406,7 +411,7 @@ pub async fn main() {
             axum::routing::get(|| async { "Hello, World!" })
         );
 
-    // Run our application as a hyper server on http://localhost:3000.
+    // Run our app using a hyper server on http://localhost:3000.
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     axum::serve(listener, app)
         .await
@@ -438,10 +443,174 @@ In your shell, press CTRL-C to shut down.
 
 ---
 
+# Hello, World! with app function
+
+[examples/axum-hello-world-with-app-function](examples/axum-hello-world-with-app-function/)
+
+We can improve our "Hello, World!" by refactoring the app into its own function.
+
+Before the refactor, the code is:
+
+```rust
+#[tokio::main]
+async fn main() {
+    // Create our app with one route that prints "Hello, World!"
+    let app = axum::Router::new()
+        .route("/",
+            axum::routing::get(|| async { "Hello, World!" })
+        );
+
+    // Run our application as a hyper server on http://localhost:3000.
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    axum::serve(listener, app).await.unwrap();
+}
+```
+
+Our demos will often use the axum routing function, so add code to use it:
+
+```rust
+/// Use axum routing such as get, put, post, patch, delete.
+use axum::routing::*;
+```
+
+Refactor the function `main` to move the app out:
+
+```rust
+/// Run our app using a hyper server on http://localhost:3000.
+#[tokio::main]
+async fn main() {
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    axum::serve(listener, app()).await.unwrap();
+}
+```
+
+Create the function `app`:
+
+```rust
+/// Create our application with one route that prints "Hello, World!"
+pub fn app() -> axum::Router {
+    axum::Router::new()
+        .route("/",
+            get(|| async { "Hello, World!" })
+        );
+}
+```
+
+After the refactor, the code is:
+
+```rust
+/// Use axum routing such as get, put, post, patch, delete.
+use axum::routing::*;
+
+/// Run our app using a hyper server on http://localhost:3000.
+#[tokio::main]
+async fn main() {
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    axum::serve(listener, app()).await.unwrap();
+}
+
+/// Create our application with one route that prints "Hello, World!"
+pub fn app() -> axum::Router {
+    axum::Router::new()
+        .route("/",
+            get(|| async { "Hello, World!" })
+        );
+}
+```
+
+---
+
+# Hello, World! with handler function
+
+[examples/axum-hello-world-with-handler-function](examples/axum-hello-world-with-handler-function/)
+
+We can improve our "Hello, World!" by refactoring the app to use an axum handler function.
+
+An axum handler function is an async function that returns anything that axum
+can convert into a response. An axum route can call an an axum handler function.
+
+Before the refactor, the code is:
+
+```rust
+/// Create our application with one route that prints "Hello, World!"
+pub fn app() -> axum::Router {
+    axum::Router::new()
+        .route("/", get(|| async { "Hello, World!" }))
+}
+```
+
+Edit file `main.rs` and add an axum handler function like this:
+
+```rust
+/// Create our application with one route that prints "Hello, World!"
+pub fn app() -> axum::Router {
+    axum::Router::new()
+        .route("/", get(hello))
+}
+
+/// axum handler function which returns a string and causes axum to
+/// immediately respond with status code `200 OK` and the string.
+pub async fn hello() -> String {
+   "Hello, World!".into()
+}
+```
+
+---
+
+# Hello, World! with an axum test server
+
+[examples/axum-hello-world-with-an-axum-test-server](examples/axum-hello-world-with-an-axum-test-server/)
+
+The crate `axum-test` enables easy testing of an axum app by running the axum app within an axum test server.
+
+Edit file `Cargo.toml`.
+
+Use this kind of package and these dependencies, including the dev-dependency using the crate `axum-text`:
+
+```toml
+[dev-dependencies]
+axum-test = { version = "17.3.0" } # Library for writing tests for web servers written using Axum.
+```
+
+Edit file `src/main.rs`.
+
+```rust
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use axum_test::TestServer;
+
+    #[tokio::test]
+    async fn test() {
+        let server = TestServer::new(app()).unwrap();
+        server.get("/").await.assert_text("Hello, World!");
+    }
+}
+```
+
+## Try the demo
+
+Shell:
+
+```sh
+cargo test
+```
+
+Output:
+
+```stdout
+running 1 test
+test tests::test ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+```
+
+---
+
 # Create a fallback router
 
 [examples/axum-fallback-router](examples/axum-fallback-router/)
- 
+
 To handle a request that fails to match anything in the axum router,
 you can use the function `fallback`.
 
@@ -462,11 +631,28 @@ pub async fn fallback(
 Modify the `Router` to add the function `fallback` as the first choice:
 
 ```rust
-let app = Router::new()
+/// Create our application.
+pub fn app() -> axum::Router {
+    axum::Router::new()
     .fallback(
         fallback
     )
-    …
+    .route("/",
+        axum::routing::get(|| async { "Hello, World!" })
+    )
+}
+```
+
+Add a test:
+
+```rust
+#[tokio::test]
+async fn test_fallback() {
+    let server = TestServer::new(app()).unwrap();
+    let response = server.get("/foo").await;
+    response.assert_status(axum::http::StatusCode::NOT_FOUND);
+    response.assert_text("http://localhost/foo");
+}
 ```
 
 ## Try the demo
@@ -580,64 +766,6 @@ You should see the server shut down.
 
 ---
 
-# Hello handler function
-
-[examples/axum-hello-handler-function](examples/axum-hello-handler-function/)
-
-An axum route can call an axum handler, which is an async function that returns
-anything that axum can convert into a response.
-
-Edit file `main.rs`.
-
-Our demos will often use the axum routing `get` function, so add code to use it:
-
-```rust
-use axum::routing::get;
-```
-
-Edit file `main.rs` and the router code to this:
-
-```rust
-let app = axum::Router::new()
-    .route("/",
-        get(hello)
-    );
-```
-
-Add a handler, which is an async function that returns a string:
-
-```rust
-/// axum handler for "GET /" which returns a string and causes axum to
-/// immediately respond with status code `200 OK` and with the string.
-pub async fn hello() -> String {
-   "Hello, World!".into()
-}
-```
-
-## Try the demo
-
-Shell:
-
-```sh
-cargo run
-```
-
-Browse <http://localhost:3000> or run:
-
-```sh
-curl 'http://localhost:3000'
-```
-
-Output:
-
-```sh
-Hello, World!
-```
-
-In your shell, press CTRL-C to shut down.
-
----
-
 # Epoch handler function
 
 [examples/epoch-handler-function](examples/axum-epoch-handler-function/)
@@ -666,6 +794,19 @@ pub async fn epoch() -> Result<String, axum::http::StatusCode> {
         Ok(duration) => Ok(format!("{}", duration.as_secs())),
         Err(_) => Err(axum::http::StatusCode::INTERNAL_SERVER_ERROR)
     }
+}
+```
+
+Add a test:
+
+```rust
+#[tokio::test]
+async fn test() {
+    let server = TestServer::new(app()).unwrap();
+    let response_text_0 = server.get("/epoch").await.text();
+    std::thread::sleep(std::time::Duration::from_secs(1));
+    let response_text_1 = server.get("/epoch").await.text();
+    assert!(response_text_0 < response_text_1, "{} < {}", response_text_0, response_text_1)
 }
 ```
 
@@ -725,6 +866,19 @@ Add a handler that returns the uptime as seconds, such as sixty seconds meaning 
 /// This shows how to write a handler that uses a global static lazy value.
 pub async fn uptime() -> String {
     format!("{}", INSTANT.elapsed().as_secs())
+}
+```
+
+Add a test:
+
+```rust
+#[tokio::test]
+async fn test() {
+    let server = TestServer::new(app()).unwrap();
+    let response_text_0 = server.get("/uptime").await.text();
+    std::thread::sleep(std::time::Duration::from_secs(1));
+    let response_text_1 = server.get("/uptime").await.text();
+    assert!(response_text_0 < response_text_1, "{} < {}", response_text_0, response_text_1)
 }
 ```
 
@@ -788,6 +942,18 @@ pub async fn count() -> String {
 }
 ```
 
+Add a test:
+
+```rust
+#[tokio::test]
+async fn test() {
+    let server = TestServer::new(app()).unwrap();
+    let response_text_0 = server.get("/count").await.text();
+    let response_text_1 = server.get("/count").await.text();
+    assert!(response_text_0 < response_text_1, "{} < {}", response_text_0, response_text_1);
+}
+```
+
 ## Try the demo
 
 Shell:
@@ -842,7 +1008,7 @@ This section shows how to:
 
 ---
 
-# Respond with string of HTML
+# Respond with a string of HTML
 
 Edit file `main.rs`.
 
@@ -864,6 +1030,16 @@ Add a handler:
 /// The `Html` type sets an HTTP header content-type of `text/html`.
 pub async fn string_html() -> axum::response::Html<&'static str> {
     "<html><body><h1>Headline</h1><p>Paragraph</b></body></html>".into()
+}
+```
+
+Add a test:
+
+```rust
+#[tokio::test]
+async fn test() {
+    let server = TestServer::new(app()).unwrap();
+    server.get("/string.html").await.assert_text("<html><body><h1>Headline</h1><p>Paragraph</b></body></html>")
 }
 ```
 
@@ -930,6 +1106,16 @@ pub async fn get_demo_path_id(
 }
 ```
 
+Add a test:
+
+```rust
+#[tokio::test]
+async fn test() {
+    let server = TestServer::new(app()).unwrap();
+    server.get("/demo-path/111").await.assert_text("Get demo path id: \"111\"");
+}
+```
+
 ## Try the demo
 
 Shell:
@@ -982,6 +1168,16 @@ pub async fn get_items(
         axum::extract::Query<HashMap<String, String>>
 ) -> String {
     format!("Get items with query params: {:?}", params)
+}
+```
+
+Add a test:
+
+```rust
+#[tokio::test]
+async fn test() {
+    let server = TestServer::new(app()).unwrap();
+    server.get("/demo-query?a=b").await.assert_text("Demo query params: {\"a\": \"b\"}");
 }
 ```
 
@@ -1119,7 +1315,7 @@ Add code to use deserialization:
 
 ```rust
 /// Use Deserialize to convert e.g. from request JSON into Book struct.
-use serde::Deserialize;
+use serde::{Serialize, Deserialize};
 ```
 
 Add code to create a book struct that derives the traits we want:
@@ -1127,7 +1323,7 @@ Add code to create a book struct that derives the traits we want:
 ```rust
 /// Demo book structure with some example fields for id, title, author.
 // A production app could prefer an id to be type u32, UUID, etc.
-#[derive(Debug, Deserialize, Clone, Eq, Hash, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, Clone, Eq, Hash, PartialEq)]
 pub struct Book {
     pub id: String,
     pub title: String,
@@ -1234,7 +1430,8 @@ use std::thread;
 /// When you're done, then join the thread with its parent thread.
 async fn print_data() {
     thread::spawn(move || {
-        let data = DATA.lock().unwrap();
+        match DATA.lock() {
+            Ok(data) => {
         println!("data: {:?}" ,data);
     }).join().unwrap()
 }
@@ -1290,7 +1487,8 @@ Add a handler:
 /// This demo must clone the DATA in order to sort items by title.
 pub async fn get_books() -> axum::response::Html<String> {
     thread::spawn(move || {
-        let data = DATA.lock().unwrap();
+        match DATA.lock() {
+            Ok(data) => {
         let mut books = data.values().collect::<Vec<_>>().clone();
         books.sort_by(|a, b| a.title.cmp(&b.title));
         books.iter().map(|&book|
@@ -1348,7 +1546,8 @@ pub async fn post_books(
     axum::extract::Json(book): axum::extract::Json<Book>
 ) -> axum::response::Html<String> {
     thread::spawn(move || {
-        let mut data = DATA.lock().unwrap();
+        match DATA.lock() {
+            Ok(mut data) => {
         let id = data.keys().max().unwrap() + 1;
         let book = Book { id, ..book };
         data.insert(id, book.clone());
@@ -1420,7 +1619,8 @@ pub async fn get_books_id(
     axum::extract::Path(id): axum::extract::Path<u32>
 ) -> axum::response::Html<String> {
     thread::spawn(move || {
-        let data = DATA.lock().unwrap();
+        match DATA.lock() {
+            Ok(data) => {
         match data.get(&id) {
             Some(book) => format!("<p>{}</p>\n", &book),
             None => format!("<p>Book id {} not found</p>", id),
@@ -1487,7 +1687,8 @@ pub async fn put_books_id(
     axum::extract::Json(book): axum::extract::Json<Book>
 ) -> axum::response::Html<String> {
     thread::spawn(move || {
-        let mut data = DATA.lock().unwrap();
+        match DATA.lock() {
+            Ok(mut data) => {
         data.insert(book.id, book.clone());
         format!("Put book: {}", &book)
     }).join().unwrap().into()
@@ -1571,7 +1772,8 @@ pub async fn delete_books_id(
     axum::extract::Path(id): axum::extract::Path<u32>
 ) -> axum::response::Html<String> {
     thread::spawn(move || {
-        let mut data = DATA.lock().unwrap();
+        match DATA.lock() {
+            Ok(mut data) => {
         if data.contains_key(&id) {
             data.remove(&id);
             format!("Delete book id: {}", &id)
@@ -1619,18 +1821,18 @@ Output:
 
 ## Patch one book
 
-Create file `book_patch.rs`.
+Create file `book_change.rs`.
 
-Add code for a BookPatch struct that has optional attributes:
+Add code for a BookChange struct that has optional attributes:
 
 ```rust
 // Use Deserialize to convert e.g. from request JSON into Book struct.
-use serde::Deserialize;
+use serde::{Serialize, Deserialize};
 
 // Demo book patch structure with some example fields for id, title, author.
 // A production app could prefer an id to be type u32, UUID, etc.
-#[derive(Debug, Deserialize, Clone, Eq, Hash, PartialEq)]
-pub struct BookPatch {
+#[derive(Debug, Serialize, Deserialize, Clone, Eq, Hash, PartialEq)]
+pub struct BookChange {
     pub id: u32,
     pub title: Option<String>,
     pub author: Option<String>,
@@ -1642,7 +1844,7 @@ Add code to implement `Display`:
 ```rust
 // Display the book using the format "{title} by {author}".
 // This is a typical Rust trait and is not axum-specific.
-impl std::fmt::Display for BookPatch {
+impl std::fmt::Display for BookChange {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
             f,
@@ -1656,12 +1858,12 @@ impl std::fmt::Display for BookPatch {
 
 Edit file `main.rs`.
 
-Add code to use the new BookPatch:
+Add code to use the new BookChange:
 
 ```rust
-/// See file book_patch.rs, which defines the `BookPatch` struct.
-mod book_patch;
-use crate::book_patch::BookPatch;
+/// See file book_change.rs, which defines the `BookChange` struct.
+mod book_change;
+use crate::book_change::BookChange;
 ```
 
 Modify the route `/books/{id}` to append the function `patch`:
@@ -1682,16 +1884,17 @@ Add a handler:
 /// axum handler for "PATCH /books/{id}" which updates attributes.
 /// This demo shows how to mutate the book attributes in the DATA store.
 pub async fn patch_books_id(
-    axum::extract::Json(book_patch): axum::extract::Json<BookPatch>
+    axum::extract::Json(book_change): axum::extract::Json<BookChange>
 ) -> axum::response::Html<String> {
     thread::spawn(move || {
-        let id = book_patch.id;
-        let mut data = DATA.lock().unwrap();
+        let id = book_change.id;
+        match DATA.lock() {
+            Ok(mut data) => {
         if data.contains_key(&id) {
-            if let Some(title) = book_patch.title {
+            if let Some(title) = book_change.title {
                 data.get_mut(&id).unwrap().title = title.clone();
             }
-            if let Some(author) = book_patch.author {
+            if let Some(author) = book_change.author {
                 data.get_mut(&id).unwrap().title = author.clone();
             }
             format!("Patch book id: {}", &id)
@@ -1768,7 +1971,8 @@ pub async fn get_books_id_form(
     axum::extract::Path(id): axum::extract::Path<u32>
 ) -> axum::response::Html<String> {
     thread::spawn(move || {
-        let data = DATA.lock().unwrap();
+        match DATA.lock() {
+            Ok(data) => {
         match data.get(&id) {
             Some(book) => format!(
                 concat!(
@@ -1841,7 +2045,8 @@ pub async fn patch_books_id_form(
 ) -> axum::response::Html<String> {
     let new_book: Book = form.0;
     thread::spawn(move || {
-        let mut data = DATA.lock().unwrap();
+        match DATA.lock() {
+            Ok(mut data) => {
         if data.contains_key(&new_book.id) {
             if !new_book.title.is_empty() {
                 data.get_mut(&new_book.id).unwrap().title = new_book.title.clone();
@@ -1926,6 +2131,7 @@ use tracing_subscriber::{
 Add a tracing subscriber to the start of the main function:
 
 ```rust
+/// Run our main function.
 #[tokio::main]
 pub async fn main() {
     // Start tracing and emit a tracing event.

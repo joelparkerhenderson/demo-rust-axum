@@ -12,15 +12,15 @@ Add this anywhere before the function `main`:
 pub static COUNT: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
 ```
 
-Edit file `main.rs` router code to add this route:
+Edit file `main.rs` function `app` and add this route:
 
 ```rust
-let app = axum::Router::new()
-    …
-    .route("/count",
-        get(count)
-    )
-    …
+pub fn app() -> axum::Router {
+    axum::Router::new()
+        …
+        .route("/count",
+            get(count)
+        )
 ```
 
 Add a handler that does an atomic increment of the count:
@@ -31,6 +31,18 @@ Add a handler that does an atomic increment of the count:
 pub async fn count() -> String {
     COUNT.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
     format!("{}", COUNT.load(std::sync::atomic::Ordering::SeqCst))
+}
+```
+
+Add a test:
+
+```rust
+#[tokio::test]
+async fn test() {
+    let server = TestServer::new(app()).unwrap();
+    let response_text_0 = server.get("/count").await.text();
+    let response_text_1 = server.get("/count").await.text();
+    assert!(response_text_0 < response_text_1, "{} < {}", response_text_0, response_text_1);
 }
 ```
 

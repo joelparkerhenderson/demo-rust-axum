@@ -1,4 +1,4 @@
-# Respond with string of HTML
+# Respond with a string of HTML
 
 Edit file `main.rs`.
 

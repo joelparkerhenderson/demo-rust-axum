@@ -12,17 +12,19 @@ use axum::routing::get;
 /// For the implementation, see function `get_query`.
 use std::collections::HashMap;
 
+/// Run our app using a hyper server on http://localhost:3000.
 #[tokio::main]
 async fn main() {
-    // Build our application by creating our router.
-    let app = axum::Router::new()
-        .route("/demo-query",
-            get(get_demo_query)
-        );
-
-    // Run our application as a hyper server on http://localhost:3000.
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
-    axum::serve(listener, app).await.unwrap();
+    axum::serve(listener, app()).await.unwrap();
+}
+
+/// Create our application.
+pub fn app() -> axum::Router {
+    axum::Router::new()
+    .route("/demo-query",
+        get(get_demo_query)
+    )
 }
 
 /// axum handler for "GET /demo-query" which uses `axum::extract::Query`.
@@ -33,3 +35,16 @@ pub async fn get_demo_query(
 ) -> String {
     format!("Demo query params: {:?}", params)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use axum_test::TestServer;
+
+    #[tokio::test]
+    async fn test() {
+        let server = TestServer::new(app()).unwrap();
+        server.get("/demo-query?a=b").await.assert_text("Demo query params: {\"a\": \"b\"}");
+    }
+}
+

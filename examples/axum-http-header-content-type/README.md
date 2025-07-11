@@ -7,12 +7,13 @@ To return a custom content type, you can set an axum HTTP header.
 Start with the typical file `main.rs`.
 
 ```rust
+/// Run our main function.
 #[tokio::main]
 async fn main() {
     // Build our application by creating our router.
     let app = axum::Router::new();
 
-    // Run our application as a hyper server on http://localhost:3000.
+    // Run our app using a hyper server on http://localhost:3000.
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
@@ -101,7 +102,7 @@ async fn get_demo_csv() -> impl axum::response::IntoResponse {
     (
         headers,
         concat!(
-            "alpha,bravo,charlie\n",
+            "alfa,bravo,charlie\n",
             "delta,echo,foxtrot\n",
         )
     )
@@ -122,6 +123,6 @@ You should see your browser receive the comma separated values (CSV),
 and either display the text or prompt you to download a CSV file.
 
 ```text
-alpha,bravo,charlie
+alfa,bravo,charlie
 delta,echo,foxtrot"
 ```

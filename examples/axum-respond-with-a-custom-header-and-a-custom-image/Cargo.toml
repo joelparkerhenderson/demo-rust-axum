@@ -23,3 +23,6 @@ axum = { version = "~0.8.4" } # Web framework that focuses on ergonomics and mod
 tokio = { version = "~1.45.1", features = ["full"] } # Event-driven, non-blocking I/O platform.
 base64 = { version = "~0.22.1" } # Encode and decode base64 as bytes or utf8.
 http = { version = "~1.3.1" } # Types for HTTP requests and responses.
+
+[dev-dependencies]
+axum-test = { version = "17.3.0" } # Library for writing tests for web servers written using Axum.

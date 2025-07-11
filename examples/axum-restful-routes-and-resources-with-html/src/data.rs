@@ -20,7 +20,8 @@ use crate::book::Book;
 // ```
 // async fn example() {
 //     thread::spawn(move || {
-//         let data = DATA.lock().unwrap();
+//         match DATA.lock() {
+            Ok(data) => {
 //         …
 // }).join().unwrap()
 // ```

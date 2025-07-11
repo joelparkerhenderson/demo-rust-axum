@@ -18,14 +18,14 @@ Add code to use deserialization:
 
 ```rust
 /// Use Deserialize to convert e.g. from request JSON into Book struct.
-use serde::Deserialize;
+use serde::{Serialize, Deserialize};
 ```
 
 Add code to create a book struct that derives the traits we want:
 
 ```rust
 /// Demo book structure with some example fields for id, title, author.
-#[derive(Debug, Deserialize, Clone, Eq, Hash, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, Clone, Eq, Hash, PartialEq)]
 pub struct Book {
     pub title: String,
     pub author: String,
@@ -40,12 +40,13 @@ Create a typical server:
 
 ```rust
 
+/// Run our main function.
 #[tokio::main]
 async fn main() {
     // Build our application by creating our router.
     let app = axum::Router::new();
 
-    // Run our application as a hyper server on http://localhost:3000.
+    // Run our app using a hyper server on http://localhost:3000.
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }

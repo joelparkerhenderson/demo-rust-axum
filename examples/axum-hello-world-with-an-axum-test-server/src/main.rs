@@ -1,10 +1,10 @@
+/// Run our app using a hyper server on http://localhost:3000.
 #[tokio::main]
 async fn main() {
-    // Run our application as a hyper server on http://localhost:3000.
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     axum::serve(listener, app()).await.unwrap();
 }
-
+/// Create our application.
 pub fn app() -> axum::Router {
     axum::Router::new()
     .route("/",
@@ -18,7 +18,7 @@ mod tests {
     use axum_test::TestServer;
 
     #[tokio::test]
-    async fn response_text() {
+    async fn test() {
         let app: axum::Router = app();
         let server = TestServer::new(app).unwrap();
         let response_text = server.get("/").await.text();

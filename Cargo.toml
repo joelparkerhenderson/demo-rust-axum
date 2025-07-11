@@ -30,6 +30,9 @@ http = { version = "~1.3.1" } # Types for HTTP requests and responses.
 tracing = { version = "~0.1.41" } #  Application-level tracing for Rust.
 tracing-subscriber = { version = "~0.3.19", features = ["env-filter"] } # Utilities for `tracing` subscribers.
 
+[dev-dependencies]
+axum-test = { version = "17.3.0" } # Library for writing tests for web servers written using Axum.
+
 [[example]]
 name = "axum-bind-host-port-socket-address"
 path = "examples/axum-bind-host-port-socket-address/src/main.rs"
@@ -59,8 +62,8 @@ name = "axum-graceful-shutdown"
 path = "examples/axum-graceful-shutdown/src/main.rs"
 
 [[example]]
-name = "axum-hello-handler-function"
-path = "examples/axum-hello-handler-function/src/main.rs"
+name = "axum-hello-world-with-functions"
+path = "examples/axum-hello-world-with-functions/src/main.rs"
 
 [[example]]
 name = "axum-hello-world"
@@ -103,8 +106,12 @@ name = "axum-respond-with-a-string-of-html"
 path = "examples/axum-respond-with-a-string-of-html/src/main.rs"
 
 [[example]]
-name = "axum-restful-routes-and-resources"
-path = "examples/axum-restful-routes-and-resources/src/main.rs"
+name = "axum-restful-routes-and-resources-with-html"
+path = "examples/axum-restful-routes-and-resources-with-html/src/main.rs"
+
+[[example]]
+name = "axum-restful-routes-and-resources-with-json"
+path = "examples/axum-restful-routes-and-resources-with-json/src/main.rs"
 
 [[example]]
 name = "axum-router-fallback"

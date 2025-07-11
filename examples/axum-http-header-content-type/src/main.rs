@@ -7,20 +7,22 @@
 /// Use axum capabilities.
 use axum::routing::get;
 
+/// Run our app using a hyper server on http://localhost:3000.
 #[tokio::main]
 async fn main() {
-    // Build our application by creating our router.
-    let app = axum::Router::new()
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    axum::serve(listener, app()).await.unwrap();
+}
+
+/// Create our application.
+pub fn app() -> axum::Router {
+    axum::Router::new()
         .route("/demo-css",
         get(get_demo_css)
         )
         .route("/demo-csv",
             get(get_demo_csv)
-        );
-
-    // Run our application as a hyper server on http://localhost:3000.
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
-    axum::serve(listener, app).await.unwrap();
+        )
 }
 
 /// axum handler for "GET /demo-css" to get cascading style sheet text.
@@ -55,8 +57,31 @@ async fn get_demo_csv() -> impl axum::response::IntoResponse {
     (
         headers,
         concat!(
-            "alpha,bravo,charlie\n",
+            "alfa,bravo,charlie\n",
             "delta,echo,foxtrot\n",
         )
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use axum_test::TestServer;
+
+    #[tokio::test]
+    async fn get_demo_css() {
+        let server = TestServer::new(app()).unwrap();
+        let response: axum_test::TestResponse = server.get("/demo-css").await;
+        response.assert_header("content-type", "text/css");
+        response.assert_text("b: { font-color: red; }\ni: { font-color: blue; }\n");
+    }
+
+    #[tokio::test]
+    async fn get_demo_csv() {
+        let server = TestServer::new(app()).unwrap();
+        let response = server.get("/demo-csv").await;
+        response.assert_header("content-type", "text/csv");
+        response.assert_text("alfa,bravo,charlie\ndelta,echo,foxtrot\n");
+    }
+
 }

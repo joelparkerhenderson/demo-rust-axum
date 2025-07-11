@@ -23,3 +23,6 @@ axum = { version = "~0.8.4" } # Web framework that focuses on ergonomics and mod
 tokio = { version = "~1.45.1", features = ["full"] } # Event-driven, non-blocking I/O platform.
 tracing = { version = "~0.1.41" } #  Application-level tracing for Rust.
 tracing-subscriber = { version = "~0.3.19", features = ["env-filter"] } # Utilities for `tracing` subscribers.
+
+[dev-dependencies]
+axum-test = { version = "17.3.0" } # Library for writing tests for web servers written using Axum.

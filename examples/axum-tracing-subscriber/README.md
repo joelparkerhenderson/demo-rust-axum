@@ -24,6 +24,7 @@ use tracing_subscriber::{
 Add a tracing subscriber to the start of the main function:
 
 ```rust
+/// Run our main function.
 #[tokio::main]
 pub async fn main() {
     // Start tracing and emit a tracing event.

@@ -7,18 +7,20 @@
 /// Use axum capabilities.
 use axum::routing::get;
 
+/// Run our app using a hyper server on http://localhost:3000.
 #[tokio::main]
 async fn main() {
-    // Build our application by creating our router.
-    let app = axum::Router::new()
-        .route("/demo-form",
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    axum::serve(listener, app()).await.unwrap();
+}
+
+/// Create our application.
+pub fn app() -> axum::Router {
+    axum::Router::new()
+    .route("/demo-form",
         get(get_demo_form)
             .post(post_demo_form)
-        );
-
-    // Run our application as a hyper server on http://localhost:3000.
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
-    axum::serve(listener, app).await.unwrap();
+        )
 }
 
 /////
@@ -85,4 +87,28 @@ pub async fn post_demo_form(
         "#,
         &book
     ).into()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use axum_test::TestServer;
+
+    #[tokio::test]
+    async fn get_demo_form() {
+        let server = TestServer::new(app()).unwrap();
+        let response_text = server.get("/demo-form").await.text();
+        assert!(response_text.contains("<form method=\"post\" action=\"/demo-form\">"));
+    }
+
+    #[tokio::test]
+    async fn post_demo_form() {
+        let server = TestServer::new(app()).unwrap();
+        let data = [
+            ["title", "alfa"],
+            ["author", "bravo"],
+        ];
+        let response_text = server.post("/demo-form").form(&data).await.text();
+        assert!(response_text.contains("Book { title: \"alfa\", author: \"bravo\" }"));
+    }
 }
